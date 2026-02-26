@@ -1,4 +1,8 @@
+import { inject } from '@vercel/analytics';
 import App from './App.js';
+
+// Initialize Vercel Web Analytics
+inject();
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
