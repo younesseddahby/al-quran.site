@@ -1,0 +1,5 @@
+{
+  "name": "The Holy Quran App",
+  "description": "An elegant web application to read and listen to the Holy Quran, featuring prayer times, hadith collections, and customizable themes.",
+  "requestFramePermissions": []
+}

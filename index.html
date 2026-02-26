@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Holy Quran</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Preconnect to API domains for faster initial load -->
+    <link rel="preconnect" href="https://api.aladhan.com">
+    <link rel="preconnect" href="https://nominatim.openstreetmap.org">
+    <link rel="preconnect" href="https://www.mp3quran.net">
+    <link rel="preconnect" href="https://api.alquran.cloud">
+
+    <!-- Main Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    
+    <!-- Arabic Fonts Selection -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Naskh+Arabic:wght@400;700&family=Scheherazade+New:wght@400;700&family=Reem+Kufi:wght@400..700&family=Lateef&family=Alkalami&family=Vazirmatn:wght@100..900&family=Gulzar&family=Cairo:wght@200..900&family=Almarai:wght@300..800&family=Tajawal:wght@200..900&family=El+Messiri:wght@400..700&family=Changa:wght@200..800&family=Mada:wght@200..900&family=Harmattan:wght@400;700&family=Lalezar&family=Kufam:ital,wght@0,400..900;1,400..900&family=Aref+Ruqaa:wght@400;700&family=Mirza:wght@400..700&display=swap" rel="stylesheet">
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#b58900" />
+
+    <style>
+      :root {
+        --bg-light: 252 250 242; /* Soft Parchment */
+        --bg-dark: 15 23 42;    /* Slate 900 */
+        --text-light: 30 41 59;   /* Slate 800 */
+        --text-dark: 241 245 249; /* Slate 100 */
+        --theme-primary: 181 137 0;
+      }
+
+      body {
+        font-family: 'Lora', serif;
+        background-color: rgb(var(--bg-light));
+        color: rgb(var(--text-light));
+        transition: background-color 0.4s ease, color 0.4s ease;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      html.dark body {
+        background-color: rgb(var(--bg-dark));
+        color: rgb(var(--text-dark));
+      }
+
+      /* Mushaf Paper Texture */
+      .page-texture {
+        background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.06'/%3E%3C/svg%3E");
+      }
+
+      h1, h2, h3, .font-display {
+        font-family: 'Playfair Display', serif;
+      }
+
+      .font-amiri { font-family: 'Amiri', serif; }
+
+      /* Font Mappings for Classes */
+      .amiri .quran-arabic-text, .preview-amiri { font-family: 'Amiri', serif; }
+      .noto_naskh_arabic .quran-arabic-text, .preview-noto_naskh_arabic { font-family: 'Noto Naskh Arabic', serif; }
+      .scheherazade .quran-arabic-text, .preview-scheherazade { font-family: 'Scheherazade New', serif; }
+      .reem_kufi .quran-arabic-text, .preview-reem_kufi { font-family: 'Reem Kufi', sans-serif; }
+      .lateef .quran-arabic-text, .preview-lateef { font-family: 'Lateef', cursive; }
+      .alkalami .quran-arabic-text, .preview-alkalami { font-family: 'Alkalami', serif; }
+      .vazirmatn .quran-arabic-text, .preview-vazirmatn { font-family: 'Vazirmatn', sans-serif; }
+      .gulzar .quran-arabic-text, .preview-gulzar { font-family: 'Gulzar', serif; }
+      .cairo .quran-arabic-text, .preview-cairo { font-family: 'Cairo', sans-serif; }
+      .almarai .quran-arabic-text, .preview-almarai { font-family: 'Almarai', sans-serif; }
+      .tajawal .quran-arabic-text, .preview-tajawal { font-family: 'Tajawal', sans-serif; }
+      .el_messiri .quran-arabic-text, .preview-el_messiri { font-family: 'El Messiri', sans-serif; }
+      .changa .quran-arabic-text, .preview-changa { font-family: 'Changa', sans-serif; }
+      .mada .quran-arabic-text, .preview-mada { font-family: 'Mada', sans-serif; }
+      .harmattan .quran-arabic-text, .preview-harmattan { font-family: 'Harmattan', sans-serif; }
+      .lalezar .quran-arabic-text, .preview-lalezar { font-family: 'Lalezar', cursive; }
+      .kufam .quran-arabic-text, .preview-kufam { font-family: 'Kufam', sans-serif; }
+      .aref_ruqaa .quran-arabic-text, .preview-aref_ruqaa { font-family: 'Aref Ruqaa', serif; }
+      .mirza .quran-arabic-text, .preview-mirza { font-family: 'Mirza', serif; }
+
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar { width: 6px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { 
+        background-color: rgba(var(--theme-color-500-rgb, 181 137 0), 0.3); 
+        border-radius: 10px; 
+      }
+      ::-webkit-scrollbar-thumb:hover { 
+        background-color: rgba(var(--theme-color-500-rgb, 181 137 0), 0.6); 
+      }
+
+      /* Animations */
+      @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+      .fade-in { animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+      
+      /* Ayah Highlight Styles */
+      .active-ayah-span {
+        background-color: rgba(var(--theme-color-500-rgb), 0.1);
+        border-radius: 4px;
+        box-shadow: 0 0 0 4px rgba(var(--theme-color-500-rgb), 0.05);
+        transition: all 0.3s ease;
+      }
+      html.dark .active-ayah-span {
+        background-color: rgba(var(--theme-color-500-rgb), 0.15);
+      }
+
+      .ayah-span {
+        position: relative;
+        display: inline;
+        padding: 0 2px;
+      }
+
+      .ayah-number-end {
+        user-select: none;
+        pointer-events: none;
+      }
+
+      /* Font sizing globals - Enhanced for better readability */
+      :root {
+        --arabic-size: 1.4rem;
+        --line-height: 2.4;
+      }
+      html.font-size-x-small { --arabic-size: 1.1rem; --line-height: 1.8; }
+      html.font-size-small { --arabic-size: 1.4rem; --line-height: 2.4; }
+      html.font-size-medium { --arabic-size: 1.8rem; --line-height: 2.8; }
+      html.font-size-large { --arabic-size: 2.2rem; --line-height: 3.2; }
+      html.font-size-x-large { --arabic-size: 2.8rem; --line-height: 3.8; }
+
+      @media (min-width: 768px) {
+        :root {
+          --arabic-size: 1.8rem;
+          --line-height: 2.8;
+        }
+        html.font-size-x-small { --arabic-size: 1.4rem; --line-height: 2.4; }
+        html.font-size-small { --arabic-size: 1.8rem; --line-height: 2.8; }
+        html.font-size-medium { --arabic-size: 2.2rem; --line-height: 3.2; }
+        html.font-size-large { --arabic-size: 2.8rem; --line-height: 3.8; }
+        html.font-size-x-large { --arabic-size: 3.5rem; --line-height: 4.5; }
+      }
+
+      .quran-arabic-text {
+        font-size: var(--arabic-size);
+        line-height: var(--line-height);
+        direction: rtl;
+        text-align: justify;
+        text-align-last: center;
+        word-spacing: 4px;
+        text-justify: inter-word;
+      }
+
+      @media (min-width: 768px) {
+        .quran-arabic-text {
+          word-spacing: 8px;
+        }
+      }
+
+      /* Toast Styles */
+      #toast-container {
+        position: fixed;
+        bottom: 5rem;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 100;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        pointer-events: none;
+      }
+      .toast {
+        background: white;
+        color: #1e293b;
+        padding: 0.75rem 1.25rem;
+        border-radius: 9999px;
+        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        font-size: 0.875rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        animation: toastIn 0.3s ease-out forwards;
+        pointer-events: auto;
+        border: 1px solid #e2e8f0;
+      }
+      html.dark .toast {
+        background: #1e293b;
+        color: white;
+        border-color: #334155;
+      }
+      @keyframes toastIn { from { opacity: 0; transform: translateY(1rem); } to { opacity: 1; transform: translateY(0); } }
+      @keyframes toastOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(1rem); } }
+    </style>
+
+    <script>
+      (function() {
+        const theme = localStorage.getItem('theme') || 'system';
+        const lang = localStorage.getItem('language') || 'ar';
+        const fontSize = localStorage.getItem('fontSize') || 'medium';
+        const arabicFont = localStorage.getItem('arabicFont') || 'noto_naskh_arabic';
+        
+        const effectiveTheme = theme === 'system' ? 
+          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme;
+
+        document.documentElement.classList.add(effectiveTheme, `font-size-${fontSize}`, arabicFont);
+        document.documentElement.lang = lang;
+        document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+      })();
+
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              parchment: 'rgb(var(--bg-light))',
+              night: 'rgb(var(--bg-dark))',
+              ink: 'rgb(var(--text-light))',
+              cream: 'rgb(var(--text-dark))',
+              line: 'rgba(var(--text-light) / 0.1)',
+              'line-dark': 'rgba(var(--text-dark) / 0.1)',
+              theme: {
+                50: 'rgb(var(--theme-color-50-rgb) / <alpha-value>)',
+                100: 'rgb(var(--theme-color-100-rgb) / <alpha-value>)',
+                200: 'rgb(var(--theme-color-200-rgb) / <alpha-value>)',
+                300: 'rgb(var(--theme-color-300-rgb) / <alpha-value>)',
+                400: 'rgb(var(--theme-color-400-rgb) / <alpha-value>)',
+                500: 'rgb(var(--theme-color-500-rgb) / <alpha-value>)',
+                600: 'rgb(var(--theme-color-600-rgb) / <alpha-value>)',
+                700: 'rgb(var(--theme-color-700-rgb) / <alpha-value>)',
+                800: 'rgb(var(--theme-color-800-rgb) / <alpha-value>)',
+                900: 'rgb(var(--theme-color-900-rgb) / <alpha-value>)',
+              },
+            }
+          },
+        },
+      };
+
+      // Global toast helper
+      window.showToast = (message, type = 'info') => {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerHTML = `<span>${message}</span>`;
+        container.appendChild(toast);
+        setTimeout(() => {
+          toast.style.animation = 'toastOut 0.3s ease-in forwards';
+          setTimeout(() => toast.remove(), 300);
+        }, 3000);
+      };
+    </script>
+    <script type="importmap">
+    {
+      "imports": {
+        "@google/genai": "https://aistudiocdn.com/@google/genai@^1.27.0"
+      }
+    }
+    </script>
+  <link rel="stylesheet" href="/index.css">
+</head>
+  <body class="selection:bg-theme-200 dark:selection:bg-theme-900 selection:text-theme-900 dark:selection:text-theme-100">
+    <div id="root"></div>
+    <div id="toast-container"></div>
+    <script type="module" src="/index.js"></script>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
