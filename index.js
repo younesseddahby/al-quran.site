@@ -29,11 +29,15 @@ window.showToast = window.showToast || ((message, type = 'info') => {
 });
 
 import App from './App.js';
+import { injectSpeedInsights } from '@vercel/speed-insights';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
   throw new Error("Could not find root element to mount to");
 }
+
+// Initialize Vercel Speed Insights
+injectSpeedInsights();
 
 // Initialize the application
 App(rootElement);
