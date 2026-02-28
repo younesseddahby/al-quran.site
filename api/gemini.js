@@ -1,38 +1,28 @@
 import { GoogleGenAI } from "@google/genai";
 
-export const config = {
-  runtime: 'edge',
-};
-
-export default async function handler(req) {
+export default async function handler(req, res) {
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
-    return new Response(null, {
-      status: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type',
-      },
-    });
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.status(200).end();
+    return;
   }
 
   if (req.method !== 'POST') {
-    return new Response(JSON.stringify({ error: 'Method not allowed' }), { 
-      status: 405,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    res.status(405).json({ error: 'Method not allowed' });
+    return;
   }
 
   try {
-    const { history, system, retryCount } = await req.json();
+    // In standard Node.js Vercel functions, req.body is already parsed
+    const { history, system, retryCount } = req.body;
     const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
     
     if (!apiKey) {
-      return new Response(JSON.stringify({ error: 'API key not configured on server' }), { 
-        status: 500,
-        headers: { 'Content-Type': 'application/json' }
-      });
+      res.status(500).json({ error: 'API key not configured on server' });
+      return;
     }
 
     const ai = new GoogleGenAI({ apiKey });
@@ -46,35 +36,26 @@ export default async function handler(req) {
         }
     });
 
-    const stream = new ReadableStream({
-      async start(controller) {
-        try {
-          for await (const chunk of responseStream) {
-            if (chunk.text) {
-              controller.enqueue(new TextEncoder().encode(chunk.text));
-            }
-          }
-          controller.close();
-        } catch (error) {
-          controller.error(error);
-        }
-      }
-    });
+    // Set headers for streaming
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+    res.setHeader('Transfer-Encoding', 'chunked');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
 
-    return new Response(stream, {
-      headers: {
-        'Content-Type': 'text/plain; charset=utf-8',
-        'Access-Control-Allow-Origin': '*',
-        'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive',
-      }
-    });
+    for await (const chunk of responseStream) {
+        if (chunk.text) {
+            res.write(chunk.text);
+        }
+    }
+    res.end();
 
   } catch (error) {
     console.error('Gemini API Error:', error);
-    return new Response(JSON.stringify({ error: error.message }), { 
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    if (!res.headersSent) {
+      res.status(500).json({ error: error.message });
+    } else {
+      res.end();
+    }
   }
 }
