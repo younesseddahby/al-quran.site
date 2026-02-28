@@ -1,4 +1,3 @@
-import { GoogleGenAI } from "@google/genai";
 import { t, getCurrentLanguage } from '../i18n.js';
 
 const markdownToHtml = (text) => {
@@ -204,11 +203,10 @@ export const renderAITafsir = (container, { onClose, initialPrompt }) => {
             setTimeout(() => reject(new Error('TIMEOUT')), 30000)
         );
 
-        try {
-            const lang = getCurrentLanguage();
-            
-            let system = "";
-            switch(lang) {
+        const lang = getCurrentLanguage();
+        
+        let system = "";
+        switch(lang) {
                 case 'ar':
                     system = "أنت مساعد عالم إسلامي خبير في التفسير والحديث. يجب أن تكون إجابتك باللغة العربية الفصحى فقط. أجب فقط على الأسئلة المتعلقة بالإسلام والقرآن والحديث. إذا سُئلت عن أي موضوع آخر، اعتذر بلطف ووضح أنك مبرمج للإجابة على الأسئلة الإسلامية فقط. استخدم التنسيق المناسب لتنظيم إجابتك.";
                     break;
@@ -229,60 +227,56 @@ export const renderAITafsir = (container, { onClose, initialPrompt }) => {
                     parts: [{ text: m.content }]
                 }));
 
-            let apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
-            
-            // If Vite compiled it as undefined, or it's missing, fetch from our config endpoint
-            if (!apiKey || apiKey === 'undefined' || apiKey === 'null') {
-                try {
-                    const configRes = await fetch('/api/config');
-                    if (configRes.ok) {
-                        const data = await configRes.json();
-                        apiKey = data.apiKey;
+            let response;
+            try {
+                const fetchPromise = fetch('/api/gemini', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ history, system })
+                });
+
+                response = await Promise.race([fetchPromise, timeoutPromise]);
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    const err = new Error(errorData.error || `HTTP error! status: ${response.status}`);
+                    err.status = response.status;
+                    throw err;
+                }
+
+                state.connectionStatus = 'connected';
+                let fullText = '';
+                
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder("utf-8");
+                
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    const chunkText = decoder.decode(value, { stream: true });
+                    if (chunkText) {
+                        fullText += chunkText;
+                        state.streamingText = fullText;
+                        updateMsgs();
                     }
-                } catch (e) {
-                    console.warn("Failed to fetch config", e);
                 }
-            }
 
-            if (!apiKey || apiKey === 'undefined' || apiKey === 'null') {
-                throw new Error("API Key is missing. Please add GEMINI_API_KEY in Vercel settings.");
-            }
-
-            const ai = new GoogleGenAI({ apiKey });
-            
-            const streamPromise = ai.models.generateContentStream({
-                model: 'gemini-3-flash-preview',
-                contents: history,
-                config: { 
-                    systemInstruction: system,
-                    tools: [{ googleSearch: {} }]
-                }
-            });
-
-            const stream = await Promise.race([streamPromise, timeoutPromise]);
-
-            state.connectionStatus = 'connected';
-            let fullText = '';
-            
-            for await (const chunk of stream) {
-                if (chunk.text) {
-                    fullText += chunk.text;
-                    state.streamingText = fullText;
-                    updateMsgs();
-                }
-            }
-
-            state.conversation.push({ role: 'model', content: fullText });
-            state.streamingText = '';
-            
-            state.isLoading = false;
-            sessionStorage.setItem('aiConversation', JSON.stringify(state.conversation));
-            updateMsgs();
-            
-        } catch (e) {
+                state.conversation.push({ role: 'model', content: fullText });
+                state.streamingText = '';
+                
+                state.isLoading = false;
+                sessionStorage.setItem('aiConversation', JSON.stringify(state.conversation));
+                updateMsgs();
+                
+            } catch (e) {
             console.error(`AI Error (Attempt ${retryCount + 1}):`, e);
             
-            if (retryCount < 2) {
+            // Do not retry on client errors (4xx) like 400 Bad Request or 429 Too Many Requests
+            const isClientError = e.status >= 400 && e.status < 500;
+            const isRateLimit = e.status === 429 || (e.message && e.message.includes('429'));
+            const isInvalidKey = e.status === 400 || (e.message && e.message.includes('API key not valid'));
+            
+            if (retryCount < 2 && !isClientError && e.message !== 'TIMEOUT') {
                 state.connectionStatus = 'retrying';
                 updateMsgs();
                 await new Promise(r => setTimeout(r, 2000 * (retryCount + 1)));
@@ -290,9 +284,15 @@ export const renderAITafsir = (container, { onClose, initialPrompt }) => {
             }
 
             state.connectionStatus = 'error';
-            const errorMessage = e.message === 'TIMEOUT' 
-                ? (getCurrentLanguage() === 'ar' ? "انتهت مهلة الاتصال. يرجى التحقق من الإنترنت." : "Connection timed out. Please check your internet.")
-                : t('aiError');
+            
+            let errorMessage = t('aiError');
+            if (e.message === 'TIMEOUT') {
+                errorMessage = getCurrentLanguage() === 'ar' ? "انتهت مهلة الاتصال. يرجى التحقق من الإنترنت." : "Connection timed out. Please check your internet.";
+            } else if (isRateLimit) {
+                errorMessage = getCurrentLanguage() === 'ar' ? "لقد تجاوزت الحد المسموح به للطلبات المجانية. يرجى المحاولة مرة أخرى بعد دقيقة." : "You have exceeded the free request limit. Please try again in a minute.";
+            } else if (isInvalidKey) {
+                errorMessage = getCurrentLanguage() === 'ar' ? "مفتاح API غير صالح. يرجى التحقق من إعداداتك." : "Invalid API key. Please check your configuration.";
+            }
             
             state.conversation.push({ 
                 role: 'error', 
