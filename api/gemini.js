@@ -1,48 +1,80 @@
-export default async function handler(req, res) {
-  // Allow requests from your app
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+import { GoogleGenAI } from "@google/genai";
 
-  // Handle preflight
+export const config = {
+  runtime: 'edge',
+};
+
+export default async function handler(req) {
+  // Handle CORS preflight
   if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+    return new Response(null, {
+      status: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      },
+    });
   }
 
-  // Only accept POST requests
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    return new Response(JSON.stringify({ error: 'Method not allowed' }), { 
+      status: 405,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 
   try {
-    const { prompt } = req.body;
-    const apiKey = process.env.GEMINI_API_KEY;
+    const { history, system, retryCount } = await req.json();
+    const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
     
     if (!apiKey) {
-      return res.status(500).json({ error: 'API key not configured' });
+      return new Response(JSON.stringify({ error: 'API key not configured on server' }), { 
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      });
     }
 
-    // Call Gemini
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }]
-        })
+    const ai = new GoogleGenAI({ apiKey });
+    
+    const responseStream = await ai.models.generateContentStream({
+        model: retryCount > 0 ? 'gemini-3-flash-preview' : 'gemini-3.1-pro-preview',
+        contents: history,
+        config: { 
+            systemInstruction: system,
+            tools: [{ googleSearch: {} }]
+        }
+    });
+
+    const stream = new ReadableStream({
+      async start(controller) {
+        try {
+          for await (const chunk of responseStream) {
+            if (chunk.text) {
+              controller.enqueue(new TextEncoder().encode(chunk.text));
+            }
+          }
+          controller.close();
+        } catch (error) {
+          controller.error(error);
+        }
       }
-    );
-    
-    const data = await response.json();
-    
-    // Send the answer back
-    res.status(200).json({
-      success: true,
-      response: data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response'
+    });
+
+    return new Response(stream, {
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'Access-Control-Allow-Origin': '*',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
+      }
     });
 
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Gemini API Error:', error);
+    return new Response(JSON.stringify({ error: error.message }), { 
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 }
