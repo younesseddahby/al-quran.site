@@ -228,22 +228,54 @@ export const renderAITafsir = (container, { onClose, initialPrompt }) => {
                     parts: [{ text: m.content }]
                 }));
 
-            // Call our Vercel Serverless Function
-            const fetchPromise = fetch('/api/gemini', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    history,
-                    system,
-                    retryCount
-                })
-            });
+            let response;
+            try {
+                // Call our Vercel Serverless Function
+                const fetchPromise = fetch('/api/gemini', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        history,
+                        system,
+                        retryCount
+                    })
+                });
 
-            const response = await Promise.race([fetchPromise, timeoutPromise]);
+                response = await Promise.race([fetchPromise, timeoutPromise]);
 
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+                }
+            } catch (apiError) {
+                console.warn("Backend API failed, falling back to client-side SDK", apiError);
+                // Fallback to client-side SDK if backend fails
+                const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || process.env.API_KEY });
+                const result = await Promise.race([
+                    ai.models.generateContentStream({
+                        model: retryCount > 0 ? 'gemini-3-flash-preview' : 'gemini-3.1-pro-preview',
+                        contents: history,
+                        config: { 
+                            systemInstruction: system,
+                            tools: [{ googleSearch: {} }]
+                        }
+                    }),
+                    timeoutPromise
+                ]);
+                
+                state.connectionStatus = 'connected';
+                let fullText = '';
+                for await (const chunk of result) {
+                    const chunkText = chunk.text;
+                    if (chunkText) {
+                        fullText += chunkText;
+                        state.streamingText = fullText;
+                        updateMsgs();
+                    }
+                }
+                state.conversation.push({ role: 'model', content: fullText });
+                state.streamingText = '';
+                return; // Exit early since we handled it with fallback
             }
 
             state.connectionStatus = 'connected';
