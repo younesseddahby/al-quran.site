@@ -229,68 +229,44 @@ export const renderAITafsir = (container, { onClose, initialPrompt }) => {
                     parts: [{ text: m.content }]
                 }));
 
-            let response;
-            try {
-                // Call our Vercel Serverless Function
-                const fetchPromise = fetch('/api/gemini', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        history,
-                        system,
-                        retryCount
-                    })
-                });
-
-                response = await Promise.race([fetchPromise, timeoutPromise]);
-
-                if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({}));
-                    throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
-                }
-            } catch (apiError) {
-                console.warn("Backend API failed, falling back to client-side SDK", apiError);
-                // Fallback to client-side SDK if backend fails
-                const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || process.env.API_KEY });
-                const result = await Promise.race([
-                    ai.models.generateContentStream({
-                        model: retryCount > 0 ? 'gemini-3-flash-preview' : 'gemini-3.1-pro-preview',
-                        contents: history,
-                        config: { 
-                            systemInstruction: system,
-                            tools: [{ googleSearch: {} }]
-                        }
-                    }),
-                    timeoutPromise
-                ]);
-                
-                state.connectionStatus = 'connected';
-                let fullText = '';
-                for await (const chunk of result) {
-                    const chunkText = chunk.text;
-                    if (chunkText) {
-                        fullText += chunkText;
-                        state.streamingText = fullText;
-                        updateMsgs();
+            let apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
+            
+            // If Vite compiled it as undefined, or it's missing, fetch from our config endpoint
+            if (!apiKey || apiKey === 'undefined' || apiKey === 'null') {
+                try {
+                    const configRes = await fetch('/api/config');
+                    if (configRes.ok) {
+                        const data = await configRes.json();
+                        apiKey = data.apiKey;
                     }
+                } catch (e) {
+                    console.warn("Failed to fetch config", e);
                 }
-                state.conversation.push({ role: 'model', content: fullText });
-                state.streamingText = '';
-                return; // Exit early since we handled it with fallback
             }
+
+            if (!apiKey || apiKey === 'undefined' || apiKey === 'null') {
+                throw new Error("API Key is missing. Please add GEMINI_API_KEY in Vercel settings.");
+            }
+
+            const ai = new GoogleGenAI({ apiKey });
+            
+            const streamPromise = ai.models.generateContentStream({
+                model: 'gemini-3-flash-preview',
+                contents: history,
+                config: { 
+                    systemInstruction: system,
+                    tools: [{ googleSearch: {} }]
+                }
+            });
+
+            const stream = await Promise.race([streamPromise, timeoutPromise]);
 
             state.connectionStatus = 'connected';
             let fullText = '';
             
-            const reader = response.body.getReader();
-            const decoder = new TextDecoder("utf-8");
-            
-            while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
-                const chunkText = decoder.decode(value, { stream: true });
-                if (chunkText) {
-                    fullText += chunkText;
+            for await (const chunk of stream) {
+                if (chunk.text) {
+                    fullText += chunk.text;
                     state.streamingText = fullText;
                     updateMsgs();
                 }
@@ -298,6 +274,11 @@ export const renderAITafsir = (container, { onClose, initialPrompt }) => {
 
             state.conversation.push({ role: 'model', content: fullText });
             state.streamingText = '';
+            
+            state.isLoading = false;
+            sessionStorage.setItem('aiConversation', JSON.stringify(state.conversation));
+            updateMsgs();
+            
         } catch (e) {
             console.error(`AI Error (Attempt ${retryCount + 1}):`, e);
             
@@ -317,7 +298,7 @@ export const renderAITafsir = (container, { onClose, initialPrompt }) => {
                 role: 'error', 
                 content: errorMessage + (localStorage.getItem('debug_mode') === 'true' ? `\n\n[Debug: ${e.message}]` : '')
             });
-        } finally {
+            
             state.isLoading = false;
             sessionStorage.setItem('aiConversation', JSON.stringify(state.conversation));
             updateMsgs();
