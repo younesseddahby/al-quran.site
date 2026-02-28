@@ -188,7 +188,8 @@ export const renderAITafsir = (container, { onClose, initialPrompt }) => {
     const handleAsk = async (text, retryCount = 0) => {
         const input = container.querySelector('#ai-input');
         const query = text || input?.value.trim();
-        if (!query || state.isLoading) return;
+        // Only block if it's not a retry
+        if (!query || (state.isLoading && retryCount === 0)) return;
         if (input) input.value = '';
 
         if (retryCount === 0) {
