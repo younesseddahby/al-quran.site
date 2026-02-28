@@ -47,8 +47,32 @@ export const BeadsIcon = ({className = 'w-5 h-5'} = {}) => `
     </svg>
 `;
 
-export const AiIcon = () => `
-  <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+export const BookOpenIcon = ({className = 'w-6 h-6'} = {}) => `
+<svg class="${className}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18c-2.305 0-4.408.867-6 2.292m0-14.25V21" />
+</svg>
+`;
+
+export const BookmarkIcon = ({className = 'w-6 h-6'} = {}) => `
+<svg class="${className}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
+</svg>
+`;
+
+export const ShareIcon = ({className = 'w-6 h-6'} = {}) => `
+<svg class="${className}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
+</svg>
+`;
+
+export const SearchIcon = ({className = 'w-6 h-6'} = {}) => `
+<svg class="${className}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+  <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+</svg>
+`;
+
+export const AiIcon = ({className = 'w-6 h-6'} = {}) => `
+  <svg class="${className}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
     <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.898 20.573L16.5 21.75l-.398-1.177a3.375 3.375 0 00-2.456-2.456L12.5 18l1.177-.398a3.375 3.375 0 002.456-2.456L16.5 14.25l.398 1.177a3.375 3.375 0 002.456 2.456L20.25 18l-1.177.398a3.375 3.375 0 00-2.456 2.456z" />
   </svg>
 `;
@@ -182,16 +206,42 @@ export const CopyIcon = ({className = 'w-5 h-5'} = {}) => `
     </svg>
 `;
 
-export const ShareIcon = ({className = 'w-5 h-5'} = {}) => `
+// Social & Contact Icons
+export const FacebookIcon = ({className}) => `<svg class="${className}" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.04c-5.5 0-9.96 4.46-9.96 9.96s4.46 9.96 9.96 9.96c5.5 0 9.96-4.46 9.96-9.96S17.5 2.04 12 2.04zm2.63 7.93h-1.42v-1.1c0-.39.23-.74.79-.74h.63V6.21c-.24-.03-1.06-.1-2.03-.1-2.02 0-3.4 1.22-3.4 3.5v1.42H7.25v1.9h1.93v5.6h2.29v-5.6h1.5l.23-1.9z"></path></svg>`;
+export const InstagramIcon = ({className}) => `<svg class="${className}" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-2.72 0-3.05.01-4.12.06-1.06.05-1.79.22-2.42.46-.65.25-1.23.59-1.77 1.14-.55.55-.89 1.12-1.14 1.77-.24.63-.41 1.36-.46 2.42-.05 1.07-.06 1.4-.06 4.12s.01 3.05.06 4.12c.05 1.06.22 1.79.46 2.42.25.65.59 1.23 1.14 1.77.55.55 1.12.89 1.77 1.14.63.24 1.36.41 2.42.46 1.07.05 1.4.06 4.12.06s3.05-.01 4.12-.06c1.06-.05 1.79-.22 2.42-.46.65-.25 1.23.59 1.77-1.14.55-.55.89-1.12-1.14-1.77.24-.63.41-1.36-.46-2.42.05-1.07.06-1.4.06-4.12s-.01-3.05-.06-4.12c-.05-1.06-.22-1.79-.46-2.42-.25-.65-.59-1.23-1.14-1.77-.55-.55-1.12-.89-1.77-1.14-.63-.24-1.36-.41-2.42-.46C15.05 2.01 14.72 2 12 2zm0 1.8c2.67 0 2.98.01 4.04.06 1.02.05 1.58.21 1.96.36.49.18.84.42 1.21.79.37.37.61.72.79 1.21.15.38.31.94.36 1.96.05 1.06.06 1.37.06 4.04s-.01 2.98-.06 4.04c-.05 1.02-.21 1.58-.36 1.96-.18.49-.42.84-.79 1.21-.37.37-.72.61-1.21-.79-.38.15-.94-.31-1.96-.36-1.06.05-1.37.06-4.04.06s-2.98-.01-4.04-.06c-1.02-.05-1.58-.21-1.96-.36-.49-.18-.84-.42-1.21-.79-.37-.37-.61-.72-.79-1.21-.15-.38-.31-.94-.36-1.96-.05-1.06-.06-1.37-.06-4.04s.01-2.98.06-4.04c.05-1.02.21-1.58.36-1.96.18-.49.42.84.79-1.21.37-.37-.72.61-1.21-.79.38-.15-.94-.31-1.96-.36C9.02 3.81 9.33 3.8 12 3.8zm0 3.25c-2.62 0-4.75 2.13-4.75 4.75S9.38 16.55 12 16.55s4.75-2.13 4.75-4.75S14.62 7.05 12 7.05zm0 7.7c-1.63 0-2.95-1.32-2.95-2.95S10.37 8.85 12 8.85s2.95 1.32 2.95 2.95-1.32 2.95-2.95 2.95zm4.82-7.77c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"></path></svg>`;
+export const TelegramIcon = ({className}) => `<svg class="${className}" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.69 6.53-2.32 10.14c-.15.66-.58.82-1.12.51l-4.23-3.11-2.02 1.94c-.22.22-.4.39-.75.39l.28-4.32 7.69-7.01c.32-.29-.07-.46-.52-.16L7.33 11.45 3.3 10.1c-.65-.21-.66-.67.12-1l12.75-4.82c.55-.2 1.01.17.84.95z"></path></svg>`;
+export const XIcon = ({className}) => `<svg class="${className}" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>`;
+export const WhatsappIcon = ({className}) => `<svg class="${className}" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21h.01c5.46 0 9.91-4.45 9.91-9.91s-4.45-9.91-9.91-9.91zM12.04 3.65c4.51 0 8.19 3.67 8.19 8.19 0 4.51-3.67 8.19-8.19 8.19h-.01c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31c-.82-1.31-1.26-2.83-1.26-4.38 0-4.51 3.68-8.19 8.19-8.19zm4.49 9.32c-.25-.12-1.47-.72-1.7-.82s-.39-.12-.56.12c-.17.25-.64.82-.79.98-.15.17-.3.19-.56.06-.26-.12-1.09-.4-2.08-1.28-.77-.69-1.29-1.54-1.44-1.8s-.02-.38.11-.51c.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43s-.56-1.34-.76-1.84c-.2-.48-.41-.42-.56-.42h-.48c-.17 0-.43.06-.66.31s-.87.85-.87 2.07c0 1.22.89 2.4 1.01 2.56.12.17 1.76 2.68 4.26 3.76 2.5 1.08 2.5.72 2.94.69.44-.03 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.07-.12-.25-.19-.5-.31z"></path></svg>`;
+export const EmailIcon = () => `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>`;
+export const LocationIcon = () => `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>`;
+export const TeamIcon = () => `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>`;
+export const UserIcon = ({className = 'w-5 h-5'} = {}) => `
     <svg class="${className}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+        <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
     </svg>
+`;
+export const RefreshIcon = ({className = 'w-5 h-5'} = {}) => `
+  <svg class="${className}" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0011.664 0l3.181-3.183m-4.991-2.696L7.985 5.644m0 0v4.992m0 0h4.993m-4.993 0l-3.181-3.183a8.25 8.25 0 0111.664 0l3.181 3.183" />
+  </svg>
 `;
 
 // Download Manager Icons
 export const DownloadIcon = () => `
     <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+    </svg>
+`;
+
+export const SaveIcon = ({className = 'w-6 h-6'} = {}) => `
+    <svg class="${className}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+    </svg>
+`;
+
+export const XMarkIcon = ({className = 'w-6 h-6'} = {}) => `
+    <svg class="${className}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
     </svg>
 `;
 
@@ -214,29 +264,7 @@ export const UiIcon = () => `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24
 export const PlayerIconSettings = () => `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
 export const AboutIcon = () => `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
 
-
-// Social & Contact Icons
-export const FacebookIcon = ({className}) => `<svg class="${className}" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.04c-5.5 0-9.96 4.46-9.96 9.96s4.46 9.96 9.96 9.96c5.5 0 9.96-4.46 9.96-9.96S17.5 2.04 12 2.04zm2.63 7.93h-1.42v-1.1c0-.39.23-.74.79-.74h.63V6.21c-.24-.03-1.06-.1-2.03-.1-2.02 0-3.4 1.22-3.4 3.5v1.42H7.25v1.9h1.93v5.6h2.29v-5.6h1.5l.23-1.9z"></path></svg>`;
-export const InstagramIcon = ({className}) => `<svg class="${className}" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-2.72 0-3.05.01-4.12.06-1.06.05-1.79.22-2.42.46-.65.25-1.23.59-1.77 1.14-.55.55-.89 1.12-1.14 1.77-.24.63-.41 1.36-.46 2.42-.05 1.07-.06 1.4-.06 4.12s.01 3.05.06 4.12c.05 1.06.22 1.79.46 2.42.25.65.59 1.23 1.14 1.77.55.55 1.12.89 1.77 1.14.63.24 1.36.41 2.42.46 1.07.05 1.4.06 4.12.06s3.05-.01 4.12-.06c1.06-.05 1.79-.22 2.42-.46.65-.25 1.23.59 1.77-1.14.55-.55.89-1.12-1.14-1.77.24-.63.41-1.36-.46-2.42.05-1.07.06-1.4.06-4.12s-.01-3.05-.06-4.12c-.05-1.06-.22-1.79-.46-2.42-.25-.65-.59-1.23-1.14-1.77-.55-.55-1.12-.89-1.77-1.14-.63-.24-1.36-.41-2.42-.46C15.05 2.01 14.72 2 12 2zm0 1.8c2.67 0 2.98.01 4.04.06 1.02.05 1.58.21 1.96.36.49.18.84.42 1.21.79.37.37.61.72.79 1.21.15.38.31.94.36 1.96.05 1.06.06 1.37.06 4.04s-.01 2.98-.06 4.04c-.05 1.02-.21 1.58-.36 1.96-.18.49-.42.84-.79 1.21-.37.37-.72.61-1.21-.79-.38.15-.94-.31-1.96-.36-1.06.05-1.37.06-4.04.06s-2.98-.01-4.04-.06c-1.02-.05-1.58-.21-1.96-.36-.49-.18-.84-.42-1.21-.79-.37-.37-.61-.72-.79-1.21-.15-.38-.31-.94-.36-1.96-.05-1.06-.06-1.37-.06-4.04s.01-2.98.06-4.04c.05-1.02.21-1.58.36-1.96.18-.49.42.84.79-1.21.37-.37-.72.61-1.21-.79.38-.15-.94-.31-1.96-.36C9.02 3.81 9.33 3.8 12 3.8zm0 3.25c-2.62 0-4.75 2.13-4.75 4.75S9.38 16.55 12 16.55s4.75-2.13 4.75-4.75S14.62 7.05 12 7.05zm0 7.7c-1.63 0-2.95-1.32-2.95-2.95S10.37 8.85 12 8.85s2.95 1.32 2.95 2.95-1.32 2.95-2.95 2.95zm4.82-7.77c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"></path></svg>`;
-export const TelegramIcon = ({className}) => `<svg class="${className}" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.69 6.53-2.32 10.14c-.15.66-.58.82-1.12.51l-4.23-3.11-2.02 1.94c-.22.22-.4.39-.75.39l.28-4.32 7.69-7.01c.32-.29-.07-.46-.52-.16L7.33 11.45 3.3 10.1c-.65-.21-.66-.67.12-1l12.75-4.82c.55-.2 1.01.17.84.95z"></path></svg>`;
-export const XIcon = ({className}) => `<svg class="${className}" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>`;
-export const WhatsappIcon = ({className}) => `<svg class="${className}" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21h.01c5.46 0 9.91-4.45 9.91-9.91s-4.45-9.91-9.91-9.91zM12.04 3.65c4.51 0 8.19 3.67 8.19 8.19 0 4.51-3.67 8.19-8.19 8.19h-.01c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31c-.82-1.31-1.26-2.83-1.26-4.38 0-4.51 3.68-8.19 8.19-8.19zm4.49 9.32c-.25-.12-1.47-.72-1.7-.82s-.39-.12-.56.12c-.17.25-.64.82-.79.98-.15.17-.3.19-.56.06-.26-.12-1.09-.4-2.08-1.28-.77-.69-1.29-1.54-1.44-1.8s-.02-.38.11-.51c.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43s-.56-1.34-.76-1.84c-.2-.48-.41-.42-.56-.42h-.48c-.17 0-.43.06-.66.31s-.87.85-.87 2.07c0 1.22.89 2.4 1.01 2.56.12.17 1.76 2.68 4.26 3.76 2.5 1.08 2.5.72 2.94.69.44-.03 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.07-.12-.25-.19-.5-.31z"></path></svg>`;
-export const EmailIcon = () => `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>`;
-export const LocationIcon = () => `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>`;
-export const TeamIcon = () => `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>`;
-export const RefreshIcon = ({className = 'w-5 h-5'} = {}) => `
-  <svg class="${className}" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0011.664 0l3.181-3.183m-4.991-2.696L7.985 5.644m0 0v4.992m0 0h4.993m-4.993 0l-3.181-3.183a8.25 8.25 0 0111.664 0l3.181 3.183" />
-  </svg>
-`;
-
 // New Icons
-export const BookOpenIcon = ({className = 'w-6 h-6'} = {}) => `
-    <svg class="${className}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" />
-    </svg>
-`;
-
 export const ClockIcon = ({className = 'w-6 h-6'} = {}) => `
     <svg class="${className}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />

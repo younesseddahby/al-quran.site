@@ -94,8 +94,11 @@ export const renderQuranReader = (container, cache, props) => {
     const fetchPage = async (num, ayah = 1) => {
         if (num < 1 || num > 114) return;
         
+        const lang = getCurrentLanguage();
+        const displayMode = props.readerDisplayMode || 'both';
+        
         // Use cached page data if available and correct surah
-        if (state.pageData?.number === num) {
+        if (state.pageData?.number === num && state.pageData?.lang === lang) {
             setState({ view: 'reader', activeAyah: ayah });
             requestAnimationFrame(() => {
                 const container = contentArea.querySelector('#ayah-container');
@@ -111,12 +114,34 @@ export const renderQuranReader = (container, cache, props) => {
         setState({ loading: true, view: 'reader', error: null, activeAyah: ayah, pageData: null });
         
         try {
-            const res = await fetchWithRetry(`https://api.alquran.cloud/v1/surah/${num}`);
-            const data = await res.json();
-            const surah = state.surahs.find(s => s.number === num) || data.data;
+            const editionMap = {
+                'en': 'en.sahih',
+                'id': 'id.indonesian',
+                'tr': 'tr.ates'
+            };
+            
+            const edition = editionMap[lang] || 'en.sahih';
+            
+            // Fetch Arabic and Translation in parallel
+            const [resAr, resTr] = await Promise.all([
+                fetchWithRetry(`https://api.alquran.cloud/v1/surah/${num}`),
+                lang !== 'ar' ? fetchWithRetry(`https://api.alquran.cloud/v1/surah/${num}/${edition}`) : Promise.resolve(null)
+            ]);
+
+            const dataAr = await resAr.json();
+            const dataTr = resTr ? await resTr.json() : null;
+            
+            const surah = state.surahs.find(s => s.number === num) || dataAr.data;
+            
+            const combinedAyahs = dataAr.data.ayahs.map((a, i) => ({
+                ...a,
+                translation: dataTr ? dataTr.data.ayahs[i].text : null
+            }));
+
+            const pageData = { ...dataAr.data, ayahs: combinedAyahs, lang };
             
             // Update cache before calling setReaderMode to ensure new instance sees it
-            cache.readerPageData = data.data;
+            cache.readerPageData = pageData;
             cache.selectedSurah = surah;
 
             if (setReaderMode) {
@@ -125,7 +150,7 @@ export const renderQuranReader = (container, cache, props) => {
             
             // Update local state
             setState({ 
-                pageData: data.data, 
+                pageData: pageData, 
                 selectedSurah: surah, 
                 loading: false,
                 processing: true, 
@@ -134,7 +159,7 @@ export const renderQuranReader = (container, cache, props) => {
 
             // Heavy rendering optimization: yield to main thread
             requestAnimationFrame(() => {
-                renderAyahsBatch(data.data.ayahs, ayah);
+                renderAyahsBatch(combinedAyahs, ayah);
             });
             
         } catch (e) { 
@@ -153,8 +178,12 @@ export const renderQuranReader = (container, cache, props) => {
             return;
         }
 
+        const lang = getCurrentLanguage();
+        const displayMode = props.readerDisplayMode || 'both';
+        const isArabicOnly = lang === 'ar';
+
         // If we already have ayahs and we're not in a fresh processing state, don't re-render
-        if (container.querySelectorAll('.ayah-span').length > 0 && !state.processing) {
+        if (container.querySelectorAll('.ayah-item').length > 0 && !state.processing) {
             if (jumpTo) scrollToAyah(jumpTo);
             return;
         }
@@ -164,25 +193,52 @@ export const renderQuranReader = (container, cache, props) => {
         let index = 0;
 
         const renderNextBatch = () => {
-            if (!contentArea.querySelector('#ayah-container')) return; // Check if still in DOM
+            if (!contentArea.querySelector('#ayah-container')) return;
 
             const batch = ayahs.slice(index, index + batchSize);
-            const html = batch.map(a => `
-                <span class="ayah-span cursor-pointer hover:text-theme-600 dark:hover:text-theme-400 transition-colors inline ${state.activeAyah == a.numberInSurah ? 'active-ayah-span' : ''}" 
-                      data-num="${a.numberInSurah}" 
-                      data-ayah-number="${a.numberInSurah}">
-                    ${a.text} 
-                    <span class="ayah-marker inline-flex items-center justify-center relative mx-1.5 translate-y-[-0.15em] select-none group/ayah">
-                        <svg class="w-9 h-9 text-theme-600/30 dark:text-theme-500/30 group-hover/ayah:text-theme-500 transition-all duration-700 group-hover/ayah:rotate-180" viewBox="0 0 32 32" fill="none">
-                            <path d="M16 2L19 7L24 7L24 12L29 15L24 18L24 23L19 23L16 28L13 23L8 23L8 18L3 15L8 12L8 7L13 7L16 2Z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M16 6L18 10L22 10L20 13L22 16L19 19L16 23L13 19L10 16L12 13L10 10L13 10L16 6Z" fill="currentColor" fill-opacity="0.15" />
-                            <circle cx="16" cy="16" r="11" stroke="currentColor" stroke-width="0.3" stroke-dasharray="2 2" class="opacity-50" />
-                        </svg>
-                        <span class="absolute inset-0 flex items-center justify-center text-[10px] font-bold font-sans text-theme-700 dark:text-theme-300 group-hover/ayah:text-theme-600 dark:group-hover:text-theme-400 group-hover/ayah:scale-110 transition-all">
-                            ${a.numberInSurah.toLocaleString('ar-EG')}
+            
+            let html = '';
+            if (isArabicOnly || (displayMode === 'both' && !lang.includes('en') && !lang.includes('id') && !lang.includes('tr'))) {
+                // Mushaf style (inline)
+                html = batch.map(a => `
+                    <span class="ayah-item ayah-span cursor-pointer hover:text-theme-600 dark:hover:text-theme-400 transition-colors inline ${state.activeAyah == a.numberInSurah ? 'active-ayah-span' : ''}" 
+                          data-num="${a.numberInSurah}" 
+                          data-ayah-number="${a.numberInSurah}">
+                        ${a.text} 
+                        <span class="ayah-marker inline-flex items-center justify-center relative mx-1.5 translate-y-[-0.15em] select-none group/ayah">
+                            <svg class="w-9 h-9 text-theme-600/30 dark:text-theme-500/30 group-hover/ayah:text-theme-500 transition-all duration-700 group-hover/ayah:rotate-180" viewBox="0 0 32 32" fill="none">
+                                <path d="M16 2L19 7L24 7L24 12L29 15L24 18L24 23L19 23L16 28L13 23L8 23L8 18L3 15L8 12L8 7L13 7L16 2Z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M16 6L18 10L22 10L20 13L22 16L19 19L16 23L13 19L10 16L12 13L10 10L13 10L16 6Z" fill="currentColor" fill-opacity="0.15" />
+                                <circle cx="16" cy="16" r="11" stroke="currentColor" stroke-width="0.3" stroke-dasharray="2 2" class="opacity-50" />
+                            </svg>
+                            <span class="absolute inset-0 flex items-center justify-center text-[10px] font-bold font-sans text-theme-700 dark:text-theme-300 group-hover/ayah:text-theme-600 dark:group-hover:text-theme-400 group-hover/ayah:scale-110 transition-all">
+                                ${a.numberInSurah.toLocaleString('ar-EG')}
+                            </span>
                         </span>
-                    </span>
-                </span>`).join(' ');
+                    </span>`).join(' ');
+            } else {
+                // Block style for translations
+                container.classList.remove('quran-arabic-text');
+                container.classList.add('space-y-8');
+                
+                html = batch.map(a => `
+                    <div class="ayah-item group p-4 md:p-6 rounded-3xl border border-transparent hover:border-theme-500/20 hover:bg-theme-50/30 dark:hover:bg-theme-900/10 transition-all cursor-pointer ${state.activeAyah == a.numberInSurah ? 'bg-theme-50 dark:bg-theme-900/20 border-theme-500/30' : ''}" 
+                         data-num="${a.numberInSurah}" 
+                         data-ayah-number="${a.numberInSurah}">
+                        <div class="flex items-start justify-between gap-6 mb-4">
+                            <span class="w-10 h-10 flex-shrink-0 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-xl text-xs font-bold text-slate-500 group-hover:bg-theme-600 group-hover:text-white transition-all">${a.numberInSurah}</span>
+                            ${displayMode !== 'translation' ? `
+                                <p class="quran-arabic-text text-right text-2xl md:text-3xl leading-loose text-slate-800 dark:text-slate-100">${a.text}</p>
+                            ` : ''}
+                        </div>
+                        ${displayMode !== 'arabic' ? `
+                            <p class="text-lg text-slate-600 dark:text-slate-400 font-serif leading-relaxed ${isArabicOnly ? 'text-right' : 'text-left'}">
+                                ${a.translation || ''}
+                            </p>
+                        ` : ''}
+                    </div>
+                `).join('');
+            }
             
             if (index === 0) container.innerHTML = html;
             else container.insertAdjacentHTML('beforeend', html);
@@ -208,8 +264,14 @@ export const renderQuranReader = (container, cache, props) => {
             const el = contentArea.querySelector(`[data-ayah-number="${num}"]`);
             if (el) {
                 el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                contentArea.querySelectorAll('.active-ayah-span').forEach(x => x.classList.remove('active-ayah-span'));
-                el.classList.add('active-ayah-span');
+                contentArea.querySelectorAll('.active-ayah-span, .bg-theme-50').forEach(x => {
+                    x.classList.remove('active-ayah-span', 'bg-theme-50', 'dark:bg-theme-900/20', 'border-theme-500/30');
+                });
+                if (el.classList.contains('ayah-span')) {
+                    el.classList.add('active-ayah-span');
+                } else {
+                    el.classList.add('bg-theme-50', 'dark:bg-theme-900/20', 'border-theme-500/30');
+                }
             }
         }, 100);
     };
@@ -348,6 +410,8 @@ export const renderQuranReader = (container, cache, props) => {
         contentArea.dataset.surahId = s.number;
         const isRtl = getCurrentLanguage() === 'ar';
         const BackIcon = isRtl ? ArrowRightIcon : ArrowLeftIcon;
+        const fontSizeClass = `font-size-${props.fontSize || 'medium'}`;
+        const fontClass = props.arabicFont || 'font-noto-naskh-arabic';
 
         contentArea.innerHTML = `
             <div class="fixed top-0 inset-x-0 h-14 md:h-16 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl z-30 border-b border-slate-200 dark:border-slate-800 flex items-center px-3 md:px-4 justify-between">
@@ -362,7 +426,7 @@ export const renderQuranReader = (container, cache, props) => {
                 <button id="settings-trigger" class="p-1.5 md:p-2 -mr-1 md:-mr-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all active:scale-90">${SlidersHorizontalIcon({className: "w-5 h-5 md:w-6 md:h-6"})}</button>
             </div>
             
-            <div class="pt-14 pb-20 md:pt-20 md:pb-32 max-w-7xl mx-auto px-1 md:px-4 lg:px-8" id="reader-scroll-container">
+            <div class="pt-14 pb-20 md:pt-20 md:pb-32 max-w-7xl mx-auto px-1 md:px-4 lg:px-8 ${fontSizeClass} ${fontClass}" id="reader-scroll-container">
                 <div class="bg-white dark:bg-slate-900 rounded-xl md:rounded-[2.5rem] p-3 md:p-8 lg:p-12 shadow-xl page-texture border border-slate-100 dark:border-slate-800 transition-colors">
                     <div class="text-center mb-6 md:mb-12">
                          ${(s.number !== 1 && s.number !== 9) ? '<p class="font-amiri text-3xl md:text-5xl lg:text-6xl text-theme-600 dark:text-theme-400 mb-4 md:mb-10 leading-relaxed block w-full">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</p>' : ''}
@@ -400,11 +464,17 @@ export const renderQuranReader = (container, cache, props) => {
             if (setReaderMode) setReaderMode(false);
         };
         contentArea.querySelector('#ayah-container').onclick = (e) => {
-            const span = e.target.closest('.ayah-span');
-            if (span) {
-                const ayahNum = parseInt(span.dataset.num);
-                contentArea.querySelectorAll('.active-ayah-span').forEach(x => x.classList.remove('active-ayah-span'));
-                span.classList.add('active-ayah-span');
+            const item = e.target.closest('.ayah-item');
+            if (item) {
+                const ayahNum = parseInt(item.dataset.num);
+                contentArea.querySelectorAll('.active-ayah-span, .bg-theme-50').forEach(x => {
+                    x.classList.remove('active-ayah-span', 'bg-theme-50', 'dark:bg-theme-900/20', 'border-theme-500/30');
+                });
+                if (item.classList.contains('ayah-span')) {
+                    item.classList.add('active-ayah-span');
+                } else {
+                    item.classList.add('bg-theme-50', 'dark:bg-theme-900/20', 'border-theme-500/30');
+                }
                 setState({ activeAyah: ayahNum, isTafsirModal: true });
                 fetchTafsir(s.number, ayahNum);
             }
@@ -426,12 +496,20 @@ export const renderQuranReader = (container, cache, props) => {
     };
 
     const fetchTafsir = async (surah, ayah) => {
-        const cacheKey = `${surah}:${ayah}`;
+        const lang = getCurrentLanguage();
+        const cacheKey = `${surah}:${ayah}:${lang}`;
         const cached = TAFSIR_CACHE.get(cacheKey);
         setState({ isTafsirModal: true, loadingTafsir: !cached, activeTafsirAyah: { surah, ayah }, tafsirData: cached || null });
         if (cached) return;
         try {
-            const res = await fetchWithRetry(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/ar.muyassar`);
+            const tafsirEditions = {
+                'ar': 'ar.muyassar',
+                'en': 'en.asad',
+                'id': 'id.indonesian',
+                'tr': 'tr.diyanet'
+            };
+            const edition = tafsirEditions[lang] || 'en.asad';
+            const res = await fetchWithRetry(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/${edition}`);
             const data = await res.json();
             TAFSIR_CACHE.set(cacheKey, data.data);
             if (state.activeTafsirAyah?.ayah == ayah) setState({ tafsirData: data.data, loadingTafsir: false });
@@ -449,6 +527,8 @@ export const renderQuranReader = (container, cache, props) => {
         }
         const surahName = state.selectedSurah?.englishName || '';
         const ayahNum = state.activeTafsirAyah?.ayah || '';
+        const lang = getCurrentLanguage();
+        const isAr = lang === 'ar';
 
         modal.innerHTML = `
             <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm pointer-events-auto" id="tafsir-backdrop"></div>
@@ -458,7 +538,7 @@ export const renderQuranReader = (container, cache, props) => {
                     <h3 class="text-xl md:text-2xl font-bold dark:text-white">${t('tafsirFor', { surahName, ayahNumber: ayahNum })}</h3>
                     <button id="close-tafsir" class="p-2 text-slate-400">${CloseIcon()}</button>
                 </div>
-                <div class="tafsir-body text-right text-xl md:text-2xl leading-relaxed font-amiri dark:text-slate-200" dir="rtl">
+                <div class="tafsir-body ${isAr ? 'text-right font-amiri' : 'text-left'} text-xl md:text-2xl leading-relaxed dark:text-slate-200" dir="${isAr ? 'rtl' : 'ltr'}">
                     ${state.loadingTafsir ? createSpinner().outerHTML : (state.tafsirData?.text || t('tafsirNotFound'))}
                 </div>
                 ${!state.loadingTafsir && state.tafsirData ? `

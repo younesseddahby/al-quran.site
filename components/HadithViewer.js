@@ -113,7 +113,7 @@ export const renderHadithViewer = (container, props = {}) => {
       const div = document.createElement('div');
       div.className = "p-6 rounded-xl bg-parchment dark:bg-night border border-line dark:border-line-dark fade-in shadow-sm hover:shadow-md transition-shadow";
       
-      const { id, ar, en, book } = hadith;
+      const { id, ar, translation, book } = hadith;
       const collection = COLLECTIONS.find(c => c.slug === state.selectedCollection);
       const bookName = getCurrentLanguage() === 'ar' ? collection.name_ar : collection.name_en;
 
@@ -129,8 +129,10 @@ export const renderHadithViewer = (container, props = {}) => {
           
           <div class="space-y-6">
             <p dir="rtl" class="text-right quran-arabic-text leading-loose text-ink dark:text-cream text-xl md:text-2xl">${ar}</p>
-            <hr class="border-line dark:border-line-dark opacity-50" />
-            <p class="text-ink/90 dark:text-cream/90 leading-relaxed text-left body-text italic" dir="ltr">${en}</p>
+            ${getCurrentLanguage() !== 'ar' ? `
+              <hr class="border-line dark:border-line-dark opacity-50" />
+              <p class="text-ink/90 dark:text-cream/90 leading-relaxed text-left body-text italic" dir="ltr">${translation}</p>
+            ` : ''}
           </div>
 
           <div class="mt-6 pt-4 border-t border-line dark:border-line-dark flex justify-between items-center">
@@ -168,7 +170,7 @@ export const renderHadithViewer = (container, props = {}) => {
   const handleShare = async (hadith) => {
     const collection = COLLECTIONS.find(c => c.slug === state.selectedCollection);
     const bookName = collection.name_en;
-    const shareText = `${bookName} #${hadith.id}\n\n${hadith.ar}\n\n${hadith.en}\n\n${t('reference', {id: hadith.id})}`;
+    const shareText = `${bookName} #${hadith.id}\n\n${hadith.ar}\n\n${hadith.translation}\n\n${t('reference', {id: hadith.id})}`;
     
     if (navigator.share) {
       try {
@@ -190,68 +192,89 @@ export const renderHadithViewer = (container, props = {}) => {
     });
   };
 
+  const HADITH_CACHE = new Map();
+
   const fetchHadiths = async (append = false) => {
     state.loading = true;
     state.error = null;
     renderContent(append);
     
     try {
-      // Using a more reliable API that supports ranges/pagination
-      // We'll fetch a range of hadiths based on the current page
-      const start = (state.page - 1) * 10 + 1;
-      const end = state.page * 10;
+      const lang = getCurrentLanguage();
+      const collectionSlug = state.selectedCollection; // e.g., 'bukhari', 'muslim'
       
-      const response = await fetch(`https://api.hadith.gading.dev/books/${state.selectedCollection}?range=${start}-${end}`);
-      if (!response.ok) throw new Error(t('fetchHadithError'));
+      // Map our slugs to the API's collection names if they differ
+      const apiCollectionMap = {
+        'bukhari': 'bukhari',
+        'muslim': 'muslim',
+        'nasai': 'nasai',
+        'abu-daud': 'abudawud',
+        'tirmidhi': 'tirmidhi',
+        'ibn-majah': 'ibnmajah',
+        'ahmad': 'ahmad',
+        'darimi': 'darimi',
+        'malik': 'malik'
+      };
       
-      const result = await response.json();
-      const data = result.data;
+      const apiCollection = apiCollectionMap[collectionSlug] || collectionSlug;
+      
+      const editionMap = {
+        'ar': `ara-${apiCollection}`,
+        'en': `eng-${apiCollection}`,
+        'id': `ind-${apiCollection}`,
+        'tr': `tur-${apiCollection}`
+      };
+      
+      const targetEdition = editionMap[lang] || `eng-${apiCollection}`;
+      const arabicEdition = `ara-${apiCollection}`;
+      
+      const cacheKey = `${targetEdition}-${arabicEdition}`;
+      
+      let dataTarget, dataAr;
+      
+      if (HADITH_CACHE.has(cacheKey)) {
+        const cached = HADITH_CACHE.get(cacheKey);
+        dataTarget = cached.target;
+        dataAr = cached.arabic;
+      } else {
+        const [resTarget, resAr] = await Promise.all([
+          fetch(`https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/${targetEdition}.min.json`),
+          lang !== 'ar' ? fetch(`https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/${arabicEdition}.min.json`) : Promise.resolve(null)
+        ]);
 
-      if (!data || !data.hadiths) throw new Error(t('fetchHadithError'));
+        if (!resTarget.ok) throw new Error(t('fetchHadithError'));
+        
+        dataTarget = await resTarget.json();
+        dataAr = resAr ? await resAr.json() : dataTarget;
+        
+        HADITH_CACHE.set(cacheKey, { target: dataTarget, arabic: dataAr });
+      }
+
+      const allHadiths = dataTarget.hadiths;
+      const allArHadiths = dataAr.hadiths;
+
+      // Pagination
+      const start = (state.page - 1) * 10;
+      const end = state.page * 10;
+      const batch = allHadiths.slice(start, end);
       
-      const newHadiths = data.hadiths.map(h => ({
-          id: h.number,
-          ar: h.arab,
-          en: h.id, // The API returns Indonesian as 'id', but we'll use it as a placeholder or try to find English
-          book: data.name
+      const newHadiths = batch.map((h, i) => ({
+          id: h.hadithnumber || (start + i + 1),
+          ar: allArHadiths[start + i]?.text || '',
+          translation: h.text || '',
+          book: dataTarget.metadata.name
       }));
 
-      // Note: api.hadith.gading.dev returns Indonesian translations. 
-      // If we strictly need English, we might need another source or a translation layer.
-      // However, it's very reliable for Arabic text.
-      
       if (append) {
           state.hadiths = [...state.hadiths, ...newHadiths];
       } else {
           state.hadiths = newHadiths;
       }
       
-      state.hasMore = newHadiths.length === 10;
+      state.hasMore = end < allHadiths.length;
 
     } catch (err) {
-      // Fallback to the random hadith generator if gading.dev fails or for English support
-      if (!append) {
-          try {
-              const fallbackRes = await fetch(`https://random-hadith-generator.vercel.app/${state.selectedCollection.replace('abu-daud', 'abudawud')}`);
-              if (fallbackRes.ok) {
-                  const fallbackData = await fallbackRes.json();
-                  if (fallbackData.data) {
-                      state.hadiths = [{
-                          id: fallbackData.data.refno,
-                          ar: fallbackData.data.hadith_arabic,
-                          en: fallbackData.data.hadith_english,
-                          book: fallbackData.data.book
-                      }];
-                      state.hasMore = false;
-                      state.error = null;
-                      return;
-                  }
-              }
-          } catch (e) {
-              console.error("Fallback failed", e);
-          }
-      }
-      
+      console.error("Hadith Fetch Error:", err);
       state.error = err instanceof Error ? err.message : t('unknownError');
     } finally {
       state.loading = false;

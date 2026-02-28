@@ -1,5 +1,4 @@
 
-
 import { createSpinner } from './Spinner.js';
 import { renderErrorState } from './UI.js';
 import { t, getCurrentLanguage } from '../i18n.js';
@@ -13,11 +12,13 @@ const prayerOrder = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
 
 export const renderAdhanTimes = (container, props = {}) => {
     const savedLocation = JSON.parse(localStorage.getItem('prayerLocation'));
+    const isAutoLocation = localStorage.getItem('isAutoLocation') === 'true';
     const isRtl = getCurrentLanguage() === 'ar';
     const BackIcon = isRtl ? ArrowRightIcon : ArrowLeftIcon;
 
     let state = {
         location: savedLocation || null,
+        isAutoLocation: isAutoLocation,
         prayerTimes: null,
         loading: false,
         error: null,
@@ -31,7 +32,7 @@ export const renderAdhanTimes = (container, props = {}) => {
         isIOS: typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function',
         qiblaError: null,
         isQiblaLoading: false,
-        qiblaLocation: null, // { lat, lon, city, country }
+        qiblaLocation: null, 
         qiblaDirection: 0,
         deviceHeading: 0,
     };
@@ -41,47 +42,166 @@ export const renderAdhanTimes = (container, props = {}) => {
     let orientationListener = null;
     let compassElement = null;
 
-    // --- One-Time Structure Setup ---
-    container.innerHTML = `
-        <div class="space-y-6">
-            <div class="flex items-center gap-3">
-                <button id="adhan-back-btn" class="p-2 -ml-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-all active:scale-90 flex items-center gap-1">
-                    ${BackIcon({className: "w-6 h-6"})}
-                    <span class="hidden sm:inline text-sm font-bold">${t('back')}</span>
-                </button>
-                <h2 class="text-3xl font-bold text-theme-700 dark:text-theme-400 font-amiri">${t('adhanAndPrayerTimes')}</h2>
-            </div>
-            <div class="space-y-4">
-                <form id="location-form" class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end p-4 bg-white dark:bg-slate-900 rounded-xl shadow-sm">
-                    <div class="relative sm:col-span-2">
-                        <label for="city" class="block text-sm font-medium text-slate-700 dark:text-slate-300">${t('city')}</label>
-                        <input type="text" id="city" value="${state.location ? state.location.city : ''}" placeholder="${t('cityExample')}" class="mt-1 block w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-md shadow-sm focus:outline-none focus:ring-theme-500 focus:border-theme-500 sm:text-sm" autocomplete="off">
-                        <div id="city-suggestions" class="absolute z-10 w-full mt-1 bg-white dark:bg-slate-700 rounded-md shadow-lg hidden max-h-60 overflow-auto"></div>
+    const render = () => {
+        container.innerHTML = `
+            <div class="space-y-6">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <button id="adhan-back-btn" class="p-2 -ml-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 text-slate-900 dark:text-white transition-all active:scale-90 flex items-center gap-1">
+                            ${BackIcon({className: "w-6 h-6"})}
+                            <span class="hidden sm:inline text-sm font-bold">${t('back')}</span>
+                        </button>
+                        <h2 class="text-3xl font-bold text-theme-700 dark:text-theme-400 font-amiri">${t('adhanAndPrayerTimes')}</h2>
                     </div>
-                    <div>
-                        <label for="country" class="block text-sm font-medium text-slate-700 dark:text-slate-300">${t('country')}</label>
-                        <input type="text" id="country" value="${state.location ? state.location.country : ''}" placeholder="${t('countryExample')}" class="mt-1 block w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-md shadow-sm focus:outline-none focus:ring-theme-500 focus:border-theme-500 sm:text-sm">
+                </div>
+
+                <div class="bg-white dark:bg-slate-900 rounded-2xl p-4 shadow-sm border border-slate-100 dark:border-slate-800 space-y-4">
+                    <div class="flex items-center justify-between p-2 bg-slate-50 dark:bg-slate-800/50 rounded-xl">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-theme-100 dark:bg-theme-900/30 flex items-center justify-center text-theme-600 dark:text-theme-400">
+                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-slate-900 dark:text-white">${t('autoLocation')}</p>
+                                <p class="text-[10px] text-slate-500 dark:text-slate-400">${state.isAutoLocation ? t('currentLocation') : t('manualLocation')}</p>
+                            </div>
+                        </div>
+                        <button id="auto-location-toggle" class="w-12 h-6 rounded-full transition-colors relative ${state.isAutoLocation ? 'bg-theme-600' : 'bg-slate-300 dark:bg-slate-700'}">
+                            <div class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${state.isAutoLocation ? 'translate-x-6' : ''}"></div>
+                        </button>
                     </div>
-                    <button type="submit" class="w-full px-5 py-2.5 bg-theme-600 text-white rounded-md hover:bg-theme-700 transition-all transform active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-theme-500 shadow-lg shadow-theme-500/20">${t('showTimes')}</button>
-                </form>
-                 <div class="p-4 bg-white dark:bg-slate-900 rounded-xl shadow-sm">
-                     <button id="show-qibla-btn" class="w-full flex items-center justify-center gap-2 px-5 py-2.5 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-md hover:bg-slate-300 dark:hover:bg-slate-700 transition-all transform active:scale-95">
+
+                    ${!state.isAutoLocation ? `
+                        <form id="location-form" class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end animate-in">
+                            <div class="relative sm:col-span-2">
+                                <label for="city" class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">${t('city')}</label>
+                                <input type="text" id="city" value="${state.location ? state.location.city : ''}" placeholder="${t('cityExample')}" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-theme-500/50 transition-all dark:text-white text-sm">
+                                <div id="city-suggestions" class="absolute z-10 w-full mt-1 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 hidden max-h-60 overflow-auto"></div>
+                            </div>
+                            <div>
+                                <label for="country" class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">${t('country')}</label>
+                                <input type="text" id="country" value="${state.location ? state.location.country : ''}" placeholder="${t('countryExample')}" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-theme-500/50 transition-all dark:text-white text-sm">
+                            </div>
+                            <button type="submit" class="w-full px-5 py-3 bg-theme-600 text-white rounded-xl font-bold hover:bg-theme-700 transition-all active:scale-95 shadow-lg shadow-theme-500/20">${t('showTimes')}</button>
+                        </form>
+                    ` : ''}
+
+                    <button id="show-qibla-btn" class="w-full flex items-center justify-center gap-2 px-5 py-3 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-xl font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-all active:scale-95">
                         ${QiblaIcon()} ${t('showQiblaDirection')}
                     </button>
                 </div>
-            </div>
-            <div id="prayer-times-container" class="mt-6 border-t border-slate-200 dark:border-slate-700 pt-6"></div>
-            <div id="qibla-container" class="mt-6"></div>
-        </div>
-    `;
 
-    const contentContainer = container.querySelector('#prayer-times-container');
-    const locationForm = container.querySelector('#location-form');
-    const cityInput = container.querySelector('#city');
-    const countryInput = container.querySelector('#country');
-    const citySuggestionsContainer = container.querySelector('#city-suggestions');
-    const qiblaContainer = container.querySelector('#qibla-container');
-    const showQiblaBtn = container.querySelector('#show-qibla-btn');
+                <div id="prayer-times-container" class="mt-6"></div>
+                <div id="qibla-container" class="mt-6"></div>
+            </div>
+        `;
+
+        attachEventListeners();
+        renderContent();
+    };
+
+    const attachEventListeners = () => {
+        container.querySelector('#adhan-back-btn')?.addEventListener('click', () => {
+            if (props.onBack) props.onBack();
+        });
+
+        container.querySelector('#auto-location-toggle')?.addEventListener('click', () => {
+            state.isAutoLocation = !state.isAutoLocation;
+            localStorage.setItem('isAutoLocation', state.isAutoLocation);
+            if (state.isAutoLocation) {
+                detectLocation();
+            } else {
+                render();
+            }
+        });
+
+        const locationForm = container.querySelector('#location-form');
+        if (locationForm) {
+            locationForm.addEventListener('submit', handleFormSubmit);
+            const cityInput = container.querySelector('#city');
+            cityInput.addEventListener('input', handleCityInput);
+            const citySuggestionsContainer = container.querySelector('#city-suggestions');
+            citySuggestionsContainer.addEventListener('click', handleSuggestionClick);
+        }
+
+        container.querySelector('#show-qibla-btn')?.addEventListener('click', handleShowQibla);
+    };
+
+    const detectLocation = () => {
+        state.loading = true;
+        state.error = null;
+        render();
+
+        if (!navigator.geolocation) {
+            state.error = "Geolocation is not supported by your browser.";
+            state.isAutoLocation = false;
+            state.loading = false;
+            render();
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            async (position) => {
+                const { latitude, longitude } = position.coords;
+                try {
+                    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&accept-language=en`);
+                    const data = await res.json();
+                    const city = data.address.city || data.address.town || data.address.village || data.address.suburb;
+                    const country = data.address.country;
+                    
+                    state.location = { city, country, lat: latitude, lon: longitude };
+                    localStorage.setItem('prayerLocation', JSON.stringify(state.location));
+                    fetchPrayerTimes(state.location);
+                } catch (e) {
+                    console.error("Reverse geocoding error:", e);
+                    state.error = "Could not detect city name. Using coordinates.";
+                    state.location = { city: "Current Location", country: "", lat: latitude, lon: longitude };
+                    fetchPrayerTimes(state.location);
+                }
+            },
+            (error) => {
+                console.error("Geolocation error:", error);
+                state.error = t('locationPermissionDenied');
+                state.isAutoLocation = false;
+                state.loading = false;
+                render();
+            },
+            { timeout: 10000 }
+        );
+    };
+
+    const fetchPrayerTimes = async (loc) => {
+        if (!loc || (!loc.city && !loc.lat)) {
+            state.error = t('enterBothCityCountry');
+            renderContent();
+            return;
+        }
+
+        state.loading = true;
+        state.error = null;
+        renderContent();
+        
+        try {
+            let url = '';
+            if (loc.lat && loc.lon) {
+                url = `https://api.aladhan.com/v1/timings?latitude=${loc.lat}&longitude=${loc.lon}&method=2`;
+            } else {
+                url = `https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(loc.city)}&country=${encodeURIComponent(loc.country)}&method=2`;
+            }
+
+            const response = await fetchWithRetry(url);
+            const data = await response.json();
+            if (data.code !== 200 || !data.data) throw new Error(t('findPrayerTimesError'));
+            
+            state.prayerTimes = data.data;
+            render();
+        } catch (err) {
+            state.error = err.message;
+            renderContent();
+        } finally {
+            state.loading = false;
+        }
+    };
 
     const getNextPrayerInfo = () => {
         if (!state.prayerTimes) return null;
@@ -92,7 +212,6 @@ export const renderAdhanTimes = (container, props = {}) => {
         let nextPrayerName = null;
         let nextPrayerTime = Infinity;
 
-        // Create Date objects for today's prayer times
         const prayerTimesToday = prayerOrder.map(name => {
             const [hours, minutes] = timings[name].split(':').map(Number);
             const date = new Date(now);
@@ -100,7 +219,6 @@ export const renderAdhanTimes = (container, props = {}) => {
             return { name, date };
         });
 
-        // Find the next prayer for today
         for (const prayer of prayerTimesToday) {
             if (prayer.date > now && prayer.date < nextPrayerTime) {
                 nextPrayerTime = prayer.date;
@@ -108,7 +226,6 @@ export const renderAdhanTimes = (container, props = {}) => {
             }
         }
 
-        // If it's past Isha, the next prayer is Fajr of the next day
         if (!nextPrayerName) {
             nextPrayerName = 'Fajr';
             const fajrTime = prayerTimesToday.find(p => p.name === 'Fajr');
@@ -116,7 +233,7 @@ export const renderAdhanTimes = (container, props = {}) => {
                 nextPrayerTime = new Date(fajrTime.date);
                 nextPrayerTime.setDate(nextPrayerTime.getDate() + 1);
             } else {
-                return null; // Should not happen
+                return null;
             }
         }
         
@@ -159,7 +276,6 @@ export const renderAdhanTimes = (container, props = {}) => {
     const highlightPrayer = (nextPrayerName) => {
         if (!nextPrayerName || state.highlightedPrayer === nextPrayerName) return;
 
-        // Reset previous card
         if (state.highlightedPrayer) {
             const previousCard = container.querySelector(`#prayer-${state.highlightedPrayer}`);
             if (previousCard) {
@@ -169,7 +285,6 @@ export const renderAdhanTimes = (container, props = {}) => {
             }
         }
 
-        // Highlight the new one
         const highlightedCard = container.querySelector(`#prayer-${nextPrayerName}`);
         if (highlightedCard) {
             highlightedCard.classList.add('bg-gradient-to-br', 'from-theme-500', 'to-theme-600', 'transform', 'scale-105', '-translate-y-1', 'shadow-xl', 'shadow-theme-500/40');
@@ -181,34 +296,37 @@ export const renderAdhanTimes = (container, props = {}) => {
     };
 
     const renderContent = () => {
+        const contentContainer = container.querySelector('#prayer-times-container');
+        if (!contentContainer) return;
+
         contentContainer.innerHTML = '';
         if (state.loading) {
             contentContainer.appendChild(createSpinner(t('loading')));
         } else if (state.error) {
-            contentContainer.appendChild(renderErrorState(state.error, () => fetchPrayerTimes(state.location)));
+            contentContainer.appendChild(renderErrorState(state.error, () => state.isAutoLocation ? detectLocation() : fetchPrayerTimes(state.location)));
         } else if (state.prayerTimes) {
-            renderPrayerTimes();
+            renderPrayerTimes(contentContainer);
         } else {
-            contentContainer.innerHTML = `<p class="text-center text-slate-500">${t('enterCityCountry')}</p>`;
+            contentContainer.innerHTML = `<p class="text-center text-slate-500 py-10">${t('enterCityCountry')}</p>`;
         }
     };
 
-    const renderPrayerTimes = () => {
+    const renderPrayerTimes = (contentContainer) => {
         const { timings, meta } = state.prayerTimes;
-        const locationString = `${state.location.city}, ${state.location.country}`;
+        const locationString = state.location.city ? `${state.location.city}${state.location.country ? ', ' + state.location.country : ''}` : '...';
 
         contentContainer.innerHTML = `
-            <div class="fade-in">
-                <div class="text-center mb-6">
+            <div class="fade-in space-y-6">
+                <div class="text-center p-6 bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
                     <h3 class="text-2xl font-bold text-slate-800 dark:text-slate-200">${t('prayerTimesFor', { location: locationString })}</h3>
-                    <p class="text-sm text-slate-500 dark:text-slate-400">${t('calculationMethod', { method: meta.method.name })}</p>
-                    <div id="countdown-container" class="mt-4 h-8"></div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 uppercase tracking-widest">${t('calculationMethod', { method: meta.method.name })}</p>
+                    <div id="countdown-container" class="mt-6"></div>
                 </div>
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                     ${prayerOrder.map(prayer => `
-                        <div id="prayer-${prayer}" class="prayer-card p-4 rounded-xl text-center transition-all duration-500 ease-out bg-white dark:bg-slate-900 shadow-md">
-                            <p class="font-semibold text-slate-700 dark:text-slate-300">${t(`prayer_${prayer}`)}</p>
-                            <p class="text-3xl font-bold text-slate-900 dark:text-slate-100 mt-2">${timings[prayer]}</p>
+                        <div id="prayer-${prayer}" class="prayer-card p-5 rounded-2xl text-center transition-all duration-500 ease-out bg-white dark:bg-slate-900 shadow-sm border border-slate-100 dark:border-slate-800">
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">${t(`prayer_${prayer}`)}</p>
+                            <p class="text-3xl font-bold text-slate-900 dark:text-slate-100 font-mono">${timings[prayer]}</p>
                         </div>
                     `).join('')}
                 </div>
@@ -217,35 +335,6 @@ export const renderAdhanTimes = (container, props = {}) => {
         updateCountdown();
     };
     
-    const fetchPrayerTimes = async ({ city, country }) => {
-        if (!city || !country) {
-            state.error = t('enterBothCityCountry');
-            renderContent();
-            return;
-        }
-
-        state.loading = true;
-        state.error = null;
-        state.prayerTimes = null;
-        renderContent();
-        
-        try {
-            const response = await fetchWithRetry(`https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}`);
-            const data = await response.json();
-            if (data.code !== 200 || !data.data) throw new Error(t('findPrayerTimesError'));
-            
-            state.prayerTimes = data.data;
-            state.location = { city, country };
-            localStorage.setItem('prayerLocation', JSON.stringify({ city, country }));
-
-        } catch (err) {
-            state.error = err.message;
-        } finally {
-            state.loading = false;
-            renderContent();
-        }
-    };
-
     const fetchCitySuggestions = async (query) => {
         if (query.length < 3) {
             state.citySuggestions = [];
@@ -273,10 +362,13 @@ export const renderAdhanTimes = (container, props = {}) => {
     };
     
     const renderCitySuggestions = () => {
+        const citySuggestionsContainer = container.querySelector('#city-suggestions');
+        if (!citySuggestionsContainer) return;
+
         if (state.citySuggestions.length > 0) {
             citySuggestionsContainer.classList.remove('hidden');
             citySuggestionsContainer.innerHTML = state.citySuggestions.map(s =>
-                `<div class="suggestion-item p-2 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-600" data-city="${s.city}" data-country="${s.country}">${s.displayName}</div>`
+                `<div class="suggestion-item p-3 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700 text-sm border-b border-slate-50 dark:border-slate-700 last:border-0" data-city="${s.city}" data-country="${s.country}">${s.displayName}</div>`
             ).join('');
         } else {
             citySuggestionsContainer.classList.add('hidden');
@@ -285,6 +377,8 @@ export const renderAdhanTimes = (container, props = {}) => {
     
     const handleFormSubmit = (e) => {
         e.preventDefault();
+        const cityInput = container.querySelector('#city');
+        const countryInput = container.querySelector('#country');
         const city = cityInput.value.trim();
         const country = countryInput.value.trim();
         fetchPrayerTimes({ city, country });
@@ -299,8 +393,11 @@ export const renderAdhanTimes = (container, props = {}) => {
     const handleSuggestionClick = (e) => {
         const item = e.target.closest('.suggestion-item');
         if (item) {
+            const cityInput = container.querySelector('#city');
+            const countryInput = container.querySelector('#country');
             cityInput.value = item.dataset.city;
             countryInput.value = item.dataset.country;
+            const citySuggestionsContainer = container.querySelector('#city-suggestions');
             citySuggestionsContainer.classList.add('hidden');
             state.citySuggestions = [];
         }
@@ -311,10 +408,12 @@ export const renderAdhanTimes = (container, props = {}) => {
         clockInterval = setInterval(() => {
             state.currentTime = new Date();
             updateCountdown();
-        }, 1000); // Update every second for the countdown
+        }, 1000);
     };
     
     const closeSuggestionsOnClickOutside = (event) => {
+        const citySuggestionsContainer = container.querySelector('#city-suggestions');
+        const cityInput = container.querySelector('#city');
         if (citySuggestionsContainer && !citySuggestionsContainer.contains(event.target) && event.target !== cityInput) {
             citySuggestionsContainer.classList.add('hidden');
         }
@@ -323,6 +422,9 @@ export const renderAdhanTimes = (container, props = {}) => {
     // --- QIBLA LOGIC ---
     
     const renderQibla = () => {
+        const qiblaContainer = container.querySelector('#qibla-container');
+        if (!qiblaContainer) return;
+
         qiblaContainer.innerHTML = '';
         if (!state.isQiblaVisible) return;
 
@@ -349,40 +451,40 @@ export const renderAdhanTimes = (container, props = {}) => {
 
     const renderCompassView = () => {
         const wrapper = document.createElement('div');
-        wrapper.className = 'fade-in p-5 bg-white dark:bg-slate-900 rounded-xl shadow-sm space-y-6 flex flex-col items-center';
+        wrapper.className = 'fade-in p-6 bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 space-y-6 flex flex-col items-center';
         wrapper.innerHTML = `
-            <div class="flex justify-between items-center w-full mb-2">
-                <div class="w-8"></div> <!-- spacer -->
+            <div class="flex justify-between items-center w-full">
+                <div class="w-8"></div>
                 <h3 class="text-xl font-bold text-slate-800 dark:text-slate-100">${t('qiblaCompass')}</h3>
-                <button id="close-qibla-btn" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700">
+                <button id="close-qibla-btn" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
                     ${CloseIcon()}
                 </button>
             </div>
             <div class="relative w-64 h-64 md:w-80 md:h-80" id="compass-container">
-                <!-- Compass Rose -->
                 <div class="absolute inset-0 transition-transform duration-100 ease-linear">
-                    <div class="w-full h-full rounded-full bg-slate-200 dark:bg-slate-700 shadow-inner flex items-center justify-center relative">
-                        <span class="absolute top-2 text-lg font-bold text-theme-600 dark:text-theme-400">${t('north')}</span>
-                        <span class="absolute bottom-2 text-lg font-bold text-slate-500">S</span>
-                        <span class="absolute left-4 text-lg font-bold text-slate-500">W</span>
-                        <span class="absolute right-4 text-lg font-bold text-slate-500">E</span>
-                        <div class="w-2 h-2 rounded-full bg-slate-500"></div>
+                    <div class="w-full h-full rounded-full bg-slate-50 dark:bg-slate-800 shadow-inner flex items-center justify-center relative border-4 border-slate-100 dark:border-slate-700">
+                        <span class="absolute top-4 text-xl font-black text-theme-600 dark:text-theme-400">N</span>
+                        <span class="absolute bottom-4 text-xl font-bold text-slate-400">S</span>
+                        <span class="absolute left-6 text-xl font-bold text-slate-400">W</span>
+                        <span class="absolute right-6 text-xl font-bold text-slate-400">E</span>
+                        <div class="w-3 h-3 rounded-full bg-slate-400"></div>
                     </div>
                 </div>
-                <!-- Qibla Pointer -->
                 <div class="absolute inset-0 flex items-center justify-center transition-transform duration-100 ease-linear" style="transform: rotate(${state.qiblaDirection}deg);">
-                     <svg class="w-4/5 h-4/5 text-theme-500 drop-shadow-lg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                     <svg class="w-4/5 h-4/5 text-theme-500 drop-shadow-2xl" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M50 0 L60 20 L52 20 L50 15 L48 20 L40 20 Z" fill="currentColor"/>
                      </svg>
                 </div>
             </div>
-            <div class="text-center">
-                <p class="text-slate-500 dark:text-slate-400">${t('yourLocation')}</p>
-                <p class="font-semibold text-lg">${state.qiblaLocation.city || '...'}, ${state.qiblaLocation.country || '...'}</p>
-            </div>
-             <div class="text-center">
-                <p class="text-slate-500 dark:text-slate-400">${t('qiblaDirection')}</p>
-                <p class="font-semibold text-lg font-mono">${state.qiblaDirection.toFixed(2)}°</p>
+            <div class="grid grid-cols-2 gap-4 w-full">
+                <div class="text-center p-3 bg-slate-50 dark:bg-slate-800 rounded-xl">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">${t('yourLocation')}</p>
+                    <p class="font-bold text-slate-700 dark:text-slate-200 truncate">${state.qiblaLocation.city || '...'}</p>
+                </div>
+                 <div class="text-center p-3 bg-slate-50 dark:bg-slate-800 rounded-xl">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">${t('qiblaDirection')}</p>
+                    <p class="font-bold text-theme-600 dark:text-theme-400 font-mono">${state.qiblaDirection.toFixed(1)}°</p>
+                </div>
             </div>
         `;
         compassElement = wrapper.querySelector('#compass-container');
@@ -470,7 +572,7 @@ export const renderAdhanTimes = (container, props = {}) => {
     };
 
     const startOrientationListener = () => {
-        stopOrientationListener(); // Ensure no duplicates
+        stopOrientationListener();
         const eventName = 'ondeviceorientationabsolute' in window ? 'deviceorientationabsolute' : 'deviceorientation';
         const listener = handleOrientation;
         window.addEventListener(eventName, listener);
@@ -479,15 +581,18 @@ export const renderAdhanTimes = (container, props = {}) => {
 
     const handleShowQibla = () => {
         state.isQiblaVisible = true;
-        showQiblaBtn.disabled = true;
+        const showQiblaBtn = container.querySelector('#show-qibla-btn');
+        if (showQiblaBtn) showQiblaBtn.disabled = true;
         handlePermissionsRequest();
     };
 
     const handleHideQibla = () => {
         state.isQiblaVisible = false;
         stopOrientationListener();
-        qiblaContainer.innerHTML = '';
-        showQiblaBtn.disabled = false;
+        const qiblaContainer = container.querySelector('#qibla-container');
+        if (qiblaContainer) qiblaContainer.innerHTML = '';
+        const showQiblaBtn = container.querySelector('#show-qibla-btn');
+        if (showQiblaBtn) showQiblaBtn.disabled = false;
     };
 
     const cleanup = () => {
@@ -497,19 +602,11 @@ export const renderAdhanTimes = (container, props = {}) => {
     };
     
     // --- Initial setup ---
-    container.querySelector('#adhan-back-btn')?.addEventListener('click', () => {
-        if (props.onBack) props.onBack();
-    });
-    locationForm.addEventListener('submit', handleFormSubmit);
-    cityInput.addEventListener('input', handleCityInput);
-    citySuggestionsContainer.addEventListener('click', handleSuggestionClick);
-    showQiblaBtn.addEventListener('click', handleShowQibla);
-    document.addEventListener('click', closeSuggestionsOnClickOutside);
-
-    if (state.location) {
+    render();
+    if (state.isAutoLocation) {
+        detectLocation();
+    } else if (state.location) {
         fetchPrayerTimes(state.location);
-    } else {
-        renderContent();
     }
     startClock();
 

@@ -1,9 +1,9 @@
 import { createSpinner } from './Spinner.js';
-import { PlayIcon, PauseIcon, SkipForwardIcon, SkipBackwardIcon, DownloadIcon, TrashIcon, ArrowLeftIcon, ArrowRightIcon, ChevronRightIcon, SpeakerWaveIcon, SpeakerXMarkIcon, Backward10Icon, Forward10Icon } from './Icons.js';
+import { PlayIcon, PauseIcon, SkipForwardIcon, SkipBackwardIcon, DownloadIcon, SaveIcon, TrashIcon, ArrowLeftIcon, ArrowRightIcon, ChevronRightIcon, SpeakerWaveIcon, SpeakerXMarkIcon, Backward10Icon, Forward10Icon } from './Icons.js';
 import { renderErrorState } from './UI.js';
 import { t, getCurrentLanguage } from '../i18n.js';
 import { FAMOUS_RECITERS } from './QuranData.js';
-import { downloadFullSurah, deleteFullSurah, getFullSurahDownloads } from './DownloadManager.js';
+import { downloadFullSurah, deleteFullSurah, getFullSurahDownloads, saveSurahToDevice } from './DownloadManager.js';
 import { fetchWithRetry } from '../utils/fetchUtils.js';
 
 export const renderQuranListener = (container, cache, props) => {
@@ -256,9 +256,15 @@ export const renderQuranListener = (container, cache, props) => {
                 if (isDownloading) {
                     buttonHtml = `<div class="w-5 h-5 border-2 border-slate-300 border-t-theme-500 rounded-full animate-spin"></div>`;
                 } else if (isDownloaded) {
-                    buttonHtml = `<button data-action="delete" title="${t('delete')}" class="download-btn p-2 rounded-xl text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-colors">${TrashIcon({className: "w-5 h-5"})}</button>`;
+                    buttonHtml = `
+                        <button data-action="save-device" title="${t('saveToDevice') || 'Save to Device'}" class="download-btn p-2 rounded-xl text-theme-600 hover:bg-theme-50 dark:hover:bg-theme-950/20 transition-colors">${SaveIcon({className: "w-5 h-5"})}</button>
+                        <button data-action="delete" title="${t('delete')}" class="download-btn p-2 rounded-xl text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-colors">${TrashIcon({className: "w-5 h-5"})}</button>
+                    `;
                 } else {
-                    buttonHtml = `<button data-action="download" title="${t('download')}" class="download-btn p-2 rounded-xl text-slate-400 hover:text-theme-600 hover:bg-theme-50 dark:hover:bg-theme-950/20 transition-colors">${DownloadIcon({className: "w-5 h-5"})}</button>`;
+                    buttonHtml = `
+                        <button data-action="save-device" title="${t('saveToDevice') || 'Save to Device'}" class="download-btn p-2 rounded-xl text-slate-400 hover:text-theme-600 hover:bg-theme-50 dark:hover:bg-theme-950/20 transition-colors">${SaveIcon({className: "w-5 h-5"})}</button>
+                        <button data-action="download" title="${t('download')}" class="download-btn p-2 rounded-xl text-slate-400 hover:text-theme-600 hover:bg-theme-50 dark:hover:bg-theme-950/20 transition-colors">${DownloadIcon({className: "w-5 h-5"})}</button>
+                    `;
                 }
 
                 return `
@@ -297,14 +303,19 @@ export const renderQuranListener = (container, cache, props) => {
                     setState({ view: 'player' });
                 });
                 
-                row.querySelector('.download-btn')?.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const action = e.currentTarget.dataset.action;
-                    if (action === 'download') {
-                        handleDownload(surah);
-                    } else if (action === 'delete') {
-                        handleDelete(surah);
-                    }
+                // Attach listeners to all download buttons (Download, Save to Device, Delete)
+                row.querySelectorAll('.download-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const action = btn.dataset.action;
+                        if (action === 'download') {
+                            handleDownload(surah);
+                        } else if (action === 'delete') {
+                            handleDelete(surah);
+                        } else if (action === 'save-device') {
+                            handleSaveToDevice(surah);
+                        }
+                    });
                 });
             });
         };
@@ -622,6 +633,17 @@ export const renderQuranListener = (container, cache, props) => {
             window.showToast?.(t('deleteSuccess', { surahName: surah.englishName }), 'success');
         } catch(e) {
             console.error("Delete failed:", e);
+        }
+    };
+
+    const handleSaveToDevice = async (surah) => {
+        try {
+            window.showToast?.(t('downloadStarting', { surahName: surah.englishName }), 'success');
+            await saveSurahToDevice(state.selectedReciter, surah);
+            window.showToast?.(t('downloadSuccess', { surahName: surah.englishName }), 'success');
+        } catch (e) {
+            console.error("Save to device failed:", e);
+            window.showToast?.(t('downloadError', { surahName: surah.englishName }), 'error');
         }
     };
 

@@ -53,6 +53,30 @@ export const downloadFullSurah = async (reciter, surah) => {
     saveFullSurahDownloadedList(downloadedList);
 };
 
+export const saveSurahToDevice = async (reciter, surah) => {
+    const audioUrl = `${reciter.url}${String(surah.number).padStart(3, '0')}.mp3`;
+    const fileName = `${surah.number}_${surah.englishName}_${reciter.name_en.replace(/\s+/g, '_')}.mp3`;
+    
+    try {
+        const response = await fetch(audioUrl);
+        if (!response.ok) throw new Error('Network response was not ok');
+        
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+    } catch (error) {
+        console.error('Download to device failed:', error);
+        throw error;
+    }
+};
+
 /**
  * Deletes a cached full surah MP3 file.
  * @param {object} reciter The full reciter object.

@@ -1,5 +1,5 @@
 import { 
-    CloseIcon, SunIcon, MoonIcon, SystemThemeIcon, FacebookIcon, InstagramIcon, TelegramIcon, XIcon, WhatsappIcon, EmailIcon, LocationIcon, TeamIcon,
+    CloseIcon, SunIcon, MoonIcon, SystemThemeIcon, FacebookIcon, InstagramIcon, TelegramIcon, XIcon, WhatsappIcon, EmailIcon, UserIcon,
     CheckIcon, GridViewIcon, ListViewIcon, ArrowLeftIcon, ArrowRightIcon
 } from './Icons.js';
 import { t, getCurrentLanguage } from '../i18n.js';
@@ -21,9 +21,7 @@ const socialLinks = [
 ];
 
 const getContactInfo = () => [
-    { href: 'mailto:eddahbyyouness7@gmail.com', icon: EmailIcon(), label: 'eddahbyyouness7@gmail.com' },
-    { icon: LocationIcon(), label: t('location') },
-    { icon: TeamIcon(), label: t('team', { teamName: 'YNS-DHB' }) },
+    { icon: UserIcon(), label: 'Youness Eddahby' },
 ];
 
 const getArabicFonts = () => [
@@ -59,6 +57,7 @@ export const renderSettingsPage = (container, props) => {
         theme, setTheme, themeColor, setThemeColor, language, setLanguage,
         fontSize, setFontSize,
         arabicFont, setArabicFont, surahListLayout, setSurahListLayout, surahGridCols, setSurahGridCols,
+        readerDisplayMode, setReaderDisplayMode, debugMode, setDebugMode,
         selectedReciter, setSelectedReciter,
         animationsEnabled, setAnimationsEnabled, onBack 
     } = props;
@@ -71,7 +70,7 @@ export const renderSettingsPage = (container, props) => {
             <div class="fade-in">
                 <header class="flex items-center justify-between p-4 sticky top-0 bg-parchment/80 dark:bg-night/80 backdrop-blur-xl z-10 border-b border-line dark:border-line-dark">
                     <div class="flex items-center gap-3">
-                        <button id="main-back-btn" aria-label="Back" class="p-2 -ml-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-all active:scale-90 flex items-center gap-1">
+                        <button id="main-back-btn" aria-label="Back" class="p-2 -ml-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-900 dark:text-white transition-all active:scale-90 flex items-center gap-1">
                             ${BackIcon({className: "w-6 h-6"})}
                             <span class="hidden sm:inline text-sm font-bold">${t('back')}</span>
                         </button>
@@ -87,11 +86,11 @@ export const renderSettingsPage = (container, props) => {
                     ])}
                     ${renderSection(t('languageAndText'), [
                         renderLanguageSelector(),
-                        renderFontSizeSelector(),
-                        renderArabicFontSelector()
+                        language !== 'ar' ? renderReaderSettingsSelector() : ''
                     ])}
                     ${renderSection(t('uiSettings'), [
-                        renderSurahLayoutSelector()
+                        renderSurahLayoutSelector(),
+                        renderDebugToggle()
                     ])}
                     ${renderSection(t('playerSettings'), [
                         renderReciterSelector()
@@ -151,29 +150,29 @@ export const renderSettingsPage = (container, props) => {
             <span class="${animationsEnabled ? 'translate-x-5 rtl:-translate-x-5' : 'translate-x-0'} pointer-events-none h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"></span>
         </button>
     `);
+
+    const renderDebugToggle = () => renderSettingItem('Debug Mode', 'Show technical details in error messages', `
+        <button id="debug-toggle" role="switch" aria-checked="${debugMode}" class="${debugMode ? 'bg-theme-600' : 'bg-neutral-300 dark:bg-neutral-600'} relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out">
+            <span class="${debugMode ? 'translate-x-5 rtl:-translate-x-5' : 'translate-x-0'} pointer-events-none h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"></span>
+        </button>
+    `);
     
     const renderLanguageSelector = () => renderSettingItem(t('language'), '', `
-        <div class="flex items-center bg-black/5 dark:bg-white/5 p-1 rounded-lg">
+        <div class="flex flex-wrap items-center bg-black/5 dark:bg-white/5 p-1 rounded-lg gap-1">
            <button data-lang="en" class="lang-btn px-3 py-1.5 text-sm font-semibold rounded-md ${language === 'en' ? 'bg-amber-50 dark:bg-neutral-700 text-theme-600' : 'text-ink/60 dark:text-cream/60'}">English</button>
            <button data-lang="ar" class="lang-btn px-3 py-1.5 text-sm font-semibold rounded-md ${language === 'ar' ? 'bg-amber-50 dark:bg-neutral-700 text-theme-600' : 'text-ink/60 dark:text-cream/60'}">العربية</button>
+           <button data-lang="id" class="lang-btn px-3 py-1.5 text-sm font-semibold rounded-md ${language === 'id' ? 'bg-amber-50 dark:bg-neutral-700 text-theme-600' : 'text-ink/60 dark:text-cream/60'}">Indonesia</button>
+           <button data-lang="tr" class="lang-btn px-3 py-1.5 text-sm font-semibold rounded-md ${language === 'tr' ? 'bg-amber-50 dark:bg-neutral-700 text-theme-600' : 'text-ink/60 dark:text-cream/60'}">Türkçe</button>
         </div>
     `);
 
-    const renderFontSizeSelector = () => renderSettingItem(t('fontSize'), '', `
-        <select id="font-size-select" class="bg-black/5 dark:bg-white/5 border-line dark:border-line-dark text-ink dark:text-cream text-sm rounded-lg focus:ring-theme-500 focus:border-theme-500 block w-full sm:w-auto p-2.5 outline-none">
-            <option value="x-small" ${fontSize === 'x-small' ? 'selected' : ''}>${t('fontSizeXSmall')}</option>
-            <option value="small" ${fontSize === 'small' ? 'selected' : ''}>${t('fontSizeSmall')}</option>
-            <option value="medium" ${fontSize === 'medium' ? 'selected' : ''}>${t('fontSizeMedium')}</option>
-            <option value="large" ${fontSize === 'large' ? 'selected' : ''}>${t('fontSizeLarge')}</option>
-            <option value="x-large" ${fontSize === 'x-large' ? 'selected' : ''}>${t('fontSizeXLarge')}</option>
-        </select>
+    const renderReaderSettingsSelector = () => renderSettingItem(t('readerSettings'), '', `
+        <div class="flex items-center bg-black/5 dark:bg-white/5 p-1 rounded-lg">
+            <button data-mode="translation" class="mode-btn px-3 py-1.5 text-sm font-semibold rounded-md ${readerDisplayMode === 'translation' ? 'bg-amber-50 dark:bg-neutral-700 text-theme-600' : 'text-ink/60 dark:text-cream/60'}">${t('readOnlyTranslation')}</button>
+            <button data-mode="both" class="mode-btn px-3 py-1.5 text-sm font-semibold rounded-md ${readerDisplayMode === 'both' ? 'bg-amber-50 dark:bg-neutral-700 text-theme-600' : 'text-ink/60 dark:text-cream/60'}">${t('readArabicTranslation')}</button>
+        </div>
     `);
 
-    const renderArabicFontSelector = () => renderSettingItem(t('arabicFont'), t('arabicFontSubtitle'), `
-        <select id="arabic-font-select" class="bg-black/5 dark:bg-white/5 border-line dark:border-line-dark text-ink dark:text-cream text-base rounded-lg focus:ring-theme-500 focus:border-theme-500 block w-full sm:w-auto p-2.5 outline-none">
-            ${getArabicFonts().map(font => `<option value="${font.id}" class="preview-${font.id} text-xl" ${arabicFont === font.id ? 'selected' : ''}>${font.name}</option>`).join('')}
-        </select>
-    `);
 
     const renderSurahLayoutSelector = () => {
        const gridColsSelector = surahListLayout === 'grid' ? `
@@ -231,9 +230,9 @@ export const renderSettingsPage = (container, props) => {
         container.querySelectorAll('.theme-btn').forEach(btn => btn.addEventListener('click', () => setTheme(btn.dataset.theme)));
         container.querySelectorAll('.color-btn').forEach(btn => btn.addEventListener('click', () => setThemeColor(btn.dataset.color)));
         container.querySelector('#animations-toggle')?.addEventListener('click', () => setAnimationsEnabled(!animationsEnabled));
+        container.querySelector('#debug-toggle')?.addEventListener('click', () => setDebugMode(!debugMode));
         container.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => setLanguage(btn.dataset.lang)));
-        container.querySelector('#font-size-select')?.addEventListener('change', (e) => setFontSize(e.target.value));
-        container.querySelector('#arabic-font-select')?.addEventListener('change', (e) => setArabicFont(e.target.value));
+        container.querySelectorAll('.mode-btn').forEach(btn => btn.addEventListener('click', () => setReaderDisplayMode(btn.dataset.mode)));
         container.querySelectorAll('.layout-btn').forEach(btn => btn.addEventListener('click', () => setSurahListLayout(btn.dataset.layout)));
         container.querySelectorAll('.grid-cols-btn').forEach(btn => btn.addEventListener('click', () => setSurahGridCols(btn.dataset.cols)));
         

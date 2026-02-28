@@ -25,12 +25,6 @@
     <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#b58900" />
 
-    <!-- Vercel Web Analytics -->
-    <script>
-      window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-    </script>
-    <script defer src="/_vercel/insights/script.js"></script>
-
     <style>
       :root {
         --bg-light: 252 250 242; /* Soft Parchment */
@@ -127,22 +121,22 @@
         --arabic-size: 1.4rem;
         --line-height: 2.4;
       }
-      html.font-size-x-small { --arabic-size: 1.1rem; --line-height: 1.8; }
-      html.font-size-small { --arabic-size: 1.4rem; --line-height: 2.4; }
-      html.font-size-medium { --arabic-size: 1.8rem; --line-height: 2.8; }
-      html.font-size-large { --arabic-size: 2.2rem; --line-height: 3.2; }
-      html.font-size-x-large { --arabic-size: 2.8rem; --line-height: 3.8; }
+      .font-size-x-small { --arabic-size: 1.1rem; --line-height: 1.8; }
+      .font-size-small { --arabic-size: 1.4rem; --line-height: 2.4; }
+      .font-size-medium { --arabic-size: 1.8rem; --line-height: 2.8; }
+      .font-size-large { --arabic-size: 2.2rem; --line-height: 3.2; }
+      .font-size-x-large { --arabic-size: 2.8rem; --line-height: 3.8; }
 
       @media (min-width: 768px) {
         :root {
           --arabic-size: 1.8rem;
           --line-height: 2.8;
         }
-        html.font-size-x-small { --arabic-size: 1.4rem; --line-height: 2.4; }
-        html.font-size-small { --arabic-size: 1.8rem; --line-height: 2.8; }
-        html.font-size-medium { --arabic-size: 2.2rem; --line-height: 3.2; }
-        html.font-size-large { --arabic-size: 2.8rem; --line-height: 3.8; }
-        html.font-size-x-large { --arabic-size: 3.5rem; --line-height: 4.5; }
+        .font-size-x-small { --arabic-size: 1.4rem; --line-height: 2.4; }
+        .font-size-small { --arabic-size: 1.8rem; --line-height: 2.8; }
+        .font-size-medium { --arabic-size: 2.2rem; --line-height: 3.2; }
+        .font-size-large { --arabic-size: 2.8rem; --line-height: 3.8; }
+        .font-size-x-large { --arabic-size: 3.5rem; --line-height: 4.5; }
       }
 
       .quran-arabic-text {
@@ -207,7 +201,7 @@
         const effectiveTheme = theme === 'system' ? 
           (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme;
 
-        document.documentElement.classList.add(effectiveTheme, `font-size-${fontSize}`, arabicFont);
+        document.documentElement.classList.add(effectiveTheme, arabicFont);
         document.documentElement.lang = lang;
         document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
       })();
@@ -266,6 +260,5 @@
     <div id="root"></div>
     <div id="toast-container"></div>
     <script type="module" src="/index.js"></script>
-  <script type="module" src="/index.tsx"></script>
 </body>
 </html>

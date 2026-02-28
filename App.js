@@ -6,7 +6,8 @@ import { renderHomePage } from './components/HomePage.js';
 import { renderAITafsir } from './components/AITafsir.js';
 import { renderHisnMuslim } from './components/HisnMuslim.js';
 import { renderTasbih } from './components/Tasbih.js';
-import { QuranIcon, HadithIcon, PrayerIcon, SettingsIcon, AiIcon, ShieldIcon, BeadsIcon, ArrowLeftIcon, ArrowRightIcon } from './components/Icons.js';
+import { renderSeerah } from './components/Seerah.js';
+import { QuranIcon, HadithIcon, PrayerIcon, SettingsIcon, AiIcon, ShieldIcon, BeadsIcon, ArrowLeftIcon, ArrowRightIcon, BookOpenIcon } from './components/Icons.js';
 import { THEME_COLORS } from './theme.js';
 import { initI18n, t, setLanguage as setI18nLanguage } from './i18n.js';
 
@@ -29,6 +30,8 @@ const App = (rootElement) => {
         animationsEnabled: localStorage.getItem('animationsEnabled') !== 'false',
         surahListLayout: localStorage.getItem('surahListLayout') || 'grid',
         surahGridCols: localStorage.getItem('surahGridCols') || '3',
+        readerDisplayMode: localStorage.getItem('readerDisplayMode') || 'both', // 'both', 'translation'
+        debugMode: localStorage.getItem('debugMode') === 'true',
         isReaderMode: false,
         readerConfig: null,
         quranMode: 'read',
@@ -53,6 +56,7 @@ const App = (rootElement) => {
         { id: 'hadith', label: t('hadith'), icon: HadithIcon, mobileLabel: t('hadithTab') },
         { id: 'hisn', label: t('hisnMuslim'), icon: ShieldIcon, mobileLabel: t('adhkarTab') },
         { id: 'tasbih', label: t('tasbih'), icon: BeadsIcon, mobileLabel: t('tasbihTab') },
+        { id: 'seerah', label: t('seerah'), icon: BookOpenIcon, mobileLabel: t('seerahTab') },
         { id: 'adhan', label: t('prayerTimes'), icon: PrayerIcon, mobileLabel: t('adhanTab') },
     ];
 
@@ -60,7 +64,7 @@ const App = (rootElement) => {
         const root = document.documentElement;
         let effectiveTheme = state.theme;
         if (effectiveTheme === 'system') effectiveTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        root.className = `${effectiveTheme} font-size-${state.fontSize} ${state.arabicFont}`;
+        root.className = effectiveTheme;
         if (!state.animationsEnabled) root.classList.add('animations-disabled');
         
         const colors = THEME_COLORS[state.themeColor] || THEME_COLORS.sapphire;
@@ -89,7 +93,7 @@ const App = (rootElement) => {
                                 <span class="hidden sm:inline text-sm font-bold">${t('back')}</span>
                             </button>
                         ` : ''}
-                        <h1 class="text-xl md:text-2xl font-bold text-theme-700 dark:text-theme-400 font-display tracking-tight">${t('appName')}</h1>
+                        <h1 class="text-base md:text-lg font-bold text-theme-700 dark:text-theme-400 font-display tracking-tight">${t('appName')}</h1>
                     </div>
                     <nav class="hidden md:flex items-center gap-1 text-sm font-semibold">
                          ${getTabs().map(tab => `
@@ -143,11 +147,16 @@ const App = (rootElement) => {
         }));
     };
 
+    let lastRenderedLanguage = state.language;
+
     const renderContent = () => {
-        if (lastRenderedTab === state.activeTab && !state.isReaderMode && lastRenderedTab !== 'quran' && lastRenderedTab !== 'settings') return;
+        const langChanged = lastRenderedLanguage !== state.language;
+        if (lastRenderedTab === state.activeTab && !state.isReaderMode && lastRenderedTab !== 'quran' && lastRenderedTab !== 'settings' && !langChanged) return;
         if (currentContentCleanup) currentContentCleanup();
         mainContent.innerHTML = '';
         mainContent.className = 'container mx-auto px-2 sm:px-4 py-4 md:py-6 pb-24 md:pb-8';
+        
+        lastRenderedLanguage = state.language;
 
         const props = {
             ...state,
@@ -161,6 +170,8 @@ const App = (rootElement) => {
             setFontSize: (s) => { state.fontSize = s; applyStyles(); localStorage.setItem('fontSize', s); render(); },
             setSurahListLayout: (l) => { state.surahListLayout = l; localStorage.setItem('surahListLayout', l); render(); },
             setSurahGridCols: (c) => { state.surahGridCols = c; localStorage.setItem('surahGridCols', c); render(); },
+            setReaderDisplayMode: (m) => { state.readerDisplayMode = m; localStorage.setItem('readerDisplayMode', m); render(); },
+            setDebugMode: (d) => { state.debugMode = d; localStorage.setItem('debugMode', d); render(); },
             setAnimationsEnabled: (e) => { state.animationsEnabled = e; applyStyles(); localStorage.setItem('animationsEnabled', e); render(); },
             setSelectedReciter: (r) => { state.selectedReciter = r; localStorage.setItem('selectedReciter', r); render(); },
             onBack: () => { state.activeTab = 'home'; state.isReaderMode = false; render(); }
@@ -172,6 +183,7 @@ const App = (rootElement) => {
             case 'hadith': renderHadithViewer(mainContent, props); break;
             case 'hisn': renderHisnMuslim(mainContent, props); break;
             case 'tasbih': renderTasbih(mainContent, props); break;
+            case 'seerah': renderSeerah(mainContent, props); break;
             case 'adhan': currentContentCleanup = renderAdhanTimes(mainContent, props); break;
             case 'settings': renderSettingsPage(mainContent, props); break;
         }
@@ -180,11 +192,19 @@ const App = (rootElement) => {
 
     const renderAIChat = () => {
         if (state.isAiChatOpen) {
+            if (aiChatContainer.dataset.rendered === 'true' && !state.aiInitialPrompt) return;
+            aiChatContainer.dataset.rendered = 'true';
             renderAITafsir(aiChatContainer, {
-                onClose: () => { state.isAiChatOpen = false; renderAIChat(); },
+                onClose: () => { 
+                    state.isAiChatOpen = false; 
+                    aiChatContainer.dataset.rendered = 'false';
+                    renderAIChat(); 
+                },
                 initialPrompt: state.aiInitialPrompt
             });
+            state.aiInitialPrompt = null; // Clear it after passing to widget
         } else {
+             aiChatContainer.dataset.rendered = 'false';
              aiChatContainer.innerHTML = `
                 <button id="open-ai-chat-btn" class="fixed bottom-20 right-4 md:bottom-8 md:right-8 w-14 h-14 bg-theme-600 text-white rounded-full shadow-lg hover:bg-theme-700 transition-transform z-40 flex items-center justify-center">
                     ${AiIcon()}

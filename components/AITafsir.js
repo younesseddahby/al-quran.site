@@ -41,8 +41,19 @@ export const renderAITafsir = (container, { onClose, initialPrompt }) => {
                         <div>
                             <h3 class="font-bold text-slate-900 dark:text-white">${t('aiTafsirTitle')}</h3>
                             <div class="flex items-center gap-1.5">
-                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Online Assistant</span>
+                                <span class="w-1.5 h-1.5 rounded-full ${
+                                    state.connectionStatus === 'connected' ? 'bg-emerald-500' :
+                                    state.connectionStatus === 'retrying' ? 'bg-amber-500 animate-pulse' :
+                                    state.connectionStatus === 'error' ? 'bg-rose-500' :
+                                    'bg-emerald-500 animate-pulse'
+                                }"></span>
+                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                                    ${
+                                        state.connectionStatus === 'retrying' ? (lang === 'ar' ? 'جاري إعادة المحاولة...' : 'Retrying...') :
+                                        state.connectionStatus === 'error' ? (lang === 'ar' ? 'خطأ في الاتصال' : 'Connection Error') :
+                                        'Online Assistant'
+                                    }
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -79,7 +90,7 @@ export const renderAITafsir = (container, { onClose, initialPrompt }) => {
                 <!-- Input Area -->
                 <footer class="p-6 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900">
                     <div class="relative group">
-                        <input id="ai-input" class="w-full pl-5 pr-14 py-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl outline-none border border-slate-100 dark:border-slate-700 focus:border-theme-500 focus:ring-4 focus:ring-theme-500/10 transition-all dark:text-white text-sm" placeholder="${t('askPlaceholder')}">
+                        <textarea id="ai-input" class="w-full pl-5 pr-14 py-3 bg-slate-50 dark:bg-slate-800/50 rounded-2xl outline-none border border-slate-100 dark:border-slate-700 focus:border-theme-500 focus:ring-4 focus:ring-theme-500/10 transition-all text-slate-900 dark:text-white text-sm placeholder-slate-400 dark:placeholder-slate-500 resize-none h-12 flex items-center" placeholder="${t('askPlaceholder')}" autocomplete="off" rows="1"></textarea>
                         <button id="ai-send" class="absolute right-2 top-2 bottom-2 px-4 bg-theme-600 text-white rounded-xl disabled:opacity-50 hover:bg-theme-700 transition-all shadow-lg shadow-theme-600/20 flex items-center justify-center">
                             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </button>
@@ -101,7 +112,17 @@ export const renderAITafsir = (container, { onClose, initialPrompt }) => {
             };
             container.querySelector('#ai-overlay').onclick = container.querySelector('#close-ai').onclick;
             container.querySelector('#ai-send').onclick = () => handleAsk();
-            container.querySelector('#ai-input').onkeydown = (e) => e.key === 'Enter' && handleAsk();
+            const input = container.querySelector('#ai-input');
+            if (input) {
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        handleAsk();
+                    }
+                });
+                // Auto-focus when opened
+                input.focus();
+            }
             container.querySelector('#clear-ai').onclick = () => {
                 state.conversation = [];
                 sessionStorage.removeItem('aiConversation');
@@ -164,25 +185,43 @@ export const renderAITafsir = (container, { onClose, initialPrompt }) => {
         }
     };
 
-    const handleAsk = async (text) => {
+    const handleAsk = async (text, retryCount = 0) => {
         const input = container.querySelector('#ai-input');
         const query = text || input?.value.trim();
         if (!query || state.isLoading) return;
         if (input) input.value = '';
 
-        state.conversation.push({ role: 'user', content: query });
+        if (retryCount === 0) {
+            state.conversation.push({ role: 'user', content: query });
+        }
         state.isLoading = true;
         state.streamingText = '';
+        state.connectionStatus = 'connecting';
         updateMsgs();
 
+        const timeoutPromise = new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('TIMEOUT')), 30000)
+        );
+
         try {
-            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+            const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || process.env.API_KEY });
             const lang = getCurrentLanguage();
-            const system = lang === 'ar' 
-                ? "أنت مساعد عالم إسلامي خبير في التفسير والحديث. أجب بالعربية الفصحى بأسلوب تعليمي وودود. استخدم التنسيق المناسب (عناوين، قوائم) لتنظيم إجابتك." 
-                : "You are an expert Islamic scholar assistant specializing in Tafsir and Hadith. Answer in English with an educational and friendly tone. Use proper formatting (headings, lists) to organize your response.";
             
-            // Build history for multi-turn
+            let system = "";
+            switch(lang) {
+                case 'ar':
+                    system = "أنت مساعد عالم إسلامي خبير في التفسير والحديث. يجب أن تكون إجابتك باللغة العربية الفصحى فقط. أجب فقط على الأسئلة المتعلقة بالإسلام والقرآن والحديث. إذا سُئلت عن أي موضوع آخر، اعتذر بلطف ووضح أنك مبرمج للإجابة على الأسئلة الإسلامية فقط. استخدم التنسيق المناسب لتنظيم إجابتك.";
+                    break;
+                case 'id':
+                    system = "Anda adalah asisten cendekiawan Islam ahli dalam Tafsir dan Hadis. PENTING: Anda HARUS menjawab HANYA dalam Bahasa Indonesia. Jawab HANYA pertanyaan yang berkaitan dengan Islam, Al-Qur'an, dan Hadis. Jika ditanya tentang topik lain, tolak dengan sopan dan jelaskan bahwa Anda hanya diprogram untuk menjawab pertanyaan Islam. Jangan gunakan bahasa lain untuk penjelasan. Gunakan format Markdown yang terstruktur.";
+                    break;
+                case 'tr':
+                    system = "Tefsir ve Hadis konusunda uzman bir İslami bilim adamı asistanısınız. ÖNEMLİ: SADECE Türkçe cevap VERMELİSİNİZ. SADECE İslam, Kuran ve Hadis ile ilgili soruları cevaplayın. Başka bir konu sorulursa, nazikçe reddedin ve sadece İslami soruları cevaplamak üzere programlandığınızı açıklayın. Açıklamalar için başka dil kullanmayın. Yapılandırılmış Markdown formatı kullanın.";
+                    break;
+                default:
+                    system = "You are an expert Islamic scholar assistant specializing in Tafsir and Hadith. IMPORTANT: You MUST answer ONLY in English. Answer ONLY questions related to Islam, Quran, and Hadith. If asked about any other topic, politely decline and explain that you are programmed to answer only Islamic questions. Do not use other languages for the explanation. Use structured Markdown formatting.";
+            }
+            
             const history = state.conversation
                 .filter(m => m.role !== 'error')
                 .map(m => ({
@@ -190,15 +229,20 @@ export const renderAITafsir = (container, { onClose, initialPrompt }) => {
                     parts: [{ text: m.content }]
                 }));
 
-            const result = await ai.models.generateContentStream({
-                model: 'gemini-3.1-pro-preview',
-                contents: history,
-                config: { 
-                    systemInstruction: system,
-                    tools: [{ googleSearch: {} }]
-                }
-            });
+            // Race against timeout
+            const result = await Promise.race([
+                ai.models.generateContentStream({
+                    model: retryCount > 0 ? 'gemini-3-flash-preview' : 'gemini-3.1-pro-preview', // Fallback to flash on retry
+                    contents: history,
+                    config: { 
+                        systemInstruction: system,
+                        tools: [{ googleSearch: {} }]
+                    }
+                }),
+                timeoutPromise
+            ]);
 
+            state.connectionStatus = 'connected';
             let fullText = '';
             for await (const chunk of result) {
                 const chunkText = chunk.text;
@@ -212,8 +256,24 @@ export const renderAITafsir = (container, { onClose, initialPrompt }) => {
             state.conversation.push({ role: 'model', content: fullText });
             state.streamingText = '';
         } catch (e) {
-            console.error("AI Error:", e);
-            state.conversation.push({ role: 'error', content: t('aiError') });
+            console.error(`AI Error (Attempt ${retryCount + 1}):`, e);
+            
+            if (retryCount < 2) {
+                state.connectionStatus = 'retrying';
+                updateMsgs();
+                await new Promise(r => setTimeout(r, 2000 * (retryCount + 1)));
+                return handleAsk(query, retryCount + 1);
+            }
+
+            state.connectionStatus = 'error';
+            const errorMessage = e.message === 'TIMEOUT' 
+                ? (getCurrentLanguage() === 'ar' ? "انتهت مهلة الاتصال. يرجى التحقق من الإنترنت." : "Connection timed out. Please check your internet.")
+                : t('aiError');
+            
+            state.conversation.push({ 
+                role: 'error', 
+                content: errorMessage + (localStorage.getItem('debug_mode') === 'true' ? `\n\n[Debug: ${e.message}]` : '')
+            });
         } finally {
             state.isLoading = false;
             sessionStorage.setItem('aiConversation', JSON.stringify(state.conversation));
