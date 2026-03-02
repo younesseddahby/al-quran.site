@@ -20,7 +20,8 @@ export const renderAITafsir = (container, { onClose, initialPrompt }) => {
     let state = { 
         isLoading: false, 
         conversation: JSON.parse(sessionStorage.getItem('aiConversation') || '[]'),
-        streamingText: ''
+        streamingText: '',
+        connectionStatus: 'connected'
     };
     let isPrompting = false;
 
@@ -241,9 +242,8 @@ export const renderAITafsir = (container, { onClose, initialPrompt }) => {
                 let fullText = '';
                 
                 for await (const chunk of responseStream) {
-                    const c = chunk;
-                    if (c.text) {
-                        fullText += c.text;
+                    if (chunk.text) {
+                        fullText += chunk.text;
                         state.streamingText = fullText;
                         updateMsgs();
                     }
