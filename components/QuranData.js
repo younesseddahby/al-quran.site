@@ -158,7 +158,13 @@ export const FAMOUS_RECITERS = [
     { "id": 8, "name_en": "Mahmud Khalil al-Husary", "name_ar": "محمود خليل الحصري", "rewaya_en": "Hafs an-Asim", "rewaya_ar": "حفص عن عاصم", "url": "https://server13.mp3quran.net/husr/" },
     { "id": 10, "name_en": "Yasser ad-Dussary", "name_ar": "ياسر الدوسري", "rewaya_en": "Hafs an-Asim", "rewaya_ar": "حفص عن عاصم", "url": "https://server11.mp3quran.net/yasser/" },
     { "id": 9, "name_en": "Saad al-Ghamdi", "name_ar": "سعد الغامدي", "rewaya_en": "Hafs an-Asim", "rewaya_ar": "حفص عن عاصم", "url": "https://server7.mp3quran.net/s_gmd/" },
-    { "id": 3, "name_en": "Ahmad al-Ajmy", "name_ar": "أحمد بن علي العجمي", "rewaya_en": "Hafs an-Asim", "rewaya_ar": "حفص عن عاصم", "url": "https://server10.mp3quran.net/ajm/" }
+    { "id": 3, "name_en": "Ahmad al-Ajmy", "name_ar": "أحمد بن علي العجمي", "rewaya_en": "Hafs an-Asim", "rewaya_ar": "حفص عن عاصم", "url": "https://server10.mp3quran.net/ajm/" },
+    { "id": 12, "name_en": "Islam Sobhi", "name_ar": "إسلام صبحي", "rewaya_en": "Hafs an-Asim", "rewaya_ar": "حفص عن عاصم", "url": "https://server14.mp3quran.net/islam/Rewayat-Hafs-A-n-Assem/" },
+    { "id": 13, "name_en": "Khalid Al Jalil", "name_ar": "خالد الجليل", "rewaya_en": "Hafs an-Asim", "rewaya_ar": "حفص عن عاصم", "url": "https://server10.mp3quran.net/jleel/" },
+    { "id": 14, "name_en": "Abdul Basit 'Abd us-Samad", "name_ar": "عبد الباسط عبد الصمد", "rewaya_en": "Hafs an-Asim", "rewaya_ar": "حفص عن عاصم", "url": "https://server7.mp3quran.net/basit/" },
+    { "id": 15, "name_en": "Abu Bakr al-Shatri", "name_ar": "أبو بكر الشاطري", "rewaya_en": "Hafs an-Asim", "rewaya_ar": "حفص عن عاصم", "url": "https://server11.mp3quran.net/shatri/" },
+    { "id": 16, "name_en": "Fares Abbad", "name_ar": "فارس عباد", "rewaya_en": "Hafs an-Asim", "rewaya_ar": "حفص عن عاصم", "url": "https://server8.mp3quran.net/frs_a/" },
+    { "id": 17, "name_en": "Muhammad Siddiq al-Minshawi", "name_ar": "محمد صديق المنشاوي", "rewaya_en": "Hafs an-Asim", "rewaya_ar": "حفص عن عاصم", "url": "https://server10.mp3quran.net/minsh/" }
 ];
 
 

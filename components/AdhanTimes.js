@@ -146,15 +146,14 @@ export const renderAdhanTimes = (container, props = {}) => {
                 try {
                     const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&accept-language=en`);
                     const data = await res.json();
-                    const city = data.address.city || data.address.town || data.address.village || data.address.suburb;
-                    const country = data.address.country;
+                    const city = data.address.city || data.address.town || data.address.village || data.address.suburb || data.address.state || "Current Location";
+                    const country = data.address.country || "";
                     
                     state.location = { city, country, lat: latitude, lon: longitude };
                     localStorage.setItem('prayerLocation', JSON.stringify(state.location));
                     fetchPrayerTimes(state.location);
                 } catch (e) {
                     console.error("Reverse geocoding error:", e);
-                    state.error = "Could not detect city name. Using coordinates.";
                     state.location = { city: "Current Location", country: "", lat: latitude, lon: longitude };
                     fetchPrayerTimes(state.location);
                 }
@@ -313,7 +312,7 @@ export const renderAdhanTimes = (container, props = {}) => {
 
     const renderPrayerTimes = (contentContainer) => {
         const { timings, meta } = state.prayerTimes;
-        const locationString = state.location.city ? `${state.location.city}${state.location.country ? ', ' + state.location.country : ''}` : '...';
+        const locationString = state.location && state.location.city ? `${state.location.city}${state.location.country ? ', ' + state.location.country : ''}` : t('currentLocation');
 
         contentContainer.innerHTML = `
             <div class="fade-in space-y-6">

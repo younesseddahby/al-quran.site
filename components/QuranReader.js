@@ -414,7 +414,7 @@ export const renderQuranReader = (container, cache, props) => {
         const fontClass = props.arabicFont || 'font-noto-naskh-arabic';
 
         contentArea.innerHTML = `
-            <div class="fixed top-0 inset-x-0 h-14 md:h-16 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl z-30 border-b border-slate-200 dark:border-slate-800 flex items-center px-3 md:px-4 justify-between">
+            <div id="reader-header" class="fixed top-0 inset-x-0 h-14 md:h-16 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl z-30 border-b border-slate-200 dark:border-slate-800 flex items-center px-3 md:px-4 justify-between transition-transform duration-300">
                 <button id="reader-back" class="p-1.5 md:p-2 -ml-1 md:-ml-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center gap-1 transition-all active:scale-90">
                     ${BackIcon({className: "w-5 h-5 md:w-6 md:h-6"})}
                     <span class="hidden sm:inline text-sm font-bold">${t('backToList')}</span>
@@ -715,8 +715,28 @@ export const renderQuranReader = (container, cache, props) => {
         }
     });
 
+    let lastScrollY = 0;
+    const handleScroll = (e) => {
+        const header = document.getElementById('reader-header');
+        if (!header) return;
+        
+        const scrollTarget = e.target === document ? document.documentElement : (e.target.scrollTop !== undefined ? e.target : document.documentElement);
+        const scrollTop = scrollTarget.scrollTop || window.scrollY;
+
+        if (scrollTop > lastScrollY && scrollTop > 100) {
+            header.style.transform = 'translateY(-100%)';
+        } else {
+            header.style.transform = 'translateY(0)';
+        }
+        lastScrollY = scrollTop;
+    };
+    
+    // We attach to window as fallback, but also to the container if it exists
+    window.addEventListener('scroll', handleScroll, { passive: true, capture: true });
+
     return () => { 
         document.getElementById('tafsir-panel')?.remove(); 
         document.getElementById('jump-modal')?.remove(); 
+        window.removeEventListener('scroll', handleScroll, { capture: true });
     };
 };
