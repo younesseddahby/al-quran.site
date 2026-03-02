@@ -1,4 +1,5 @@
 import { t, getCurrentLanguage } from '../i18n.js';
+import { GoogleGenAI } from "@google/genai";
 
 const markdownToHtml = (text) => {
     if (!text) return '';
@@ -199,10 +200,6 @@ export const renderAITafsir = (container, { onClose, initialPrompt }) => {
         state.connectionStatus = 'connecting';
         updateMsgs();
 
-        const timeoutPromise = new Promise((_, reject) => 
-            setTimeout(() => reject(new Error('TIMEOUT')), 30000)
-        );
-
         const lang = getCurrentLanguage();
         
         let system = "";
@@ -227,35 +224,26 @@ export const renderAITafsir = (container, { onClose, initialPrompt }) => {
                     parts: [{ text: m.content }]
                 }));
 
-            let response;
             try {
-                const fetchPromise = fetch('/api/gemini', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ history, system })
-                });
-
-                response = await Promise.race([fetchPromise, timeoutPromise]);
-
-                if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({}));
-                    const err = new Error(errorData.error || `HTTP error! status: ${response.status}`);
-                    err.status = response.status;
-                    throw err;
+                const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
+                if (!apiKey) {
+                    throw new Error('API key not configured');
                 }
+
+                const ai = new GoogleGenAI({ apiKey });
+                const responseStream = await ai.models.generateContentStream({
+                    model: 'gemini-3-flash-preview',
+                    contents: history,
+                    config: { systemInstruction: system }
+                });
 
                 state.connectionStatus = 'connected';
                 let fullText = '';
                 
-                const reader = response.body.getReader();
-                const decoder = new TextDecoder("utf-8");
-                
-                while (true) {
-                    const { done, value } = await reader.read();
-                    if (done) break;
-                    const chunkText = decoder.decode(value, { stream: true });
-                    if (chunkText) {
-                        fullText += chunkText;
+                for await (const chunk of responseStream) {
+                    const c = chunk;
+                    if (c.text) {
+                        fullText += c.text;
                         state.streamingText = fullText;
                         updateMsgs();
                     }
@@ -271,12 +259,10 @@ export const renderAITafsir = (container, { onClose, initialPrompt }) => {
             } catch (e) {
             console.error(`AI Error (Attempt ${retryCount + 1}):`, e);
             
-            // Do not retry on client errors (4xx) like 400 Bad Request or 429 Too Many Requests
-            const isClientError = e.status >= 400 && e.status < 500;
-            const isRateLimit = e.status === 429 || (e.message && e.message.includes('429'));
-            const isInvalidKey = e.status === 400 || (e.message && e.message.includes('API key not valid'));
+            const isRateLimit = e.message?.includes('429') || e.status === 429;
+            const isInvalidKey = e.message?.includes('API key not valid') || e.status === 400;
             
-            if (retryCount < 2 && !isClientError && e.message !== 'TIMEOUT') {
+            if (retryCount < 2 && !isRateLimit && !isInvalidKey) {
                 state.connectionStatus = 'retrying';
                 updateMsgs();
                 await new Promise(r => setTimeout(r, 2000 * (retryCount + 1)));
@@ -286,19 +272,20 @@ export const renderAITafsir = (container, { onClose, initialPrompt }) => {
             state.connectionStatus = 'error';
             
             let errorMessage = t('aiError');
-            if (e.message === 'TIMEOUT') {
-                errorMessage = getCurrentLanguage() === 'ar' ? "انتهت مهلة الاتصال. يرجى التحقق من الإنترنت." : "Connection timed out. Please check your internet.";
-            } else if (isRateLimit) {
+            if (isRateLimit) {
                 errorMessage = getCurrentLanguage() === 'ar' ? "لقد تجاوزت الحد المسموح به للطلبات المجانية. يرجى المحاولة مرة أخرى بعد دقيقة." : "You have exceeded the free request limit. Please try again in a minute.";
             } else if (isInvalidKey) {
                 errorMessage = getCurrentLanguage() === 'ar' ? "مفتاح API غير صالح. يرجى التحقق من إعداداتك." : "Invalid API key. Please check your configuration.";
+            } else if (e.message && e.message !== 'Failed to fetch') {
+                errorMessage = e.message;
             }
             
             state.conversation.push({ 
                 role: 'error', 
-                content: errorMessage + (localStorage.getItem('debug_mode') === 'true' ? `\n\n[Debug: ${e.message}]` : '')
+                content: errorMessage
             });
             
+            state.streamingText = '';
             state.isLoading = false;
             sessionStorage.setItem('aiConversation', JSON.stringify(state.conversation));
             updateMsgs();
