@@ -3,7 +3,6 @@ import { PlayIcon, PauseIcon, SkipForwardIcon, SkipBackwardIcon, DownloadIcon, S
 import { renderErrorState } from './UI.js';
 import { t, getCurrentLanguage } from '../i18n.js';
 import { FAMOUS_RECITERS } from './QuranData.js';
-import { downloadFullSurah, deleteFullSurah, getFullSurahDownloads, saveSurahToDevice } from './DownloadManager.js';
 import { fetchWithRetry } from '../utils/fetchUtils.js';
 
 export const renderQuranListener = (container, cache, props) => {
@@ -28,7 +27,6 @@ export const renderQuranListener = (container, cache, props) => {
         volume: parseFloat(localStorage.getItem('quranPlayerVolume') || '0.75'),
         isMuted: false,
         
-        downloadedSurahs: {}, // { 'reciterId_surahNum': true }
         downloadingProgress: {}, // { 'reciterId_surahNum': true }
     };
 
@@ -249,21 +247,14 @@ export const renderQuranListener = (container, cache, props) => {
 
             listContainer.innerHTML = filtered.map(s => {
                 const downloadKey = `${state.selectedReciter.id}_${s.number}`;
-                const isDownloaded = !!state.downloadedSurahs[downloadKey];
                 const isDownloading = !!state.downloadingProgress[downloadKey];
 
                 let buttonHtml = '';
                 if (isDownloading) {
                     buttonHtml = `<div class="w-5 h-5 border-2 border-slate-300 border-t-theme-500 rounded-full animate-spin"></div>`;
-                } else if (isDownloaded) {
-                    buttonHtml = `
-                        <button data-action="save-device" title="${t('saveToDevice') || 'Save to Device'}" class="download-btn p-2 rounded-xl text-theme-600 hover:bg-theme-50 dark:hover:bg-theme-950/20 transition-colors">${SaveIcon({className: "w-5 h-5"})}</button>
-                        <button data-action="delete" title="${t('delete')}" class="download-btn p-2 rounded-xl text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-colors">${TrashIcon({className: "w-5 h-5"})}</button>
-                    `;
                 } else {
                     buttonHtml = `
-                        <button data-action="save-device" title="${t('saveToDevice') || 'Save to Device'}" class="download-btn p-2 rounded-xl text-slate-400 hover:text-theme-600 hover:bg-theme-50 dark:hover:bg-theme-950/20 transition-colors">${SaveIcon({className: "w-5 h-5"})}</button>
-                        <button data-action="download" title="${t('download')}" class="download-btn p-2 rounded-xl text-slate-400 hover:text-theme-600 hover:bg-theme-50 dark:hover:bg-theme-950/20 transition-colors">${DownloadIcon({className: "w-5 h-5"})}</button>
+                        <button data-action="save-device" title="${t('download') || 'Download'}" class="download-btn p-2 rounded-xl text-slate-400 hover:text-theme-600 hover:bg-theme-50 dark:hover:bg-theme-950/20 transition-colors">${DownloadIcon({className: "w-5 h-5"})}</button>
                     `;
                 }
 
@@ -308,11 +299,7 @@ export const renderQuranListener = (container, cache, props) => {
                     btn.addEventListener('click', (e) => {
                         e.stopPropagation();
                         const action = btn.dataset.action;
-                        if (action === 'download') {
-                            handleDownload(surah);
-                        } else if (action === 'delete') {
-                            handleDelete(surah);
-                        } else if (action === 'save-device') {
+                        if (action === 'save-device') {
                             handleSaveToDevice(surah);
                         }
                     });
@@ -421,9 +408,14 @@ export const renderQuranListener = (container, cache, props) => {
                         </div>
                         
                         <div class="flex justify-between items-center px-1 md:px-4">
-                            <button id="player-mute-btn" class="p-2 md:p-4 rounded-xl md:rounded-2xl bg-white/5 hover:bg-white/10 text-white/60 hover:text-white transition-all">
-                                ${volumeIcon}
-                            </button>
+                            <div class="flex items-center gap-2 group/volume">
+                                <button id="player-mute-btn" class="p-2 md:p-3 rounded-xl bg-white/5 hover:bg-white/10 text-white/60 hover:text-white transition-all">
+                                    ${volumeIcon}
+                                </button>
+                                <div class="w-0 group-hover/volume:w-24 md:group-hover/volume:w-32 overflow-hidden transition-all duration-300 flex items-center bg-white/5 rounded-full px-2 h-8">
+                                    <input type="range" id="volume-slider" class="w-full h-1 appearance-none bg-white/20 rounded-full cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:rounded-full" min="0" max="1" step="0.01" value="${state.volume}" />
+                                </div>
+                            </div>
 
                             <div class="flex items-center gap-1 md:gap-8">
                                 <button id="player-prev-surah-btn" ${isFirstSurah ? 'disabled' : ''} class="p-1.5 text-white/40 hover:text-white disabled:opacity-10 transition-all transform active:scale-90" title="${t('prevSurah')}">${SkipBackwardIcon({className: 'w-5 h-5 md:w-8 md:h-8'})}</button>
@@ -514,6 +506,22 @@ export const renderQuranListener = (container, cache, props) => {
 
         const muteBtn = contentContainer.querySelector('#player-mute-btn');
         if (muteBtn) muteBtn.addEventListener('click', handleMuteToggle);
+
+        const volumeSlider = contentContainer.querySelector('#volume-slider');
+        if (volumeSlider) {
+            volumeSlider.addEventListener('input', (e) => {
+                const vol = parseFloat(e.target.value);
+                audio.volume = vol;
+                state.volume = vol;
+                state.isMuted = vol === 0;
+                localStorage.setItem('quranPlayerVolume', vol.toString());
+                // Update icon without full re-render for performance
+                const muteBtn = contentContainer.querySelector('#player-mute-btn');
+                if (muteBtn) {
+                    muteBtn.innerHTML = state.isMuted ? SpeakerXMarkIcon({className: 'w-6 h-6'}) : SpeakerWaveIcon({className: 'w-6 h-6'});
+                }
+            });
+        }
     };
 
     const updateProgressUI = () => {
@@ -604,42 +612,27 @@ export const renderQuranListener = (container, cache, props) => {
     };
     
     // Download Handlers
-    const handleDownload = async (surah) => {
-        const key = `${state.selectedReciter.id}_${surah.number}`;
-        setState({ downloadingProgress: { ...state.downloadingProgress, [key]: true } });
-
-        try {
-            window.showToast?.(t('downloadStarting', { surahName: surah.englishName }), 'success');
-            await downloadFullSurah(state.selectedReciter, surah);
-            setState({
-                downloadedSurahs: { ...state.downloadedSurahs, [key]: true },
-                downloadingProgress: { ...state.downloadingProgress, [key]: false }
-            });
-            window.showToast?.(t('downloadSuccess', { surahName: surah.englishName }), 'success');
-        } catch (e) {
-            console.error("Download failed:", e);
-            window.showToast?.(t('downloadError', { surahName: surah.englishName }), 'error');
-            setState({ downloadingProgress: { ...state.downloadingProgress, [key]: false } });
-        }
-    };
-
-    const handleDelete = async (surah) => {
-        const key = `${state.selectedReciter.id}_${surah.number}`;
-        try {
-            await deleteFullSurah(state.selectedReciter, surah);
-            const newDownloaded = { ...state.downloadedSurahs };
-            delete newDownloaded[key];
-            setState({ downloadedSurahs: newDownloaded });
-            window.showToast?.(t('deleteSuccess', { surahName: surah.englishName }), 'success');
-        } catch(e) {
-            console.error("Delete failed:", e);
-        }
-    };
-
     const handleSaveToDevice = async (surah) => {
         try {
             window.showToast?.(t('downloadStarting', { surahName: surah.englishName }), 'success');
-            await saveSurahToDevice(state.selectedReciter, surah);
+            
+            const audioUrl = `${state.selectedReciter.url}${String(surah.number).padStart(3, '0')}.mp3`;
+            const fileName = `${surah.englishName}_${state.selectedReciter.name_en}.mp3`;
+            
+            const response = await fetch(audioUrl);
+            if (!response.ok) throw new Error('Network response was not ok');
+            
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+            
             window.showToast?.(t('downloadSuccess', { surahName: surah.englishName }), 'success');
         } catch (e) {
             console.error("Save to device failed:", e);
@@ -704,11 +697,7 @@ export const renderQuranListener = (container, cache, props) => {
     };
 
     const init = async () => {
-        const [_, downloaded] = await Promise.all([
-            fetchSurahList(),
-            getFullSurahDownloads()
-        ]);
-        state.downloadedSurahs = downloaded;
+        await fetchSurahList();
         render();
     };
     

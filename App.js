@@ -7,7 +7,8 @@ import { renderAITafsir } from './components/AITafsir.js';
 import { renderHisnMuslim } from './components/HisnMuslim.js';
 import { renderTasbih } from './components/Tasbih.js';
 import { renderSeerah } from './components/Seerah.js';
-import { QuranIcon, HadithIcon, PrayerIcon, SettingsIcon, AiIcon, ShieldIcon, BeadsIcon, ArrowLeftIcon, ArrowRightIcon, BookOpenIcon } from './components/Icons.js';
+import { renderBookmarks } from './components/Bookmarks.js';
+import { QuranIcon, HadithIcon, PrayerIcon, SettingsIcon, AiIcon, ShieldIcon, BeadsIcon, ArrowLeftIcon, ArrowRightIcon, BookOpenIcon, BookmarkIcon } from './components/Icons.js';
 import { THEME_COLORS } from './theme.js';
 import { initI18n, t, setLanguage as setI18nLanguage } from './i18n.js';
 
@@ -23,6 +24,7 @@ const App = (rootElement) => {
         activeTab: 'home',
         theme: localStorage.getItem('theme') || 'system',
         themeColor: localStorage.getItem('themeColor') || 'sapphire',
+        baseTheme: localStorage.getItem('baseTheme') || 'classic',
         language: localStorage.getItem('language') || 'ar',
         fontSize: localStorage.getItem('fontSize') || 'small',
         arabicFont: localStorage.getItem('arabicFont') || 'noto_naskh_arabic',
@@ -32,6 +34,7 @@ const App = (rootElement) => {
         surahGridCols: localStorage.getItem('surahGridCols') || '3',
         readerDisplayMode: localStorage.getItem('readerDisplayMode') || 'both', // 'both', 'translation'
         debugMode: localStorage.getItem('debugMode') === 'true',
+        bookmarks: JSON.parse(localStorage.getItem('bookmarks') || '{"quran": [], "hadith": []}'),
         isReaderMode: false,
         readerConfig: null,
         quranMode: 'read',
@@ -57,6 +60,7 @@ const App = (rootElement) => {
         { id: 'hisn', label: t('hisnMuslim'), icon: ShieldIcon, mobileLabel: t('adhkarTab') },
         { id: 'tasbih', label: t('tasbih'), icon: BeadsIcon, mobileLabel: t('tasbihTab') },
         { id: 'seerah', label: t('seerah'), icon: BookOpenIcon, mobileLabel: t('seerahTab') },
+        { id: 'bookmarks', label: t('bookmarks') || 'Bookmarks', icon: BookmarkIcon, mobileLabel: t('bookmarksTab') || 'Bookmarks' },
         { id: 'adhan', label: t('prayerTimes'), icon: PrayerIcon, mobileLabel: t('adhanTab') },
     ];
 
@@ -64,7 +68,12 @@ const App = (rootElement) => {
         const root = document.documentElement;
         let effectiveTheme = state.theme;
         if (effectiveTheme === 'system') effectiveTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        root.className = effectiveTheme;
+        
+        // Remove old base theme classes
+        root.classList.remove('theme-classic', 'theme-emerald', 'theme-midnight', 'theme-sepia');
+        root.classList.add(`theme-${state.baseTheme}`);
+        
+        root.className = `${effectiveTheme} theme-${state.baseTheme}`;
         if (!state.animationsEnabled) root.classList.add('animations-disabled');
         
         const colors = THEME_COLORS[state.themeColor] || THEME_COLORS.sapphire;
@@ -74,9 +83,41 @@ const App = (rootElement) => {
         });
     };
 
+    let lastScrollY = window.scrollY;
+    let isHeaderVisible = true;
+
+    window.addEventListener('scroll', () => {
+        if (state.isReaderMode && state.activeTab === 'quran') {
+            const currentScrollY = window.scrollY;
+            const readerTopbar = document.getElementById('reader-topbar');
+            
+            // Always show at the top or when scrolling up
+            if (currentScrollY < 50 || currentScrollY < lastScrollY) {
+                if (!isHeaderVisible) {
+                    header.style.transform = 'translateY(0)';
+                    if (readerTopbar) readerTopbar.style.transform = 'translateY(0)';
+                    isHeaderVisible = true;
+                }
+            } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
+                // Scrolling down
+                if (isHeaderVisible) {
+                    header.style.transform = 'translateY(-100%)';
+                    if (readerTopbar) readerTopbar.style.transform = 'translateY(-100%)';
+                    isHeaderVisible = false;
+                }
+            }
+            lastScrollY = currentScrollY;
+        } else {
+            header.style.transform = 'translateY(0)';
+            const readerTopbar = document.getElementById('reader-topbar');
+            if (readerTopbar) readerTopbar.style.transform = 'translateY(0)';
+            isHeaderVisible = true;
+        }
+    }, { passive: true });
+
     const renderHeader = () => {
-        const isHidden = (state.isReaderMode && state.activeTab === 'quran') || state.activeTab === 'settings';
-        header.className = isHidden ? 'hidden' : 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl sticky top-0 z-40 border-b border-slate-200 dark:border-slate-800 transition-all duration-300';
+        const isHidden = state.activeTab === 'settings' || (state.activeTab === 'quran' && state.isReaderMode);
+        header.className = isHidden ? 'hidden' : 'bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl sticky top-0 z-40 border-b border-slate-200 dark:border-slate-800 transition-transform duration-300';
         if (isHidden) return;
 
         const isHome = state.activeTab === 'home';
@@ -103,7 +144,10 @@ const App = (rootElement) => {
                         `).join('')}
                     </nav>
                     <div class="flex items-center gap-2">
-                        <button id="header-settings-btn" class="p-2.5 rounded-full hover:bg-black/5 dark:hover:bg-white/5 text-slate-600 dark:text-slate-400 transition-colors">${SettingsIcon({className: "w-6 h-6"})}</button>
+                        <button id="header-settings-btn" class="flex items-center gap-2 px-3 py-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 text-slate-600 dark:text-slate-400 transition-colors">
+                            ${SettingsIcon({className: "w-8 h-8"})}
+                            <span class="text-sm font-semibold">${t('settings')}</span>
+                        </button>
                     </div>
                 </div>
             </div>`;
@@ -164,6 +208,7 @@ const App = (rootElement) => {
             setQuranMode: (m) => { state.quranMode = m; },
             setReaderMode: (c) => { state.isReaderMode = !!c; state.readerConfig = c; render(); },
             setTheme: (t) => { state.theme = t; applyStyles(); localStorage.setItem('theme', t); render(); },
+            setBaseTheme: (b) => { state.baseTheme = b; applyStyles(); localStorage.setItem('baseTheme', b); render(); },
             setThemeColor: (c) => { state.themeColor = c; applyStyles(); localStorage.setItem('themeColor', c); render(); },
             setLanguage: (l) => { state.language = l; setI18nLanguage(l); localStorage.setItem('language', l); render(); },
             setArabicFont: (f) => { state.arabicFont = f; applyStyles(); localStorage.setItem('arabicFont', f); render(); },
@@ -174,6 +219,21 @@ const App = (rootElement) => {
             setDebugMode: (d) => { state.debugMode = d; localStorage.setItem('debugMode', d); render(); },
             setAnimationsEnabled: (e) => { state.animationsEnabled = e; applyStyles(); localStorage.setItem('animationsEnabled', e); render(); },
             setSelectedReciter: (r) => { state.selectedReciter = r; localStorage.setItem('selectedReciter', r); render(); },
+            toggleBookmark: (type, item) => {
+                const bookmarks = { ...state.bookmarks };
+                const list = bookmarks[type];
+                const index = list.findIndex(b => b.id === item.id);
+                if (index > -1) {
+                    list.splice(index, 1);
+                    window.showToast?.(t('bookmarkRemoved') || 'Removed from bookmarks', 'info');
+                } else {
+                    list.push(item);
+                    window.showToast?.(t('bookmarkAdded') || 'Added to bookmarks', 'success');
+                }
+                state.bookmarks = bookmarks;
+                localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+                render();
+            },
             onBack: () => { state.activeTab = 'home'; state.isReaderMode = false; render(); }
         };
 
@@ -184,6 +244,7 @@ const App = (rootElement) => {
             case 'hisn': renderHisnMuslim(mainContent, props); break;
             case 'tasbih': renderTasbih(mainContent, props); break;
             case 'seerah': renderSeerah(mainContent, props); break;
+            case 'bookmarks': renderBookmarks(mainContent, props); break;
             case 'adhan': currentContentCleanup = renderAdhanTimes(mainContent, props); break;
             case 'settings': renderSettingsPage(mainContent, props); break;
         }

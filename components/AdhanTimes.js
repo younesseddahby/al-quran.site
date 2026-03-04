@@ -2,12 +2,9 @@
 import { createSpinner } from './Spinner.js';
 import { renderErrorState } from './UI.js';
 import { t, getCurrentLanguage } from '../i18n.js';
-import { QiblaIcon, CloseIcon, ArrowLeftIcon, ArrowRightIcon } from './Icons.js';
+import { CloseIcon, ArrowLeftIcon, ArrowRightIcon } from './Icons.js';
 import { fetchWithRetry } from '../utils/fetchUtils.js';
 
-// Kaaba coordinates
-const KAABA_LAT = 21.4225;
-const KAABA_LON = 39.8262;
 const prayerOrder = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
 
 export const renderAdhanTimes = (container, props = {}) => {
@@ -26,23 +23,26 @@ export const renderAdhanTimes = (container, props = {}) => {
         currentTime: new Date(),
         citySuggestions: [],
         isSuggestionsLoading: false,
-        // Qibla State
-        isQiblaVisible: false,
-        qiblaPermissionState: 'prompt', // 'prompt', 'granted', 'denied'
-        isIOS: typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function',
-        qiblaError: null,
-        isQiblaLoading: false,
-        qiblaLocation: null, 
-        qiblaDirection: 0,
-        deviceHeading: 0,
     };
 
     let debounceTimer;
     let clockInterval;
-    let orientationListener = null;
-    let compassElement = null;
 
     const render = () => {
+        const locationInfo = state.location ? `
+            <div class="mt-4 p-4 bg-theme-50 dark:bg-theme-900/20 rounded-xl border border-theme-100 dark:border-theme-800/50 animate-in">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-theme-600 text-white flex items-center justify-center shadow-sm">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-bold text-theme-600 dark:text-theme-400 uppercase tracking-widest">${t('yourLocation')}</p>
+                        <p class="text-sm font-bold text-slate-900 dark:text-white">${state.location.city}${state.location.country ? ', ' + state.location.country : ''}</p>
+                    </div>
+                </div>
+            </div>
+        ` : '';
+
         container.innerHTML = `
             <div class="space-y-6">
                 <div class="flex items-center justify-between">
@@ -71,7 +71,7 @@ export const renderAdhanTimes = (container, props = {}) => {
                         </button>
                     </div>
 
-                    ${!state.isAutoLocation ? `
+                    ${state.isAutoLocation ? locationInfo : `
                         <form id="location-form" class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end animate-in">
                             <div class="relative sm:col-span-2">
                                 <label for="city" class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">${t('city')}</label>
@@ -84,15 +84,10 @@ export const renderAdhanTimes = (container, props = {}) => {
                             </div>
                             <button type="submit" class="w-full px-5 py-3 bg-theme-600 text-white rounded-xl font-bold hover:bg-theme-700 transition-all active:scale-95 shadow-lg shadow-theme-500/20">${t('showTimes')}</button>
                         </form>
-                    ` : ''}
-
-                    <button id="show-qibla-btn" class="w-full flex items-center justify-center gap-2 px-5 py-3 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-xl font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-all active:scale-95">
-                        ${QiblaIcon()} ${t('showQiblaDirection')}
-                    </button>
+                    `}
                 </div>
 
                 <div id="prayer-times-container" class="mt-6"></div>
-                <div id="qibla-container" class="mt-6"></div>
             </div>
         `;
 
@@ -123,8 +118,6 @@ export const renderAdhanTimes = (container, props = {}) => {
             const citySuggestionsContainer = container.querySelector('#city-suggestions');
             citySuggestionsContainer.addEventListener('click', handleSuggestionClick);
         }
-
-        container.querySelector('#show-qibla-btn')?.addEventListener('click', handleShowQibla);
     };
 
     const detectLocation = () => {
@@ -426,186 +419,9 @@ export const renderAdhanTimes = (container, props = {}) => {
         }
     };
 
-    // --- QIBLA LOGIC ---
-    
-    const renderQibla = () => {
-        const qiblaContainer = container.querySelector('#qibla-container');
-        if (!qiblaContainer) return;
-
-        qiblaContainer.innerHTML = '';
-        if (!state.isQiblaVisible) return;
-
-        switch (state.qiblaPermissionState) {
-            case 'granted':
-                if (state.isQiblaLoading) {
-                    qiblaContainer.appendChild(createSpinner(t('findingLocation')));
-                } else if (state.qiblaError) {
-                    qiblaContainer.appendChild(renderErrorState(state.qiblaError, handlePermissionsRequest));
-                } else {
-                    qiblaContainer.appendChild(renderCompassView());
-                }
-                break;
-            case 'denied':
-                const errorMsg = `${t('errorOrientation')} ${state.isIOS ? t('errorIOSInstruction') : ''}`;
-                qiblaContainer.appendChild(renderErrorState(errorMsg, handlePermissionsRequest));
-                break;
-            case 'prompt':
-            default:
-                qiblaContainer.appendChild(createSpinner(t('loading')));
-                break;
-        }
-    };
-
-    const renderCompassView = () => {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'fade-in p-6 bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 space-y-6 flex flex-col items-center';
-        wrapper.innerHTML = `
-            <div class="flex justify-between items-center w-full">
-                <div class="w-8"></div>
-                <h3 class="text-xl font-bold text-slate-800 dark:text-slate-100">${t('qiblaCompass')}</h3>
-                <button id="close-qibla-btn" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-                    ${CloseIcon()}
-                </button>
-            </div>
-            <div class="relative w-64 h-64 md:w-80 md:h-80" id="compass-container">
-                <div class="absolute inset-0 transition-transform duration-100 ease-linear">
-                    <div class="w-full h-full rounded-full bg-slate-50 dark:bg-slate-800 shadow-inner flex items-center justify-center relative border-4 border-slate-100 dark:border-slate-700">
-                        <span class="absolute top-4 text-xl font-black text-theme-600 dark:text-theme-400">N</span>
-                        <span class="absolute bottom-4 text-xl font-bold text-slate-400">S</span>
-                        <span class="absolute left-6 text-xl font-bold text-slate-400">W</span>
-                        <span class="absolute right-6 text-xl font-bold text-slate-400">E</span>
-                        <div class="w-3 h-3 rounded-full bg-slate-400"></div>
-                    </div>
-                </div>
-                <div class="absolute inset-0 flex items-center justify-center transition-transform duration-100 ease-linear" style="transform: rotate(${state.qiblaDirection}deg);">
-                     <svg class="w-4/5 h-4/5 text-theme-500 drop-shadow-2xl" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M50 0 L60 20 L52 20 L50 15 L48 20 L40 20 Z" fill="currentColor"/>
-                     </svg>
-                </div>
-            </div>
-            <div class="grid grid-cols-2 gap-4 w-full">
-                <div class="text-center p-3 bg-slate-50 dark:bg-slate-800 rounded-xl">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">${t('yourLocation')}</p>
-                    <p class="font-bold text-slate-700 dark:text-slate-200 truncate">${state.qiblaLocation.city || '...'}</p>
-                </div>
-                 <div class="text-center p-3 bg-slate-50 dark:bg-slate-800 rounded-xl">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">${t('qiblaDirection')}</p>
-                    <p class="font-bold text-theme-600 dark:text-theme-400 font-mono">${state.qiblaDirection.toFixed(1)}°</p>
-                </div>
-            </div>
-        `;
-        compassElement = wrapper.querySelector('#compass-container');
-        if(compassElement) compassElement.style.transform = `rotate(${-state.deviceHeading}deg)`;
-        
-        wrapper.querySelector('#close-qibla-btn').addEventListener('click', handleHideQibla);
-
-        return wrapper;
-    };
-    
-    const handlePermissionsRequest = async () => {
-        state.isQiblaLoading = true;
-        state.qiblaError = null;
-        renderQibla();
-
-        if (state.isIOS) {
-            try {
-                const permission = await DeviceOrientationEvent.requestPermission();
-                if (permission !== 'granted') throw new Error('Permission denied');
-            } catch (error) {
-                state.qiblaPermissionState = 'denied';
-                state.isQiblaLoading = false;
-                renderQibla();
-                return;
-            }
-        }
-        
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                const { latitude, longitude } = position.coords;
-                state.qiblaLocation = { lat: latitude, lon: longitude };
-                state.qiblaDirection = calculateQiblaDirection(latitude, longitude);
-                
-                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&accept-language=en`)
-                    .then(res => res.json())
-                    .then(data => {
-                        state.qiblaLocation.city = data.address.city || data.address.town || data.address.village;
-                        state.qiblaLocation.country = data.address.country;
-                    })
-                    .finally(() => {
-                        state.isQiblaLoading = false;
-                        state.qiblaPermissionState = 'granted';
-                        startOrientationListener();
-                        renderQibla();
-                    });
-            },
-            (error) => {
-                state.qiblaError = t('errorLocation');
-                state.isQiblaLoading = false;
-                renderQibla();
-            }
-        );
-    };
-
-    const calculateQiblaDirection = (lat, lon) => {
-        const toRad = (deg) => deg * Math.PI / 180;
-        const latRad = toRad(lat);
-        const lonRad = toRad(lon);
-        const kaabaLatRad = toRad(KAABA_LAT);
-        const kaabaLonRad = toRad(KAABA_LON);
-
-        const y = Math.sin(kaabaLonRad - lonRad);
-        const x = Math.cos(latRad) * Math.tan(kaabaLatRad) - Math.sin(latRad) * Math.cos(kaabaLonRad - lonRad);
-        let angle = Math.atan2(y, x);
-        
-        angle = angle * 180 / Math.PI;
-        return (angle + 360) % 360;
-    };
-    
-    const handleOrientation = (event) => {
-        let heading = event.webkitCompassHeading || event.alpha;
-        if (typeof heading !== 'number') return;
-        state.deviceHeading = heading;
-        if (compassElement) {
-            compassElement.style.transform = `rotate(${-heading}deg)`;
-        }
-    };
-    
-    const stopOrientationListener = () => {
-        if (orientationListener) {
-            const eventName = 'ondeviceorientationabsolute' in window ? 'deviceorientationabsolute' : 'deviceorientation';
-            window.removeEventListener(eventName, orientationListener);
-            orientationListener = null;
-        }
-    };
-
-    const startOrientationListener = () => {
-        stopOrientationListener();
-        const eventName = 'ondeviceorientationabsolute' in window ? 'deviceorientationabsolute' : 'deviceorientation';
-        const listener = handleOrientation;
-        window.addEventListener(eventName, listener);
-        orientationListener = listener;
-    };
-
-    const handleShowQibla = () => {
-        state.isQiblaVisible = true;
-        const showQiblaBtn = container.querySelector('#show-qibla-btn');
-        if (showQiblaBtn) showQiblaBtn.disabled = true;
-        handlePermissionsRequest();
-    };
-
-    const handleHideQibla = () => {
-        state.isQiblaVisible = false;
-        stopOrientationListener();
-        const qiblaContainer = container.querySelector('#qibla-container');
-        if (qiblaContainer) qiblaContainer.innerHTML = '';
-        const showQiblaBtn = container.querySelector('#show-qibla-btn');
-        if (showQiblaBtn) showQiblaBtn.disabled = false;
-    };
-
     const cleanup = () => {
         clearInterval(clockInterval);
         document.removeEventListener('click', closeSuggestionsOnClickOutside);
-        stopOrientationListener();
     };
     
     // --- Initial setup ---

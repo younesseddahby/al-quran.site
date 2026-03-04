@@ -263,6 +263,22 @@ const loadTranslations = () => {
       currentLocation: "الموقع الحالي",
       locationPermissionDenied: "تم رفض إذن الموقع. استخدام الوضع اليدوي.",
       calculating: "جاري الحساب...",
+      // Bookmarks
+      bookmarks: "الإشارات المرجعية",
+      bookmarksTab: "المحفوظات",
+      bookmarksDescription: "الآيات والأحاديث التي قمت بحفظها",
+      bookmarkAdded: "تمت الإضافة إلى المحفوظات",
+      bookmarkRemoved: "تمت الإزالة من المحفوظات",
+      noBookmarks: "لا توجد محفوظات بعد",
+      noBookmarksDescription: "الآيات والأحاديث التي تحفظها ستظهر هنا",
+      all: "الكل",
+      // Themes
+      colorTheme: "سمة الألوان",
+      colorThemeSubtitle: "اختر سمة الألوان الأساسية للتطبيق",
+      themeClassic: "كلاسيكي",
+      themeEmerald: "زمردي",
+      themeMidnight: "ليلي",
+      themeSepia: "عتيق",
     },
     en: {
       // App
@@ -521,6 +537,22 @@ const loadTranslations = () => {
       currentLocation: "Current Location",
       locationPermissionDenied: "Location permission denied. Using manual mode.",
       calculating: "Calculating...",
+      // Bookmarks
+      bookmarks: "Bookmarks",
+      bookmarksTab: "Bookmarks",
+      bookmarksDescription: "Verses and hadiths you have saved",
+      bookmarkAdded: "Added to bookmarks",
+      bookmarkRemoved: "Removed from bookmarks",
+      noBookmarks: "No bookmarks yet",
+      noBookmarksDescription: "Verses and hadiths you bookmark will appear here",
+      all: "All",
+      // Themes
+      colorTheme: "Color Theme",
+      colorThemeSubtitle: "Select a base color theme for the app",
+      themeClassic: "Classic",
+      themeEmerald: "Emerald",
+      themeMidnight: "Midnight",
+      themeSepia: "Sepia",
     },
     id: {
       appName: "Al-Qur'an Al-Karim",

@@ -1,6 +1,6 @@
 import { createSpinner } from './Spinner.js';
 import { renderErrorState, renderSkeletonGrid } from './UI.js';
-import { CloseIcon, SkipBackwardIcon, SkipForwardIcon, SlidersHorizontalIcon, ArrowLeftIcon, ArrowRightIcon, ChevronRightIcon, MinusIcon, PlusIcon, AiIcon } from './Icons.js';
+import { CloseIcon, SkipBackwardIcon, SkipForwardIcon, SlidersHorizontalIcon, ArrowLeftIcon, ArrowRightIcon, ChevronRightIcon, MinusIcon, PlusIcon, AiIcon, BookmarkIcon, BookmarkSolidIcon } from './Icons.js';
 import { t, getCurrentLanguage } from '../i18n.js';
 import { fetchWithRetry } from '../utils/fetchUtils.js';
 
@@ -221,12 +221,19 @@ export const renderQuranReader = (container, cache, props) => {
                 container.classList.remove('quran-arabic-text');
                 container.classList.add('space-y-8');
                 
-                html = batch.map(a => `
+                html = batch.map(a => {
+                    const isBookmarked = props.bookmarks.quran.some(b => b.id === `${state.pageData.number}:${a.numberInSurah}`);
+                    return `
                     <div class="ayah-item group p-4 md:p-6 rounded-3xl border border-transparent hover:border-theme-500/20 hover:bg-theme-50/30 dark:hover:bg-theme-900/10 transition-all cursor-pointer ${state.activeAyah == a.numberInSurah ? 'bg-theme-50 dark:bg-theme-900/20 border-theme-500/30' : ''}" 
                          data-num="${a.numberInSurah}" 
                          data-ayah-number="${a.numberInSurah}">
                         <div class="flex items-start justify-between gap-6 mb-4">
-                            <span class="w-10 h-10 flex-shrink-0 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-xl text-xs font-bold text-slate-500 group-hover:bg-theme-600 group-hover:text-white transition-all">${a.numberInSurah}</span>
+                            <div class="flex items-center gap-3">
+                                <span class="w-10 h-10 flex-shrink-0 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-xl text-xs font-bold text-slate-500 group-hover:bg-theme-600 group-hover:text-white transition-all">${a.numberInSurah}</span>
+                                <button class="bookmark-ayah-btn p-2 rounded-lg hover:bg-theme-100 dark:hover:bg-theme-800 text-slate-400 hover:text-theme-600 transition-all" data-surah="${state.pageData.number}" data-ayah="${a.numberInSurah}">
+                                    ${isBookmarked ? BookmarkSolidIcon({className: "w-5 h-5 text-theme-600"}) : BookmarkIcon({className: "w-5 h-5"})}
+                                </button>
+                            </div>
                             ${displayMode !== 'translation' ? `
                                 <p class="quran-arabic-text text-right text-2xl md:text-3xl leading-loose text-slate-800 dark:text-slate-100">${a.text}</p>
                             ` : ''}
@@ -237,7 +244,7 @@ export const renderQuranReader = (container, cache, props) => {
                             </p>
                         ` : ''}
                     </div>
-                `).join('');
+                `}).join('');
             }
             
             if (index === 0) container.innerHTML = html;
@@ -428,6 +435,11 @@ export const renderQuranReader = (container, cache, props) => {
             
             <div class="pt-14 pb-20 md:pt-20 md:pb-32 max-w-7xl mx-auto px-1 md:px-4 lg:px-8 ${fontSizeClass} ${fontClass}" id="reader-scroll-container">
                 <div class="bg-white dark:bg-slate-900 rounded-xl md:rounded-[2.5rem] p-3 md:p-8 lg:p-12 shadow-xl page-texture border border-slate-100 dark:border-slate-800 transition-colors">
+                    <div class="text-center mb-4">
+                        <p class="text-[10px] font-bold text-theme-600/60 dark:text-theme-400/60 uppercase tracking-widest animate-pulse">
+                            ${t('clickAyahForTafsir') || (getCurrentLanguage() === 'ar' ? 'انقر على الآية لعرض التفسير' : 'Click on any verse to view its Tafsir')}
+                        </p>
+                    </div>
                     <div class="text-center mb-6 md:mb-12">
                          ${(s.number !== 1 && s.number !== 9) ? '<p class="font-amiri text-3xl md:text-5xl lg:text-6xl text-theme-600 dark:text-theme-400 mb-4 md:mb-10 leading-relaxed block w-full">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</p>' : ''}
                          <div class="inline-flex items-center gap-3 px-6 py-2.5 bg-slate-50 dark:bg-slate-800/50 rounded-full border border-slate-100 dark:border-slate-700/50 shadow-sm">
@@ -464,6 +476,26 @@ export const renderQuranReader = (container, cache, props) => {
             if (setReaderMode) setReaderMode(false);
         };
         contentArea.querySelector('#ayah-container').onclick = (e) => {
+            const bookmarkBtn = e.target.closest('.bookmark-ayah-btn');
+            if (bookmarkBtn) {
+                e.stopPropagation();
+                const surahNum = parseInt(bookmarkBtn.dataset.surah);
+                const ayahNum = parseInt(bookmarkBtn.dataset.ayah);
+                const surah = state.pageData;
+                const ayah = surah.ayahs.find(a => a.numberInSurah === ayahNum);
+                
+                props.toggleBookmark('quran', {
+                    id: `${surahNum}:${ayahNum}`,
+                    surahNum,
+                    ayahNum,
+                    title: `${t('surah')} ${surahNum}: ${surah.englishName}`,
+                    subtitle: `${t('ayah')} ${ayahNum}`,
+                    text: ayah.text,
+                    lang: 'ar'
+                });
+                return;
+            }
+
             const item = e.target.closest('.ayah-item');
             if (item) {
                 const ayahNum = parseInt(item.dataset.num);
@@ -530,13 +562,20 @@ export const renderQuranReader = (container, cache, props) => {
         const lang = getCurrentLanguage();
         const isAr = lang === 'ar';
 
+        const isBookmarked = props.bookmarks.quran.some(b => b.id === `${state.pageData.number}:${ayahNum}`);
+
         modal.innerHTML = `
             <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm pointer-events-auto" id="tafsir-backdrop"></div>
             <div class="panel-content w-full max-w-2xl bg-white dark:bg-slate-900 rounded-t-[2.5rem] shadow-2xl p-6 md:p-10 translate-y-0 transition-transform duration-500 pointer-events-auto max-h-[85vh] overflow-y-auto border-t border-slate-200 dark:border-slate-800">
                 <div class="w-12 h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full mx-auto mb-8"></div>
                 <div class="flex justify-between items-start mb-6">
                     <h3 class="text-xl md:text-2xl font-bold dark:text-white">${t('tafsirFor', { surahName, ayahNumber: ayahNum })}</h3>
-                    <button id="close-tafsir" class="p-2 text-slate-400">${CloseIcon()}</button>
+                    <div class="flex items-center gap-2">
+                        <button id="tafsir-bookmark-btn" class="p-2 text-slate-400 hover:text-theme-600 transition-colors">
+                            ${isBookmarked ? BookmarkSolidIcon({className: "w-6 h-6 text-theme-600"}) : BookmarkIcon({className: "w-6 h-6"})}
+                        </button>
+                        <button id="close-tafsir" class="p-2 text-slate-400">${CloseIcon()}</button>
+                    </div>
                 </div>
                 <div class="tafsir-body ${isAr ? 'text-right font-amiri' : 'text-left'} text-xl md:text-2xl leading-relaxed dark:text-slate-200" dir="${isAr ? 'rtl' : 'ltr'}">
                     ${state.loadingTafsir ? createSpinner().outerHTML : (state.tafsirData?.text || t('tafsirNotFound'))}
@@ -548,6 +587,23 @@ export const renderQuranReader = (container, cache, props) => {
             </div>`;
         
         modal.querySelector('#close-tafsir').onclick = () => setState({ isTafsirModal: false, loadingTafsir: false });
+        modal.querySelector('#tafsir-bookmark-btn')?.addEventListener('click', () => {
+            const surahNum = state.pageData.number;
+            const ayahNum = state.activeTafsirAyah.ayah;
+            const surah = state.pageData;
+            const ayah = surah.ayahs.find(a => a.numberInSurah === ayahNum);
+            
+            props.toggleBookmark('quran', {
+                id: `${surahNum}:${ayahNum}`,
+                surahNum,
+                ayahNum,
+                title: `${t('surah')} ${surahNum}: ${surah.englishName}`,
+                subtitle: `${t('ayah')} ${ayahNum}`,
+                text: ayah.text,
+                lang: 'ar'
+            });
+            renderTafsirModal(); // Re-render to update icon
+        });
         modal.querySelector('#tafsir-backdrop').onclick = () => setState({ isTafsirModal: false, loadingTafsir: false });
         modal.querySelector('#tafsir-ai-btn')?.addEventListener('click', () => {
             const currentAyah = state.pageData?.ayahs.find(a => a.numberInSurah == state.activeTafsirAyah.ayah);

@@ -1,6 +1,6 @@
 import { renderErrorState } from './UI.js';
 import { t, getCurrentLanguage } from '../i18n.js';
-import { ArrowLeftIcon, ArrowRightIcon, ShareIcon, BookOpenIcon } from './Icons.js';
+import { ArrowLeftIcon, ArrowRightIcon, ShareIcon, BookOpenIcon, BookmarkIcon, BookmarkSolidIcon } from './Icons.js';
 
 const COLLECTIONS = [
   { slug: 'bukhari', name_en: 'Sahih al-Bukhari', name_ar: 'صحيح البخاري', desc_en: 'Compiled by Imam al-Bukhari', desc_ar: 'جمعه الإمام البخاري' },
@@ -12,6 +12,7 @@ const COLLECTIONS = [
   { slug: 'malik', name_en: 'Muwatta Malik', name_ar: 'موطأ مالك', desc_en: 'Compiled by Imam Malik', desc_ar: 'جمعه الإمام مالك' },
   { slug: 'nawawi', name_en: '40 Hadith Nawawi', name_ar: 'الأربعون النووية', desc_en: 'Compiled by Imam an-Nawawi', desc_ar: 'جمعه الإمام النووي' },
   { slug: 'qudsi', name_en: 'Hadith Qudsi', name_ar: 'الأحاديث القدسية', desc_en: 'Sacred Hadiths', desc_ar: 'أحاديث قدسية' },
+  { slug: 'riyadussalihin', name_en: 'Riyad as-Salihin', name_ar: 'رياض الصالحين', desc_en: 'The Meadows of the Righteous', desc_ar: 'كتاب رياض الصالحين' },
 ];
 
 export const renderHadithViewer = (container, props = {}) => {
@@ -238,21 +239,31 @@ export const renderHadithViewer = (container, props = {}) => {
     let arabicText = hadith.arab || '';
     
     if (isAr) {
-        hadithText = arabicText || hadith.text || '';
+        hadithText = arabicText || hadith.text || hadith.hadith || '';
     } else {
         // For non-Arabic languages, show translation
-        hadithText = hadith.text || '';
+        hadithText = hadith.text || hadith.hadith || '';
         
         // If still no translation found for non-Arabic, show Arabic as fallback
-        if (!hadithText) {
+        if (!hadithText || hadithText.trim() === '') {
             hadithText = arabicText;
         }
     }
 
     const hadithNumber = hadith.hadithNumber || hadith.hadithnumber || hadith.number || '';
+    const isBookmarked = props.bookmarks.hadith.some(b => b.id === `${state.selectedCollection.slug}:${hadithNumber}`);
 
     // Clean up HTML tags if any
-    hadithText = hadithText.replace(/<[^>]*>?/gm, '');
+    if (typeof hadithText === 'string') {
+        hadithText = hadithText.replace(/<[^>]*>?/gm, '');
+    } else {
+        hadithText = String(hadithText || '');
+    }
+
+    // Final check for blank text
+    if (!hadithText || hadithText.trim() === '') {
+        hadithText = t('hadithTextNotAvailable') || 'Hadith text not available in this edition.';
+    }
 
     card.innerHTML = `
         <div class="absolute top-0 right-0 w-32 h-32 bg-theme-50 dark:bg-theme-900/10 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
@@ -266,9 +277,14 @@ export const renderHadithViewer = (container, props = {}) => {
                     <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">${t('hadith')} ${hadithNumber}</p>
                 </div>
             </div>
-            <button class="share-btn p-2.5 rounded-xl hover:bg-theme-50 dark:hover:bg-theme-900/30 text-slate-400 hover:text-theme-600 transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
-                ${ShareIcon({className: "w-5 h-5"})}
-            </button>
+            <div class="flex items-center gap-1">
+                <button class="bookmark-btn p-2.5 rounded-xl hover:bg-theme-50 dark:hover:bg-theme-900/30 text-slate-400 hover:text-theme-600 transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
+                    ${isBookmarked ? BookmarkSolidIcon({className: "w-5 h-5 text-theme-600"}) : BookmarkIcon({className: "w-5 h-5"})}
+                </button>
+                <button class="share-btn p-2.5 rounded-xl hover:bg-theme-50 dark:hover:bg-theme-900/30 text-slate-400 hover:text-theme-600 transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
+                    ${ShareIcon({className: "w-5 h-5"})}
+                </button>
+            </div>
         </div>
         <div class="relative">
             <span class="absolute -top-4 -left-2 text-6xl text-slate-100 dark:text-slate-800 font-serif opacity-50 select-none">"</span>
@@ -277,6 +293,18 @@ export const renderHadithViewer = (container, props = {}) => {
             </p>
         </div>
     `;
+
+    card.querySelector('.bookmark-btn')?.addEventListener('click', () => {
+        props.toggleBookmark('hadith', {
+            id: `${state.selectedCollection.slug}:${hadithNumber}`,
+            collection: state.selectedCollection.slug,
+            hadithNumber,
+            title: lang === 'ar' ? state.selectedCollection.name_ar : state.selectedCollection.name_en,
+            subtitle: `${t('hadith')} ${hadithNumber}`,
+            text: hadithText,
+            lang: isAr ? 'ar' : 'en'
+        });
+    });
 
     card.querySelector('.share-btn')?.addEventListener('click', () => {
         const textToShare = `${hadithText}\n\n[${state.selectedCollection.slug} - ${hadithNumber}]\n${t('appName')}`;

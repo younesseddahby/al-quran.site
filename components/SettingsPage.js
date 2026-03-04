@@ -54,7 +54,7 @@ export const resetSettingsPageState = () => {
 
 export const renderSettingsPage = (container, props) => {
     const { 
-        theme, setTheme, themeColor, setThemeColor, language, setLanguage,
+        theme, setTheme, themeColor, setThemeColor, baseTheme, setBaseTheme, language, setLanguage,
         fontSize, setFontSize,
         arabicFont, setArabicFont, surahListLayout, setSurahListLayout, surahGridCols, setSurahGridCols,
         readerDisplayMode, setReaderDisplayMode, debugMode, setDebugMode,
@@ -81,6 +81,7 @@ export const renderSettingsPage = (container, props) => {
                 <main class="max-w-4xl mx-auto p-4 sm:p-6 space-y-8">
                     ${renderSection(t('appearance'), [
                         renderThemeSelector(),
+                        renderBaseThemeSelector(),
                         renderAccentColorSelector(),
                         renderAnimationsToggle()
                     ])}
@@ -132,6 +133,27 @@ export const renderSettingsPage = (container, props) => {
             <button data-theme="light" class="theme-btn px-3 py-1.5 text-sm font-semibold rounded-md flex items-center justify-center gap-2 ${theme === 'light' ? 'bg-amber-50 dark:bg-neutral-700 text-theme-600' : 'text-ink/60 dark:text-cream/60'}">${SunIcon()} ${t('themeLight')}</button>
             <button data-theme="dark" class="theme-btn px-3 py-1.5 text-sm font-semibold rounded-md flex items-center justify-center gap-2 ${theme === 'dark' ? 'bg-amber-50 dark:bg-neutral-700 text-theme-600' : 'text-ink/60 dark:text-cream/60'}">${MoonIcon()} ${t('themeDark')}</button>
             <button data-theme="system" class="theme-btn px-3 py-1.5 text-sm font-semibold rounded-md flex items-center justify-center gap-2 ${theme === 'system' ? 'bg-amber-50 dark:bg-neutral-700 text-theme-600' : 'text-ink/60 dark:text-cream/60'}">${SystemThemeIcon()} ${t('themeSystem')}</button>
+        </div>
+    `);
+
+    const renderBaseThemeSelector = () => renderSettingItem(t('colorTheme') || 'Color Theme', t('colorThemeSubtitle') || 'Select a base color theme', `
+        <div class="grid grid-cols-2 gap-2">
+            <button data-base="classic" class="base-theme-btn p-3 rounded-xl border flex flex-col items-center gap-2 ${baseTheme === 'classic' ? 'bg-theme-50 dark:bg-theme-900/20 border-theme-500 text-theme-600' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-500'}">
+                <div class="w-full h-4 rounded bg-parchment border border-slate-200"></div>
+                <span class="text-[10px] font-bold uppercase">${t('themeClassic') || 'Classic'}</span>
+            </button>
+            <button data-base="emerald" class="base-theme-btn p-3 rounded-xl border flex flex-col items-center gap-2 ${baseTheme === 'emerald' ? 'bg-theme-50 dark:bg-theme-900/20 border-theme-500 text-theme-600' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-500'}">
+                <div class="w-full h-4 rounded bg-emerald-50 border border-emerald-200"></div>
+                <span class="text-[10px] font-bold uppercase">${t('themeEmerald') || 'Emerald'}</span>
+            </button>
+            <button data-base="midnight" class="base-theme-btn p-3 rounded-xl border flex flex-col items-center gap-2 ${baseTheme === 'midnight' ? 'bg-theme-50 dark:bg-theme-900/20 border-theme-500 text-theme-600' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-500'}">
+                <div class="w-full h-4 rounded bg-sky-50 border border-sky-200"></div>
+                <span class="text-[10px] font-bold uppercase">${t('themeMidnight') || 'Midnight'}</span>
+            </button>
+            <button data-base="sepia" class="base-theme-btn p-3 rounded-xl border flex flex-col items-center gap-2 ${baseTheme === 'sepia' ? 'bg-theme-50 dark:bg-theme-900/20 border-theme-500 text-theme-600' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-500'}">
+                <div class="w-full h-4 rounded bg-yellow-50 border border-yellow-200"></div>
+                <span class="text-[10px] font-bold uppercase">${t('themeSepia') || 'Sepia'}</span>
+            </button>
         </div>
     `);
     
@@ -228,6 +250,7 @@ export const renderSettingsPage = (container, props) => {
     const attachEventListeners = () => {
         container.querySelector('#main-back-btn')?.addEventListener('click', onBack);
         container.querySelectorAll('.theme-btn').forEach(btn => btn.addEventListener('click', () => setTheme(btn.dataset.theme)));
+        container.querySelectorAll('.base-theme-btn').forEach(btn => btn.addEventListener('click', () => setBaseTheme(btn.dataset.base)));
         container.querySelectorAll('.color-btn').forEach(btn => btn.addEventListener('click', () => setThemeColor(btn.dataset.color)));
         container.querySelector('#animations-toggle')?.addEventListener('click', () => setAnimationsEnabled(!animationsEnabled));
         container.querySelector('#debug-toggle')?.addEventListener('click', () => setDebugMode(!debugMode));
