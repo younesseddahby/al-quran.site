@@ -143,6 +143,12 @@ export const renderAdhanTimes = (container, props = {}) => {
         navigator.geolocation.getCurrentPosition(
             async (position) => {
                 const { latitude, longitude } = position.coords;
+                
+                // Fetch prayer times immediately using coordinates
+                state.location = { city: t('currentLocation') || "Current Location", country: "", lat: latitude, lon: longitude };
+                fetchPrayerTimes(state.location);
+
+                // Perform reverse geocoding in background to get city name
                 try {
                     const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&accept-language=en`);
                     const data = await res.json();
@@ -151,21 +157,23 @@ export const renderAdhanTimes = (container, props = {}) => {
                     
                     state.location = { city, country, lat: latitude, lon: longitude };
                     localStorage.setItem('prayerLocation', JSON.stringify(state.location));
-                    fetchPrayerTimes(state.location);
+                    
+                    // Update UI with city name if prayer times are already loaded
+                    if (state.prayerTimes) {
+                        render();
+                    }
                 } catch (e) {
                     console.error("Reverse geocoding error:", e);
-                    state.location = { city: "Current Location", country: "", lat: latitude, lon: longitude };
-                    fetchPrayerTimes(state.location);
                 }
             },
             (error) => {
                 console.error("Geolocation error:", error);
-                state.error = t('locationPermissionDenied');
+                state.error = t('locationPermissionDenied') || "Location permission denied.";
                 state.isAutoLocation = false;
                 state.loading = false;
                 render();
             },
-            { timeout: 10000 }
+            { timeout: 10000, enableHighAccuracy: true }
         );
     };
 
