@@ -135,7 +135,7 @@ export const renderTasbih = (container, props = {}) => {
                                     <span class="text-xs text-slate-500">${t('vibrateOnTap') || 'Vibrate on every tap'}</span>
                                 </div>
                                 <button id="haptic-toggle" class="w-12 h-6 rounded-full relative transition-colors ${state.hapticEnabled ? 'bg-theme-600' : 'bg-slate-300 dark:bg-slate-700'}">
-                                    <div class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${state.hapticEnabled ? 'translate-x-6' : ''}"></div>
+                                    <div class="absolute top-1 start-1 w-4 h-4 bg-white rounded-full transition-transform ${state.hapticEnabled ? 'ltr:translate-x-6 rtl:-translate-x-6' : ''}"></div>
                                 </button>
                             </div>
 

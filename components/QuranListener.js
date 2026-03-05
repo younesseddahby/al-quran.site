@@ -492,16 +492,36 @@ export const renderQuranListener = (container, cache, props) => {
         const handleSeek = (e) => {
              if (!audio.duration || isNaN(audio.duration)) return;
              const seekTime = parseFloat(e.target.value);
-             audio.currentTime = seekTime;
-             updateProgressUI();
+             
+             // Update UI immediately while scrubbing
+             const currentTimeEl = document.getElementById('player-current-time');
+             const progressFill = document.getElementById('progress-fill');
+             if (currentTimeEl) currentTimeEl.textContent = formatTime(seekTime);
+             if (progressFill) {
+                const percent = (seekTime / audio.duration) * 100;
+                progressFill.style.width = `${percent}%`;
+             }
+
+             if (!isScrubbing) {
+                audio.currentTime = seekTime;
+             }
+        };
+
+        const handleSeekEnd = (e) => {
+            if (!audio.duration || isNaN(audio.duration)) return;
+            const seekTime = parseFloat(e.target.value);
+            audio.currentTime = seekTime;
+            isScrubbing = false;
+            updateProgressUI();
         };
 
         if (progressBar) {
             progressBar.addEventListener('input', handleSeek);
+            progressBar.addEventListener('change', handleSeekEnd);
             progressBar.addEventListener('mousedown', () => { isScrubbing = true; });
-            progressBar.addEventListener('mouseup', () => { isScrubbing = false; });
+            progressBar.addEventListener('mouseup', () => { /* handled by change */ });
             progressBar.addEventListener('touchstart', () => { isScrubbing = true; });
-            progressBar.addEventListener('touchend', () => { isScrubbing = false; });
+            progressBar.addEventListener('touchend', () => { /* handled by change */ });
         }
 
         const muteBtn = contentContainer.querySelector('#player-mute-btn');

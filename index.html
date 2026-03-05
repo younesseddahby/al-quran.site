@@ -152,6 +152,8 @@
       .font-size-medium { --arabic-size: 1.8rem; --line-height: 2.8; }
       .font-size-large { --arabic-size: 2.2rem; --line-height: 3.2; }
       .font-size-x-large { --arabic-size: 2.8rem; --line-height: 3.8; }
+      .font-size-xx-large { --arabic-size: 3.5rem; --line-height: 4.5; }
+      .font-size-xxx-large { --arabic-size: 4.5rem; --line-height: 5.5; }
 
       @media (min-width: 768px) {
         :root {
@@ -163,6 +165,8 @@
         .font-size-medium { --arabic-size: 2.2rem; --line-height: 3.2; }
         .font-size-large { --arabic-size: 2.8rem; --line-height: 3.8; }
         .font-size-x-large { --arabic-size: 3.5rem; --line-height: 4.5; }
+        .font-size-xx-large { --arabic-size: 4.5rem; --line-height: 5.5; }
+        .font-size-xxx-large { --arabic-size: 6rem; --line-height: 7; }
       }
 
       .quran-arabic-text {
@@ -220,7 +224,7 @@
     <script>
       (function() {
         const theme = localStorage.getItem('theme') || 'system';
-        const lang = localStorage.getItem('language') || 'ar';
+        const lang = localStorage.getItem('language') || 'en';
         const fontSize = localStorage.getItem('fontSize') || 'medium';
         const arabicFont = localStorage.getItem('arabicFont') || 'noto_naskh_arabic';
         

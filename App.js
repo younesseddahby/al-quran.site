@@ -8,7 +8,10 @@ import { renderHisnMuslim } from './components/HisnMuslim.js';
 import { renderTasbih } from './components/Tasbih.js';
 import { renderSeerah } from './components/Seerah.js';
 import { renderBookmarks } from './components/Bookmarks.js';
-import { QuranIcon, HadithIcon, PrayerIcon, SettingsIcon, AiIcon, ShieldIcon, BeadsIcon, ArrowLeftIcon, ArrowRightIcon, BookOpenIcon, BookmarkIcon } from './components/Icons.js';
+import { 
+    HomeIcon, QuranIcon, HadithIcon, PrayerIcon, SettingsIcon, AiIcon, ShieldIcon, BeadsIcon, 
+    ArrowLeftIcon, ArrowRightIcon, BookOpenIcon, BookmarkIcon 
+} from './components/Icons.js';
 import { THEME_COLORS } from './theme.js';
 import { initI18n, t, setLanguage as setI18nLanguage } from './i18n.js';
 
@@ -25,10 +28,9 @@ const App = (rootElement) => {
         theme: localStorage.getItem('theme') || 'system',
         themeColor: localStorage.getItem('themeColor') || 'sapphire',
         baseTheme: localStorage.getItem('baseTheme') || 'classic',
-        language: localStorage.getItem('language') || 'ar',
+        language: localStorage.getItem('language') || 'en',
         fontSize: localStorage.getItem('fontSize') || 'small',
         arabicFont: localStorage.getItem('arabicFont') || 'noto_naskh_arabic',
-        selectedReciter: localStorage.getItem('selectedReciter') || 'ar.alafasy',
         animationsEnabled: localStorage.getItem('animationsEnabled') !== 'false',
         surahListLayout: localStorage.getItem('surahListLayout') || 'grid',
         surahGridCols: localStorage.getItem('surahGridCols') || '3',
@@ -54,7 +56,7 @@ const App = (rootElement) => {
     let lastRenderedTab = null;
 
     const getTabs = () => [
-        { id: 'home', label: t('home'), icon: (p) => `<svg class="${p.className}" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h7.5" /></svg>`, mobileLabel: t('home') },
+        { id: 'home', label: t('home'), icon: HomeIcon, mobileLabel: t('home') },
         { id: 'quran', label: t('quran'), icon: QuranIcon, mobileLabel: t('quran') },
         { id: 'hadith', label: t('hadith'), icon: HadithIcon, mobileLabel: t('hadithTab') },
         { id: 'hisn', label: t('hisnMuslim'), icon: ShieldIcon, mobileLabel: t('adhkarTab') },
@@ -73,7 +75,7 @@ const App = (rootElement) => {
         root.classList.remove('theme-classic', 'theme-emerald', 'theme-midnight', 'theme-sepia');
         root.classList.add(`theme-${state.baseTheme}`);
         
-        root.className = `${effectiveTheme} theme-${state.baseTheme}`;
+        root.className = `${effectiveTheme} theme-${state.baseTheme} ${state.arabicFont}`;
         if (!state.animationsEnabled) root.classList.add('animations-disabled');
         
         const colors = THEME_COLORS[state.themeColor] || THEME_COLORS.sapphire;
@@ -218,7 +220,6 @@ const App = (rootElement) => {
             setReaderDisplayMode: (m) => { state.readerDisplayMode = m; localStorage.setItem('readerDisplayMode', m); render(); },
             setDebugMode: (d) => { state.debugMode = d; localStorage.setItem('debugMode', d); render(); },
             setAnimationsEnabled: (e) => { state.animationsEnabled = e; applyStyles(); localStorage.setItem('animationsEnabled', e); render(); },
-            setSelectedReciter: (r) => { state.selectedReciter = r; localStorage.setItem('selectedReciter', r); render(); },
             toggleBookmark: (type, item) => {
                 const bookmarks = { ...state.bookmarks };
                 const list = bookmarks[type];

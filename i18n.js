@@ -1,7 +1,7 @@
 
 
 
-let currentLanguage = 'ar';
+let currentLanguage = 'en';
 let translations = {};
 
 const loadTranslations = () => {
@@ -74,6 +74,8 @@ const loadTranslations = () => {
       fontSizeMedium: "متوسط",
       fontSizeLarge: "كبير",
       fontSizeXLarge: "كبير جدًا",
+      fontSizeXXLarge: "ضخم",
+      fontSizeXXXLarge: "ضخم جدًا",
       arabicFont: "الخط العربي",
       arabicFontSubtitle: "اختر الخط للنصوص القرآنية",
       font_amiri: "أميري",
@@ -122,6 +124,17 @@ const loadTranslations = () => {
       noRecitersFound: "لم يتم العثور على قراء.",
       madeWithLove: "صنع بـ ❤️ بواسطة يونس الذهبي",
       aboutDeveloper: "عن المطور",
+      customizeExperience: "خصص تجربتك",
+      sections: "الأقسام",
+      resetToDefaults: "إعادة الضبط",
+      confirmResetSettings: "هل أنت متأكد من إعادة ضبط جميع الإعدادات؟",
+      accentColorSubtitle: "اختر لون التمييز المفضل لديك",
+      appLanguageSubtitle: "اختر لغة التطبيق المفضلة",
+      readerSettingsSubtitle: "تكوين كيفية عرض القرآن",
+      arabicFontSubtitle: "اختر خطاً للنص العربي",
+      fontSizeSubtitle: "ضبط حجم النص لسهولة القراءة",
+      grid: "شبكة",
+      list: "قائمة",
       surahListLayout: "تخطيط قائمة السور",
       surahListLayoutSubtitle: "عرض السور في شبكة أو قائمة",
       surahGridCols: "أعمدة شبكة السور",
@@ -279,6 +292,10 @@ const loadTranslations = () => {
       themeEmerald: "زمردي",
       themeMidnight: "ليلي",
       themeSepia: "عتيق",
+      colorViolet: "بنفسجي",
+      colorRose: "وردي",
+      colorOrange: "برتقالي",
+      colorSlate: "رمادي",
     },
     en: {
       // App
@@ -348,6 +365,8 @@ const loadTranslations = () => {
       fontSizeMedium: "Medium",
       fontSizeLarge: "Large",
       fontSizeXLarge: "X-Large",
+      fontSizeXXLarge: "XX-Large",
+      fontSizeXXXLarge: "XXX-Large",
       arabicFont: "Arabic Font",
       arabicFontSubtitle: "Choose the font for Quranic texts",
       font_amiri: "Amiri",
@@ -396,6 +415,17 @@ const loadTranslations = () => {
       noRecitersFound: "No reciters found.",
       madeWithLove: "Made with ❤️ by Youness Eddahby",
       aboutDeveloper: "About the Developer",
+      customizeExperience: "Customize your experience",
+      sections: "Sections",
+      resetToDefaults: "Reset to Defaults",
+      confirmResetSettings: "Are you sure you want to reset all settings to default?",
+      accentColorSubtitle: "Choose your favorite highlight color",
+      appLanguageSubtitle: "Select your preferred app language",
+      readerSettingsSubtitle: "Configure how the Quran is displayed",
+      arabicFontSubtitle: "Choose a font for Arabic text",
+      fontSizeSubtitle: "Adjust text size for better readability",
+      grid: "Grid",
+      list: "List",
       surahListLayout: "Surah List Layout",
       surahListLayoutSubtitle: "Display surahs in a grid or a list",
       surahGridCols: "Surah Grid Columns",
@@ -553,6 +583,10 @@ const loadTranslations = () => {
       themeEmerald: "Emerald",
       themeMidnight: "Midnight",
       themeSepia: "Sepia",
+      colorViolet: "Violet",
+      colorRose: "Rose",
+      colorOrange: "Orange",
+      colorSlate: "Slate",
     },
     id: {
       appName: "Al-Qur'an Al-Karim",

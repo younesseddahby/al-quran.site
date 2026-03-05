@@ -1,9 +1,8 @@
 import { 
     CloseIcon, SunIcon, MoonIcon, SystemThemeIcon, FacebookIcon, InstagramIcon, TelegramIcon, XIcon, WhatsappIcon, EmailIcon, UserIcon,
-    CheckIcon, GridViewIcon, ListViewIcon, ArrowLeftIcon, ArrowRightIcon
+    CheckIcon, GridViewIcon, ListViewIcon, ArrowLeftIcon, ArrowRightIcon, BookOpenIcon
 } from './Icons.js';
 import { t, getCurrentLanguage } from '../i18n.js';
-import { RECITERS } from './QuranData.js';
 
 const colors = [
     { name: 'amber', bgClass: 'bg-amber-500', ringClass: 'ring-amber-500' },
@@ -58,7 +57,6 @@ export const renderSettingsPage = (container, props) => {
         fontSize, setFontSize,
         arabicFont, setArabicFont, surahListLayout, setSurahListLayout, surahGridCols, setSurahGridCols,
         readerDisplayMode, setReaderDisplayMode, debugMode, setDebugMode,
-        selectedReciter, setSelectedReciter,
         animationsEnabled, setAnimationsEnabled, onBack 
     } = props;
 
@@ -67,60 +65,129 @@ export const renderSettingsPage = (container, props) => {
         const BackIcon = isRtl ? ArrowRightIcon : ArrowLeftIcon;
 
         container.innerHTML = `
-            <div class="fade-in">
-                <header class="flex items-center justify-between p-4 sticky top-0 bg-parchment/80 dark:bg-night/80 backdrop-blur-xl z-10 border-b border-line dark:border-line-dark">
-                    <div class="flex items-center gap-3">
-                        <button id="main-back-btn" aria-label="Back" class="p-2 -ml-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-900 dark:text-white transition-all active:scale-90 flex items-center gap-1">
-                            ${BackIcon({className: "w-6 h-6"})}
-                            <span class="hidden sm:inline text-sm font-bold">${t('back')}</span>
-                        </button>
-                        <h1 class="text-2xl font-bold font-display text-ink dark:text-cream">${t('settings')}</h1>
+            <div class="fade-in min-h-screen bg-slate-50 dark:bg-slate-950 pb-32">
+                <header class="sticky top-0 z-30 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800">
+                    <div class="max-w-5xl mx-auto px-4 h-16 md:h-20 flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <button id="main-back-btn" class="p-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all active:scale-95 text-slate-600 dark:text-slate-300">
+                                ${BackIcon({className: "w-6 h-6"})}
+                            </button>
+                            <div>
+                                <h1 class="text-xl md:text-2xl font-bold text-slate-900 dark:text-white">${t('settings')}</h1>
+                                <p class="text-[10px] md:text-xs text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider">${t('customizeExperience') || 'Customize your experience'}</p>
+                            </div>
+                        </div>
                     </div>
                 </header>
- 
-                <main class="max-w-4xl mx-auto p-4 sm:p-6 space-y-8">
-                    ${renderSection(t('appearance'), [
-                        renderThemeSelector(),
-                        renderBaseThemeSelector(),
-                        renderAccentColorSelector(),
-                        renderAnimationsToggle()
-                    ])}
-                    ${renderSection(t('languageAndText'), [
-                        renderLanguageSelector(),
-                        language !== 'ar' ? renderReaderSettingsSelector() : ''
-                    ])}
-                    ${renderSection(t('uiSettings'), [
-                        renderSurahLayoutSelector(),
-                        renderDebugToggle()
-                    ])}
-                    ${renderSection(t('playerSettings'), [
-                        renderReciterSelector()
-                    ])}
-                    ${renderSection(t('about'), [
-                        renderAboutInfo()
-                    ])}
+
+                <main class="max-w-5xl mx-auto px-4 py-8 md:py-12">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                        <!-- Left Column: Navigation/Sections -->
+                        <div class="lg:col-span-4 space-y-4">
+                            <div class="bg-white dark:bg-slate-900 rounded-[2rem] p-6 border border-slate-200 dark:border-slate-800 shadow-sm sticky top-28">
+                                <h2 class="text-sm font-bold text-slate-400 uppercase tracking-[0.2em] mb-6 px-2">${t('sections') || 'Sections'}</h2>
+                                <nav class="space-y-1">
+                                    ${renderNavButton('appearance', t('appearance'), SunIcon({className: "w-5 h-5"}))}
+                                    ${renderNavButton('language', t('languageAndText'), BookOpenIcon({className: "w-5 h-5"}))}
+                                    ${renderNavButton('interface', t('uiSettings'), GridViewIcon({className: "w-5 h-5"}))}
+                                    ${renderNavButton('about', t('about'), UserIcon({className: "w-5 h-5"}))}
+                                </nav>
+                                <div class="mt-8 pt-8 border-t border-slate-100 dark:border-slate-800">
+                                    <button id="reset-settings-btn" class="w-full flex items-center justify-center gap-2 p-4 rounded-2xl bg-rose-50 dark:bg-rose-900/10 text-rose-600 dark:text-rose-400 font-bold text-sm hover:bg-rose-100 dark:hover:bg-rose-900/20 transition-all active:scale-95">
+                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                                        ${t('resetToDefaults') || 'Reset to Defaults'}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Content -->
+                        <div class="lg:col-span-8 space-y-10">
+                            <!-- Appearance Section -->
+                            <section id="section-appearance" class="scroll-mt-28 space-y-6">
+                                <div class="flex items-center gap-3 px-2">
+                                    <div class="w-10 h-10 rounded-2xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 dark:text-amber-400 shadow-sm">
+                                        ${SunIcon({className: "w-6 h-6"})}
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-slate-900 dark:text-white">${t('appearance')}</h2>
+                                </div>
+                                <div class="bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm divide-y divide-slate-100 dark:divide-slate-800">
+                                    ${renderSettingItem(t('theme'), t('themeSettingsSubtitle'), renderThemeSelector())}
+                                    ${renderSettingItem(t('colorTheme'), t('colorThemeSubtitle'), renderBaseThemeSelector())}
+                                    ${renderSettingItem(t('accentColor'), t('accentColorSubtitle') || 'Choose your favorite highlight color', renderAccentColorSelector())}
+                                    ${renderSettingItem(t('interfaceAnimations'), t('interfaceAnimationsSubtitle'), renderAnimationsToggle())}
+                                </div>
+                            </section>
+
+                            <!-- Language & Text Section -->
+                            <section id="section-language" class="scroll-mt-28 space-y-6">
+                                <div class="flex items-center gap-3 px-2">
+                                    <div class="w-10 h-10 rounded-2xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-sm">
+                                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" /></svg>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-slate-900 dark:text-white">${t('languageAndText')}</h2>
+                                </div>
+                                <div class="bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm divide-y divide-slate-100 dark:divide-slate-800">
+                                    ${renderSettingItem(t('language'), t('appLanguageSubtitle') || 'Select your preferred app language', renderLanguageSelector())}
+                                    ${language !== 'ar' ? renderSettingItem(t('readerSettings'), t('readerSettingsSubtitle') || 'Configure how the Quran is displayed', renderReaderSettingsSelector()) : ''}
+                                    ${renderSettingItem(t('arabicFont'), t('arabicFontSubtitle') || 'Choose a font for Arabic text', renderArabicFontSelector())}
+                                    ${renderSettingItem(t('fontSize'), t('fontSizeSubtitle') || 'Adjust text size for better readability', renderFontSizeSelector())}
+                                </div>
+                            </section>
+
+                            <!-- Interface Section -->
+                            <section id="section-interface" class="scroll-mt-28 space-y-6">
+                                <div class="flex items-center gap-3 px-2">
+                                    <div class="w-10 h-10 rounded-2xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-sm">
+                                        ${GridViewIcon({className: "w-6 h-6"})}
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-slate-900 dark:text-white">${t('uiSettings')}</h2>
+                                </div>
+                                <div class="bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm divide-y divide-slate-100 dark:divide-slate-800">
+                                    <div class="p-6 md:p-8">
+                                        <h4 class="font-bold text-slate-900 dark:text-white mb-4">${t('surahListLayout')}</h4>
+                                        ${renderSurahLayoutSelector()}
+                                    </div>
+                                    ${renderSettingItem('Debug Mode', 'Show technical details for troubleshooting', renderDebugToggle())}
+                                </div>
+                            </section>
+
+                            <!-- About Section -->
+                            <section id="section-about" class="scroll-mt-28 space-y-6">
+                                <div class="flex items-center gap-3 px-2">
+                                    <div class="w-10 h-10 rounded-2xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 dark:text-purple-400 shadow-sm">
+                                        ${UserIcon({className: "w-6 h-6"})}
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-slate-900 dark:text-white">${t('about')}</h2>
+                                </div>
+                                <div class="bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm p-6 md:p-10">
+                                    ${renderAboutInfo()}
+                                </div>
+                            </section>
+                        </div>
+                    </div>
                 </main>
             </div>
         `;
         attachEventListeners();
     };
 
-    const renderSection = (title, contentItems) => `
-        <section class="space-y-4">
-            <h2 class="text-xl font-bold font-display text-ink dark:text-cream border-b border-line dark:border-line-dark pb-2">${title}</h2>
-            <div class="space-y-4">
-                ${contentItems.join('')}
-            </div>
-        </section>
+    const renderNavButton = (id, label, icon) => `
+        <button data-section="${id}" class="section-nav-btn w-full flex items-center gap-3 p-3.5 rounded-2xl transition-all hover:bg-slate-50 dark:hover:bg-slate-800/50 text-slate-600 dark:text-slate-400 font-bold text-sm">
+            <span class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800 group-hover:bg-white dark:group-hover:bg-slate-700 transition-colors shadow-sm">
+                ${icon}
+            </span>
+            ${label}
+        </button>
     `;
-    
+
     const renderSettingItem = (title, subtitle, controlHTML) => `
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-parchment dark:bg-night rounded-lg border border-line dark:border-line-dark gap-4">
-            <div>
-                <h4 class="font-semibold text-ink dark:text-cream">${title}</h4>
-                <p class="text-sm text-ink/70 dark:text-cream/70">${subtitle}</p>
+        <div class="p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div class="min-w-0 flex-grow">
+                <h4 class="font-bold text-slate-900 dark:text-white text-base md:text-lg">${title}</h4>
+                ${subtitle ? `<p class="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-1 font-medium">${subtitle}</p>` : ''}
             </div>
-            <div>
+            <div class="flex-shrink-0">
                 ${controlHTML}
             </div>
         </div>
@@ -128,161 +195,188 @@ export const renderSettingsPage = (container, props) => {
 
     // --- Component HTML Generators ---
     
-    const renderThemeSelector = () => renderSettingItem(t('theme'), t('themeSettingsSubtitle'), `
-        <div class="flex items-center bg-black/5 dark:bg-white/5 p-1 rounded-lg">
-            <button data-theme="light" class="theme-btn px-3 py-1.5 text-sm font-semibold rounded-md flex items-center justify-center gap-2 ${theme === 'light' ? 'bg-amber-50 dark:bg-neutral-700 text-theme-600' : 'text-ink/60 dark:text-cream/60'}">${SunIcon()} ${t('themeLight')}</button>
-            <button data-theme="dark" class="theme-btn px-3 py-1.5 text-sm font-semibold rounded-md flex items-center justify-center gap-2 ${theme === 'dark' ? 'bg-amber-50 dark:bg-neutral-700 text-theme-600' : 'text-ink/60 dark:text-cream/60'}">${MoonIcon()} ${t('themeDark')}</button>
-            <button data-theme="system" class="theme-btn px-3 py-1.5 text-sm font-semibold rounded-md flex items-center justify-center gap-2 ${theme === 'system' ? 'bg-amber-50 dark:bg-neutral-700 text-theme-600' : 'text-ink/60 dark:text-cream/60'}">${SystemThemeIcon()} ${t('themeSystem')}</button>
+    const renderThemeSelector = () => `
+        <div class="flex items-center bg-slate-100 dark:bg-slate-800 p-1.5 rounded-[1.25rem] shadow-inner">
+            <button data-theme="light" class="theme-btn flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${theme === 'light' ? 'bg-white dark:bg-slate-700 text-theme-600 shadow-md' : 'text-slate-500'}">
+                ${SunIcon({className: "w-4 h-4"})} <span class="text-xs font-bold">${t('light')}</span>
+            </button>
+            <button data-theme="dark" class="theme-btn flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${theme === 'dark' ? 'bg-white dark:bg-slate-700 text-theme-600 shadow-md' : 'text-slate-500'}">
+                ${MoonIcon({className: "w-4 h-4"})} <span class="text-xs font-bold">${t('dark')}</span>
+            </button>
+            <button data-theme="system" class="theme-btn flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${theme === 'system' ? 'bg-white dark:bg-slate-700 text-theme-600 shadow-md' : 'text-slate-500'}">
+                ${SystemThemeIcon({className: "w-4 h-4"})} <span class="text-xs font-bold">${t('system')}</span>
+            </button>
         </div>
-    `);
+    `;
 
-    const renderBaseThemeSelector = () => renderSettingItem(t('colorTheme') || 'Color Theme', t('colorThemeSubtitle') || 'Select a base color theme', `
-        <div class="grid grid-cols-2 gap-2">
-            <button data-base="classic" class="base-theme-btn p-3 rounded-xl border flex flex-col items-center gap-2 ${baseTheme === 'classic' ? 'bg-theme-50 dark:bg-theme-900/20 border-theme-500 text-theme-600' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-500'}">
-                <div class="w-full h-4 rounded bg-parchment border border-slate-200"></div>
-                <span class="text-[10px] font-bold uppercase">${t('themeClassic') || 'Classic'}</span>
-            </button>
-            <button data-base="emerald" class="base-theme-btn p-3 rounded-xl border flex flex-col items-center gap-2 ${baseTheme === 'emerald' ? 'bg-theme-50 dark:bg-theme-900/20 border-theme-500 text-theme-600' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-500'}">
-                <div class="w-full h-4 rounded bg-emerald-50 border border-emerald-200"></div>
-                <span class="text-[10px] font-bold uppercase">${t('themeEmerald') || 'Emerald'}</span>
-            </button>
-            <button data-base="midnight" class="base-theme-btn p-3 rounded-xl border flex flex-col items-center gap-2 ${baseTheme === 'midnight' ? 'bg-theme-50 dark:bg-theme-900/20 border-theme-500 text-theme-600' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-500'}">
-                <div class="w-full h-4 rounded bg-sky-50 border border-sky-200"></div>
-                <span class="text-[10px] font-bold uppercase">${t('themeMidnight') || 'Midnight'}</span>
-            </button>
-            <button data-base="sepia" class="base-theme-btn p-3 rounded-xl border flex flex-col items-center gap-2 ${baseTheme === 'sepia' ? 'bg-theme-50 dark:bg-theme-900/20 border-theme-500 text-theme-600' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-500'}">
-                <div class="w-full h-4 rounded bg-yellow-50 border border-yellow-200"></div>
-                <span class="text-[10px] font-bold uppercase">${t('themeSepia') || 'Sepia'}</span>
-            </button>
-        </div>
-    `);
+    const renderBaseThemeSelector = () => `
+        <select class="base-theme-select bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white text-sm font-bold py-3 px-5 rounded-2xl border-none focus:ring-2 focus:ring-theme-500 shadow-sm min-w-[160px]">
+            <option value="classic" ${baseTheme === 'classic' ? 'selected' : ''}>✨ ${t('themeClassic')}</option>
+            <option value="emerald" ${baseTheme === 'emerald' ? 'selected' : ''}>🌿 ${t('themeEmerald')}</option>
+            <option value="midnight" ${baseTheme === 'midnight' ? 'selected' : ''}>🌙 ${t('themeMidnight')}</option>
+            <option value="sepia" ${baseTheme === 'sepia' ? 'selected' : ''}>📜 ${t('themeSepia')}</option>
+        </select>
+    `;
     
-    const renderAccentColorSelector = () => renderSettingItem(t('accentColor'), t('themeSettingsSubtitle'), `
-        <div class="flex gap-4">
-            ${colors.map(color => `
-                <button data-color="${color.name}" aria-label="Set accent color to ${color.name}" class="color-btn w-8 h-8 rounded-full ${color.bgClass} flex items-center justify-center transition-transform transform hover:scale-110 focus:outline-none ${themeColor === color.name ? `ring-2 ring-offset-2 ring-offset-parchment dark:ring-offset-night ${color.ringClass}` : ''}">
-                    ${themeColor === color.name ? CheckIcon() : ''}
+    const renderAccentColorSelector = () => {
+        const availableColors = [
+            { name: 'amber', bg: 'bg-amber-500' },
+            { name: 'ruby', bg: 'bg-rose-500' },
+            { name: 'sapphire', bg: 'bg-blue-500' },
+            { name: 'jade', bg: 'bg-emerald-500' },
+            { name: 'violet', bg: 'bg-violet-500' },
+            { name: 'rose', bg: 'bg-rose-500' },
+            { name: 'orange', bg: 'bg-orange-500' },
+            { name: 'slate', bg: 'bg-slate-500' }
+        ];
+        return `
+            <div class="flex flex-wrap items-center justify-end gap-3 max-w-[200px]">
+                ${availableColors.map(c => `
+                    <button data-color="${c.name}" class="color-btn w-8 h-8 rounded-full ${c.bg} ring-offset-4 dark:ring-offset-slate-900 ${themeColor === c.name ? 'ring-2 ring-slate-400 scale-110 shadow-lg' : 'hover:scale-110'} transition-all active:scale-90"></button>
+                `).join('')}
+            </div>
+        `;
+    };
+
+    const renderAnimationsToggle = () => `
+        <button id="animations-toggle" class="w-14 h-8 rounded-full transition-all relative ${animationsEnabled ? 'bg-theme-600 shadow-lg shadow-theme-500/20' : 'bg-slate-300 dark:bg-slate-700'}">
+            <div class="absolute top-1 start-1 w-6 h-6 rounded-full bg-white transition-transform ${animationsEnabled ? 'ltr:translate-x-6 rtl:-translate-x-6' : ''} shadow-sm"></div>
+        </button>
+    `;
+
+    const renderDebugToggle = () => `
+        <button id="debug-toggle" class="w-14 h-8 rounded-full transition-all relative ${debugMode ? 'bg-theme-600 shadow-lg shadow-theme-500/20' : 'bg-slate-300 dark:bg-slate-700'}">
+            <div class="absolute top-1 start-1 w-6 h-6 rounded-full bg-white transition-transform ${debugMode ? 'ltr:translate-x-6 rtl:-translate-x-6' : ''} shadow-sm"></div>
+        </button>
+    `;
+    
+    const renderLanguageSelector = () => `
+        <div class="grid grid-cols-2 gap-2 bg-slate-100 dark:bg-slate-800 p-1.5 rounded-[1.25rem]">
+            ${['ar', 'en', 'id', 'tr'].map(l => `
+                <button data-lang="${l}" class="lang-btn px-4 py-2.5 rounded-xl text-xs font-bold transition-all ${language === l ? 'bg-white dark:bg-slate-700 text-theme-600 shadow-md' : 'text-slate-500'}">
+                    ${l === 'ar' ? 'العربية' : l === 'en' ? 'English' : l === 'id' ? 'Indonesia' : 'Türkçe'}
                 </button>
             `).join('')}
         </div>
-    `);
+    `;
 
-    const renderAnimationsToggle = () => renderSettingItem(t('interfaceAnimations'), t('interfaceAnimationsSubtitle'), `
-        <button id="animations-toggle" role="switch" aria-checked="${animationsEnabled}" class="${animationsEnabled ? 'bg-theme-600' : 'bg-neutral-300 dark:bg-neutral-600'} relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out">
-            <span class="${animationsEnabled ? 'translate-x-5 rtl:-translate-x-5' : 'translate-x-0'} pointer-events-none h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"></span>
-        </button>
-    `);
-
-    const renderDebugToggle = () => renderSettingItem('Debug Mode', 'Show technical details in error messages', `
-        <button id="debug-toggle" role="switch" aria-checked="${debugMode}" class="${debugMode ? 'bg-theme-600' : 'bg-neutral-300 dark:bg-neutral-600'} relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out">
-            <span class="${debugMode ? 'translate-x-5 rtl:-translate-x-5' : 'translate-x-0'} pointer-events-none h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"></span>
-        </button>
-    `);
-    
-    const renderLanguageSelector = () => renderSettingItem(t('language'), '', `
-        <div class="flex flex-wrap items-center bg-black/5 dark:bg-white/5 p-1 rounded-lg gap-1">
-           <button data-lang="en" class="lang-btn px-3 py-1.5 text-sm font-semibold rounded-md ${language === 'en' ? 'bg-amber-50 dark:bg-neutral-700 text-theme-600' : 'text-ink/60 dark:text-cream/60'}">English</button>
-           <button data-lang="ar" class="lang-btn px-3 py-1.5 text-sm font-semibold rounded-md ${language === 'ar' ? 'bg-amber-50 dark:bg-neutral-700 text-theme-600' : 'text-ink/60 dark:text-cream/60'}">العربية</button>
-           <button data-lang="id" class="lang-btn px-3 py-1.5 text-sm font-semibold rounded-md ${language === 'id' ? 'bg-amber-50 dark:bg-neutral-700 text-theme-600' : 'text-ink/60 dark:text-cream/60'}">Indonesia</button>
-           <button data-lang="tr" class="lang-btn px-3 py-1.5 text-sm font-semibold rounded-md ${language === 'tr' ? 'bg-amber-50 dark:bg-neutral-700 text-theme-600' : 'text-ink/60 dark:text-cream/60'}">Türkçe</button>
+    const renderReaderSettingsSelector = () => `
+        <div class="flex items-center bg-slate-100 dark:bg-slate-800 p-1.5 rounded-[1.25rem]">
+            <button data-mode="translation" class="mode-btn px-5 py-2.5 text-xs font-bold rounded-xl transition-all ${readerDisplayMode === 'translation' ? 'bg-white dark:bg-slate-700 text-theme-600 shadow-md' : 'text-slate-500'}">${t('translationOnly')}</button>
+            <button data-mode="both" class="mode-btn px-5 py-2.5 text-xs font-bold rounded-xl transition-all ${readerDisplayMode === 'both' ? 'bg-white dark:bg-slate-700 text-theme-600 shadow-md' : 'text-slate-500'}">${t('showBoth')}</button>
         </div>
-    `);
+    `;
 
-    const renderReaderSettingsSelector = () => renderSettingItem(t('readerSettings'), '', `
-        <div class="flex items-center bg-black/5 dark:bg-white/5 p-1 rounded-lg">
-            <button data-mode="translation" class="mode-btn px-3 py-1.5 text-sm font-semibold rounded-md ${readerDisplayMode === 'translation' ? 'bg-amber-50 dark:bg-neutral-700 text-theme-600' : 'text-ink/60 dark:text-cream/60'}">${t('readOnlyTranslation')}</button>
-            <button data-mode="both" class="mode-btn px-3 py-1.5 text-sm font-semibold rounded-md ${readerDisplayMode === 'both' ? 'bg-amber-50 dark:bg-neutral-700 text-theme-600' : 'text-ink/60 dark:text-cream/60'}">${t('readArabicTranslation')}</button>
-        </div>
-    `);
+    const renderArabicFontSelector = () => `
+        <select class="arabic-font-select bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white text-sm font-bold py-3 px-5 rounded-2xl border-none focus:ring-2 focus:ring-theme-500 shadow-sm min-w-[200px]">
+            ${getArabicFonts().map(f => `<option value="${f.id}" ${arabicFont === f.id ? 'selected' : ''}>${f.name}</option>`).join('')}
+        </select>
+    `;
 
-
-    const renderSurahLayoutSelector = () => {
-       const gridColsSelector = surahListLayout === 'grid' ? `
-            <div class="mt-4 pt-4 border-t border-line dark:border-line-dark flex items-center justify-between">
-                <p class="text-sm text-ink/70 dark:text-cream/70">${t('surahGridColsSubtitle')}</p>
-                <div class="flex items-center bg-black/5 dark:bg-white/5 p-1 rounded-lg">
-                    <button data-cols="2" class="grid-cols-btn flex-1 py-1 px-3 text-sm font-semibold rounded-md ${surahGridCols === '2' ? 'bg-amber-50 dark:bg-neutral-700 text-theme-600' : 'text-ink/60 dark:text-cream/60'}">2</button>
-                    <button data-cols="3" class="grid-cols-btn flex-1 py-1 px-3 text-sm font-semibold rounded-md ${surahGridCols === '3' ? 'bg-amber-50 dark:bg-neutral-700 text-theme-600' : 'text-ink/60 dark:text-cream/60'}">3</button>
-                    <button data-cols="4" class="grid-cols-btn flex-1 py-1 px-3 text-sm font-semibold rounded-md ${surahGridCols === '4' ? 'bg-amber-50 dark:bg-neutral-700 text-theme-600' : 'text-ink/60 dark:text-cream/60'}">4</button>
-                </div>
+    const renderFontSizeSelector = () => {
+        const sizes = [
+            { id: 'x-small', label: 'XS' },
+            { id: 'small', label: 'S' },
+            { id: 'medium', label: 'M' },
+            { id: 'large', label: 'L' },
+            { id: 'x-large', label: 'XL' },
+            { id: 'xx-large', label: '2XL' },
+            { id: 'xxx-large', label: '3XL' }
+        ];
+        return `
+            <div class="flex items-center bg-slate-100 dark:bg-slate-800 p-1.5 rounded-[1.25rem]">
+                ${sizes.map(s => `
+                    <button data-size="${s.id}" class="font-size-btn w-10 h-10 flex items-center justify-center rounded-xl text-[10px] font-bold transition-all ${fontSize === s.id ? 'bg-white dark:bg-slate-700 text-theme-600 shadow-md scale-110' : 'text-slate-500'}">
+                        ${s.label}
+                    </button>
+                `).join('')}
             </div>
-        ` : '';
-        
-        return `<div class="p-4 bg-parchment dark:bg-night rounded-lg border border-line dark:border-line-dark">
-            <div class="flex items-center justify-between">
-                <div>
-                    <h4 class="font-semibold text-ink dark:text-cream">${t('surahListLayout')}</h4>
-                    <p class="text-sm text-ink/70 dark:text-cream/70">${t('surahListLayoutSubtitle')}</p>
-                </div>
-                <div class="flex items-center bg-black/5 dark:bg-white/5 p-1 rounded-lg">
-                    <button data-layout="grid" class="layout-btn p-1.5 rounded-md ${surahListLayout === 'grid' ? 'bg-amber-50 dark:bg-neutral-700 text-theme-600' : 'text-ink/60 dark:text-cream/60'}">${GridViewIcon()}</button>
-                    <button data-layout="list" class="layout-btn p-1.5 rounded-md ${surahListLayout === 'list' ? 'bg-amber-50 dark:bg-neutral-700 text-theme-600' : 'text-ink/60 dark:text-cream/60'}">${ListViewIcon()}</button>
-                </div>
-            </div>
-            ${gridColsSelector}
-        </div>`;
+        `;
     };
-    
-    const renderReciterSelector = () => `<div class="p-4 bg-parchment dark:bg-night rounded-lg border border-line dark:border-line-dark">
-        <h4 class="font-semibold text-ink dark:text-cream mb-2">${t('defaultReciter')}</h4>
-        <input id="reciter-search-input" type="text" placeholder="${t('searchReciterPlaceholder')}" value="${playerSearchQuery}" class="block w-full px-4 py-2 text-base border-line dark:border-line-dark bg-amber-50 dark:bg-neutral-800 text-ink dark:text-cream focus:outline-none focus:ring-theme-500 focus:border-theme-500 rounded-md" />
-        <ul id="reciter-list-container" class="mt-2 rounded-lg max-h-60 overflow-y-auto border border-line dark:border-line-dark"></ul>
-    </div>`;
 
-    const renderAboutInfo = () => `<div class="p-4 bg-parchment dark:bg-night rounded-lg border border-line dark:border-line-dark space-y-4">
-        <div class="space-y-3">
-           ${getContactInfo().map(item => `<div class="flex items-center space-x-3 rtl:space-x-reverse text-sm text-ink dark:text-cream">
-               <span class="text-theme-600 dark:text-theme-400">${item.icon}</span>
-               ${item.href ? `<a href="${item.href}" target="_blank" rel="noopener noreferrer" class="hover:underline" dir="ltr">${item.label}</a>` : `<span>${item.label}</span>`}
-           </div>`).join('')}
+    const renderSurahLayoutSelector = () => `
+        <div class="space-y-6">
+            <div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-3xl border border-slate-100 dark:border-slate-800">
+                <div class="flex items-center gap-3">
+                    <button data-layout="grid" class="layout-btn flex items-center gap-2 px-6 py-3 rounded-2xl transition-all ${surahListLayout === 'grid' ? 'bg-white dark:bg-slate-700 text-theme-600 shadow-lg' : 'text-slate-500'}">
+                        ${GridViewIcon({className: "w-5 h-5"})} <span class="text-sm font-bold">${t('grid') || 'Grid'}</span>
+                    </button>
+                    <button data-layout="list" class="layout-btn flex items-center gap-2 px-6 py-3 rounded-2xl transition-all ${surahListLayout === 'list' ? 'bg-white dark:bg-slate-700 text-theme-600 shadow-lg' : 'text-slate-500'}">
+                        ${ListViewIcon({className: "w-5 h-5"})} <span class="text-sm font-bold">${t('list') || 'List'}</span>
+                    </button>
+                </div>
+                ${surahListLayout === 'grid' ? `
+                    <div class="flex items-center bg-slate-200/50 dark:bg-slate-900/50 p-1 rounded-xl">
+                        ${['2','3','4'].map(c => `
+                            <button data-cols="${c}" class="grid-cols-btn w-8 h-8 flex items-center justify-center rounded-lg text-xs font-bold transition-all ${surahGridCols === c ? 'bg-white dark:bg-slate-700 text-theme-600 shadow-sm' : 'text-slate-500'}">${c}</button>
+                        `).join('')}
+                    </div>
+                ` : ''}
+            </div>
         </div>
-        <div class="grid grid-cols-3 gap-2 pt-4 border-t border-line dark:border-line-dark">
-            ${socialLinks.map(link => `<a href="${link.href}" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center space-x-2 p-2 rounded-lg bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-ink/70 dark:text-cream/70 hover:text-theme-600 dark:hover:text-theme-400 transition-colors">
-                ${link.icon} <span class="text-xs font-medium hidden sm:inline">${link.label}</span>
-            </a>`).join('')}
+    `;
+    
+    const renderAboutInfo = () => `
+        <div class="space-y-8">
+            <div class="flex items-center gap-6">
+                <div class="w-20 h-20 rounded-[2rem] bg-gradient-to-br from-theme-500 to-indigo-600 flex items-center justify-center text-white font-bold text-3xl shadow-xl shadow-theme-500/20">Y</div>
+                <div>
+                    <h4 class="text-xl font-bold text-slate-900 dark:text-white">Youness Eddahby</h4>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Full Stack Developer & Designer</p>
+                    <div class="flex items-center gap-2 mt-2">
+                        <span class="px-2 py-0.5 rounded-md bg-theme-50 dark:bg-theme-900/20 text-[10px] font-bold text-theme-600 dark:text-theme-400 uppercase tracking-wider border border-theme-100 dark:border-theme-900/30">v1.2.0</span>
+                    </div>
+                </div>
+            </div>
+            <div class="grid grid-cols-5 gap-3">
+                ${socialLinks.map(link => `
+                    <a href="${link.href}" target="_blank" class="flex items-center justify-center p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-theme-600 hover:text-white dark:hover:bg-theme-600 transition-all active:scale-90 shadow-sm border border-slate-100 dark:border-slate-800" title="${link.label}">
+                        ${link.icon}
+                    </a>
+                `).join('')}
+            </div>
+            <div class="pt-8 border-t border-slate-100 dark:border-slate-800 text-center">
+                <p class="text-[10px] text-slate-400 uppercase tracking-[0.3em] font-bold">${t('madeWithLove')}</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 font-medium">© 2024 The Holy Quran App. All rights reserved.</p>
+            </div>
         </div>
-        <div class="text-center text-xs text-ink/60 dark:text-cream/60 pt-4 border-t border-line dark:border-line-dark">
-            ${t('madeWithLove')}
-        </div>
-    </div>`;
+    `;
     
     // --- Event Listeners ---
     const attachEventListeners = () => {
         container.querySelector('#main-back-btn')?.addEventListener('click', onBack);
+        
+        container.querySelectorAll('.section-nav-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const sectionId = btn.dataset.section;
+                const element = container.querySelector(`#section-${sectionId}`);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
         container.querySelectorAll('.theme-btn').forEach(btn => btn.addEventListener('click', () => setTheme(btn.dataset.theme)));
-        container.querySelectorAll('.base-theme-btn').forEach(btn => btn.addEventListener('click', () => setBaseTheme(btn.dataset.base)));
+        container.querySelector('.base-theme-select')?.addEventListener('change', (e) => setBaseTheme(e.target.value));
         container.querySelectorAll('.color-btn').forEach(btn => btn.addEventListener('click', () => setThemeColor(btn.dataset.color)));
         container.querySelector('#animations-toggle')?.addEventListener('click', () => setAnimationsEnabled(!animationsEnabled));
         container.querySelector('#debug-toggle')?.addEventListener('click', () => setDebugMode(!debugMode));
+        
         container.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => setLanguage(btn.dataset.lang)));
+        
         container.querySelectorAll('.mode-btn').forEach(btn => btn.addEventListener('click', () => setReaderDisplayMode(btn.dataset.mode)));
         container.querySelectorAll('.layout-btn').forEach(btn => btn.addEventListener('click', () => setSurahListLayout(btn.dataset.layout)));
         container.querySelectorAll('.grid-cols-btn').forEach(btn => btn.addEventListener('click', () => setSurahGridCols(btn.dataset.cols)));
         
-        const searchInput = container.querySelector('#reciter-search-input');
-        const listContainer = container.querySelector('#reciter-list-container');
-        if (searchInput && listContainer) {
-             const renderReciterList = (query = '') => {
-                const lang = getCurrentLanguage();
-                const lowerQuery = query.toLowerCase();
-                const filtered = RECITERS.filter(r => r.englishName.toLowerCase().includes(lowerQuery) || r.name.includes(lowerQuery));
-                if (filtered.length === 0) {
-                    listContainer.innerHTML = `<li class="p-4 text-center text-ink/70 dark:text-cream/70">${t('noRecitersFound')}</li>`; return;
-                }
-                listContainer.innerHTML = filtered.map(r => `<li data-reciter-id="${r.identifier}" class="reciter-item p-3 cursor-pointer hover:bg-amber-50 dark:hover:bg-neutral-800 flex items-center justify-between transition-colors">
-                    <div>
-                        <p class="font-medium text-ink dark:text-cream">${lang === 'ar' ? r.name : r.englishName}</p>
-                    </div>
-                    ${selectedReciter === r.identifier ? `<div class="w-5 h-5 text-theme-600">${CheckIcon()}</div>` : ''}
-                </li>`).join('');
-            };
-            searchInput.addEventListener('input', (e) => { playerSearchQuery = e.target.value; renderReciterList(playerSearchQuery); });
-            listContainer.addEventListener('click', (e) => {
-                const item = e.target.closest('.reciter-item');
-                if (item) setSelectedReciter(item.dataset.reciterId);
-            });
-            renderReciterList(playerSearchQuery);
-        }
+        container.querySelector('.arabic-font-select')?.addEventListener('change', (e) => setArabicFont(e.target.value));
+        container.querySelectorAll('.font-size-btn').forEach(btn => btn.addEventListener('click', () => setFontSize(btn.dataset.size)));
+
+        container.querySelector('#reset-settings-btn')?.addEventListener('click', () => {
+            if (confirm(t('confirmResetSettings') || 'Are you sure you want to reset all settings to default?')) {
+                localStorage.clear();
+                window.location.reload();
+            }
+        });
     };
 
     render();

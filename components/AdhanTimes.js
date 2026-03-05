@@ -67,7 +67,7 @@ export const renderAdhanTimes = (container, props = {}) => {
                             </div>
                         </div>
                         <button id="auto-location-toggle" class="w-12 h-6 rounded-full transition-colors relative ${state.isAutoLocation ? 'bg-theme-600' : 'bg-slate-300 dark:bg-slate-700'}">
-                            <div class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${state.isAutoLocation ? 'translate-x-6' : ''}"></div>
+                            <div class="absolute top-1 start-1 w-4 h-4 bg-white rounded-full transition-transform ${state.isAutoLocation ? 'ltr:translate-x-6 rtl:-translate-x-6' : ''}"></div>
                         </button>
                     </div>
 
