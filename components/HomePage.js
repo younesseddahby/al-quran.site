@@ -1,7 +1,7 @@
 
 import { t, getCurrentLanguage } from '../i18n.js';
 import { createSpinner } from './Spinner.js';
-import { BookOpenIcon, ListenIcon, HadithIcon, ClockIcon, CalendarIcon, ShieldIcon, BeadsIcon, ChevronRightIcon } from './Icons.js';
+import { BookOpenIcon, ListenIcon, HadithIcon, ClockIcon, CalendarIcon, ShieldIcon, BeadsIcon, ChevronRightIcon, QuizIcon, BookmarkIcon } from './Icons.js';
 import { fetchWithRetry } from '../utils/fetchUtils.js';
 
 // --- HELPER FUNCTIONS ---
@@ -175,6 +175,8 @@ const renderQuickLinks = (container) => {
         { nav: "hisn", icon: ShieldIcon({className: 'w-8 h-8 md:w-10 md:h-10'}), title: t('readHisn'), desc: t('readHisnDesc'), color: 'bg-amber-500' },
         { nav: "tasbih", icon: BeadsIcon({className: 'w-8 h-8 md:w-10 md:h-10'}), title: t('tasbih'), desc: t('tasbihDesc'), color: 'bg-rose-500' },
         { nav: "hadith", icon: HadithIcon({className: 'w-8 h-8 md:w-10 md:h-10'}), title: t('discoverHadith'), desc: t('discoverHadithDesc'), color: 'bg-indigo-500' },
+        { nav: "bookmarks", icon: BookmarkIcon({className: 'w-8 h-8 md:w-10 md:h-10'}), title: t('bookmarks') || 'Bookmarks', desc: t('bookmarksTab') || 'View your saved verses and hadiths', color: 'bg-purple-500' },
+        { nav: "quiz", icon: QuizIcon({className: 'w-8 h-8 md:w-10 md:h-10'}), title: t('islamicQuiz'), desc: t('testYourKnowledge') || 'Test your Islamic knowledge with different levels.', color: 'bg-theme-500' },
     ];
     linksContainer.innerHTML = linkItems.map(link => `
         <a href="#" data-nav="${link.nav}" ${link.subNav ? `data-sub-nav="${link.subNav}"` : ''} class="quick-link-card group p-6 md:p-8 bg-white dark:bg-slate-900 rounded-[2rem] md:rounded-[2.5rem] hover:-translate-y-1 md:hover:-translate-y-2 transition-all duration-500 flex flex-col gap-4 md:gap-6 border border-slate-100 dark:border-slate-800 shadow-lg shadow-slate-200/50 dark:shadow-none hover:shadow-2xl hover:shadow-theme-500/10 active:scale-[0.98]">

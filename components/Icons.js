@@ -1,5 +1,44 @@
 
 // App Navigation Icons
+export const QuizIcon = ({className = 'w-6 h-6'} = {}) => `
+  <svg class="${className}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .415.162.791.425 1.066.262.275.612.446 1.001.446.39 0 .739-.171 1.002-.446.263-.275.424-.651.424-1.066 0-.231-.035-.454-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25c1.039 0 1.909.704 2.15 1.664m-5.8 0h5.8m-8.15 1.477-1.533.188a2.25 2.25 0 0 0-1.977 2.192V18.75A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+  </svg>
+`;
+
+export const TrophyIcon = ({className = 'w-6 h-6'} = {}) => `
+  <svg class="${className}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 0 1 3 3h-15a3 3 0 0 1 3-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0V9.457c0-.621-.504-1.125-1.125-1.125h-2.764c-.621 0-1.125.504-1.125 1.125V15.375m5.007 0c.621 0 1.125-.504 1.125-1.125V9.457c0-.621-.504-1.125-1.125-1.125h-2.764c-.621 0-1.125.504-1.125 1.125V15.375m-5.007 0c-.621 0-1.125-.504-1.125-1.125V9.457c0-.621.504-1.125 1.125-1.125h2.764c.621 0 1.125.504 1.125 1.125V15.375" />
+  </svg>
+`;
+
+export const TimerIcon = ({className = 'w-6 h-6'} = {}) => `
+  <svg class="${className}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+    <path stroke-linecap="round" stroke-linejoin="round" d="M12 2v2m0 16v2m10-10h-2M4 12H2" opacity="0.3" />
+  </svg>
+`;
+
+export const BrainIcon = ({className = 'w-6 h-6'} = {}) => `
+  <svg class="${className}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 0 0 6-6c0-3.314-2.686-6-6-6s-6 2.686-6 6a6 6 0 0 0 6 6Z" />
+    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75v12m-5.25-6h10.5" opacity="0.5" />
+    <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" stroke-width="1" opacity="0.3" />
+  </svg>
+`;
+
+export const CheckCircleIcon = ({className = 'w-6 h-6'} = {}) => `
+  <svg class="${className}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+  </svg>
+`;
+
+export const XCircleIcon = ({className = 'w-6 h-6'} = {}) => `
+  <svg class="${className}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+    <path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+  </svg>
+`;
+
 export const HomeIcon = ({className = 'w-6 h-6'} = {}) => `
   <svg class="${className}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
     <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h7.5" />

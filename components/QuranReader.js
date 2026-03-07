@@ -1,6 +1,6 @@
 import { createSpinner } from './Spinner.js';
 import { renderErrorState, renderSkeletonGrid } from './UI.js';
-import { CloseIcon, SkipBackwardIcon, SkipForwardIcon, SlidersHorizontalIcon, ArrowLeftIcon, ArrowRightIcon, ChevronRightIcon, MinusIcon, PlusIcon, AiIcon, BookmarkIcon, BookmarkSolidIcon } from './Icons.js';
+import { CloseIcon, SkipBackwardIcon, SkipForwardIcon, SlidersHorizontalIcon, ArrowLeftIcon, ArrowRightIcon, ChevronRightIcon, MinusIcon, PlusIcon, AiIcon, BookmarkIcon, BookmarkSolidIcon, ArrowUpIcon } from './Icons.js';
 import { t, getCurrentLanguage } from '../i18n.js';
 import { fetchWithRetry } from '../utils/fetchUtils.js';
 
@@ -33,6 +33,16 @@ export const renderQuranReader = (container, cache, props) => {
         contentArea.className = 'quran-reader-inner min-h-full transition-opacity duration-300';
         container.innerHTML = '';
         container.appendChild(contentArea);
+        
+        contentArea.addEventListener('touchstart', e => { 
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        }, { passive: true });
+        contentArea.addEventListener('touchend', e => { 
+            const distX = e.changedTouches[0].screenX - touchStartX;
+            const distY = e.changedTouches[0].screenY - touchStartY;
+            handleSwipe(distX, distY);
+        }, { passive: true });
     }
 
     let touchStartX = 0;
@@ -224,22 +234,22 @@ export const renderQuranReader = (container, cache, props) => {
                 html = batch.map(a => {
                     const isBookmarked = props.bookmarks.quran.some(b => b.id === `${state.pageData.number}:${a.numberInSurah}`);
                     return `
-                    <div class="ayah-item group p-4 md:p-6 rounded-3xl border border-transparent hover:border-theme-500/20 hover:bg-theme-50/30 dark:hover:bg-theme-900/10 transition-all cursor-pointer ${state.activeAyah == a.numberInSurah ? 'bg-theme-50 dark:bg-theme-900/20 border-theme-500/30' : ''}" 
+                    <div class="ayah-item group p-3 md:p-6 rounded-2xl md:rounded-3xl border border-transparent hover:border-theme-500/20 hover:bg-theme-50/30 dark:hover:bg-theme-900/10 transition-all cursor-pointer ${state.activeAyah == a.numberInSurah ? 'bg-theme-50 dark:bg-theme-900/20 border-theme-500/30' : ''}" 
                          data-num="${a.numberInSurah}" 
                          data-ayah-number="${a.numberInSurah}">
-                        <div class="flex items-start justify-between gap-6 mb-4">
-                            <div class="flex items-center gap-3">
-                                <span class="w-10 h-10 flex-shrink-0 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-xl text-xs font-bold text-slate-500 group-hover:bg-theme-600 group-hover:text-white transition-all">${a.numberInSurah}</span>
-                                <button class="bookmark-ayah-btn p-2 rounded-lg hover:bg-theme-100 dark:hover:bg-theme-800 text-slate-400 hover:text-theme-600 transition-all" data-surah="${state.pageData.number}" data-ayah="${a.numberInSurah}">
-                                    ${isBookmarked ? BookmarkSolidIcon({className: "w-5 h-5 text-theme-600"}) : BookmarkIcon({className: "w-5 h-5"})}
+                        <div class="flex items-start justify-between gap-3 md:gap-6 mb-3 md:mb-4">
+                            <div class="flex items-center gap-2 md:gap-3">
+                                <span class="w-8 h-8 md:w-10 md:h-10 flex-shrink-0 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-lg md:rounded-xl text-[10px] md:text-xs font-bold text-slate-500 group-hover:bg-theme-600 group-hover:text-white transition-all">${a.numberInSurah}</span>
+                                <button class="bookmark-ayah-btn p-1.5 md:p-2 rounded-lg hover:bg-theme-100 dark:hover:bg-theme-800 text-slate-400 hover:text-theme-600 transition-all" data-surah="${state.pageData.number}" data-ayah="${a.numberInSurah}">
+                                    ${isBookmarked ? BookmarkSolidIcon({className: "w-4 h-4 md:w-5 md:h-5 text-theme-600"}) : BookmarkIcon({className: "w-4 h-4 md:w-5 md:h-5"})}
                                 </button>
                             </div>
                             ${displayMode !== 'translation' ? `
-                                <p class="quran-arabic-text text-right text-2xl md:text-3xl leading-loose text-slate-800 dark:text-slate-100">${a.text}</p>
+                                <p class="quran-arabic-text text-right text-xl md:text-3xl leading-loose text-slate-800 dark:text-slate-100">${a.text}</p>
                             ` : ''}
                         </div>
                         ${displayMode !== 'arabic' ? `
-                            <p class="text-lg text-slate-600 dark:text-slate-400 font-serif leading-relaxed ${isArabicOnly ? 'text-right' : 'text-left'}">
+                            <p class="text-base md:text-lg text-slate-600 dark:text-slate-400 font-serif leading-relaxed ${isArabicOnly ? 'text-right' : 'text-left'}">
                                 ${a.translation || ''}
                             </p>
                         ` : ''}
@@ -266,25 +276,45 @@ export const renderQuranReader = (container, cache, props) => {
         renderNextBatch();
     };
 
-    const scrollToAyah = (num) => {
-        setTimeout(() => {
-            const el = contentArea.querySelector(`[data-ayah-number="${num}"]`);
-            if (el) {
-                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                contentArea.querySelectorAll('.active-ayah-span, .bg-theme-50').forEach(x => {
-                    x.classList.remove('active-ayah-span', 'bg-theme-50', 'dark:bg-theme-900/20', 'border-theme-500/30');
-                });
-                if (el.classList.contains('ayah-span')) {
-                    el.classList.add('active-ayah-span');
-                } else {
-                    el.classList.add('bg-theme-50', 'dark:bg-theme-900/20', 'border-theme-500/30');
-                }
+    const scrollToAyah = (num, retryCount = 0) => {
+        const el = contentArea.querySelector(`[data-ayah-number="${num}"]`);
+        if (el) {
+            // Remove existing highlights
+            contentArea.querySelectorAll('.active-ayah-span, .bg-theme-50').forEach(x => {
+                x.classList.remove('active-ayah-span', 'bg-theme-50', 'dark:bg-theme-900/20', 'border-theme-500/30');
+            });
+
+            // Apply new highlight
+            if (el.classList.contains('ayah-span')) {
+                el.classList.add('active-ayah-span');
+            } else {
+                el.classList.add('bg-theme-50', 'dark:bg-theme-900/20', 'border-theme-500/30');
             }
-        }, 100);
+
+            // Smooth scroll with fallback for better reliability
+            try {
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } catch (e) {
+                // Fallback for older browsers or edge cases
+                const top = el.getBoundingClientRect().top + window.pageYOffset - (window.innerHeight / 2);
+                window.scrollTo({ top, behavior: 'smooth' });
+            }
+            
+            // Update local state and UI without full re-render
+            state.activeAyah = num;
+            const jumpTrigger = contentArea.querySelector('#jump-trigger');
+            if (jumpTrigger) {
+                jumpTrigger.innerHTML = `${t('surah')} ${state.pageData.number} • ${t('ayah')} ${num}`;
+            }
+        } else if (retryCount < 10) {
+            // If element not found, retry after a short delay (useful during batch rendering)
+            setTimeout(() => scrollToAyah(num, retryCount + 1), 150);
+        }
     };
 
     const handleSwipe = (distX, distY) => {
-        if (state.loading || state.processing) return;
+        if (state.loading || state.processing || state.view !== 'reader') return;
+        if (state.isSettingsModal || state.isTafsirModal || state.isJumpModal) return;
         if (Math.abs(distY) > Math.abs(distX)) return;
         if (Math.abs(distX) < SWIPE_THRESHOLD) return;
         const currentNum = state.pageData?.number || 0;
@@ -421,7 +451,7 @@ export const renderQuranReader = (container, cache, props) => {
         const fontClass = props.arabicFont || 'font-noto-naskh-arabic';
 
         contentArea.innerHTML = `
-            <div id="reader-header" class="fixed top-0 inset-x-0 h-14 md:h-16 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl z-30 border-b border-slate-200 dark:border-slate-800 flex items-center px-3 md:px-4 justify-between transition-transform duration-300">
+            <div id="reader-header" class="fixed top-0 inset-x-0 h-14 md:h-16 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl z-30 border-b border-slate-200 dark:border-slate-800 flex items-center px-3 md:px-4 justify-between transition-all duration-300 transform -translate-y-full shadow-lg">
                 <button id="reader-back" class="p-1.5 md:p-2 -ml-1 md:-ml-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center gap-1 transition-all active:scale-90">
                     ${BackIcon({className: "w-5 h-5 md:w-6 md:h-6"})}
                     <span class="hidden sm:inline text-sm font-bold">${t('backToList')}</span>
@@ -432,6 +462,10 @@ export const renderQuranReader = (container, cache, props) => {
                 </div>
                 <button id="settings-trigger" class="p-1.5 md:p-2 -mr-1 md:-mr-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all active:scale-90">${SlidersHorizontalIcon({className: "w-5 h-5 md:w-6 md:h-6"})}</button>
             </div>
+            
+            <button id="back-to-top" class="fixed bottom-24 right-4 md:right-8 z-40 p-3 md:p-4 bg-theme-600 text-white rounded-full shadow-2xl transition-all duration-300 opacity-0 translate-y-10 pointer-events-none active:scale-90">
+                ${ArrowUpIcon({className: "w-6 h-6"})}
+            </button>
             
             <div class="pt-14 pb-20 md:pt-20 md:pb-32 max-w-7xl mx-auto px-1 md:px-4 lg:px-8 ${fontSizeClass} ${fontClass}" id="reader-scroll-container">
                 <div class="bg-white dark:bg-slate-900 rounded-xl md:rounded-[2.5rem] p-3 md:p-8 lg:p-12 shadow-xl page-texture border border-slate-100 dark:border-slate-800 transition-colors">
@@ -455,12 +489,13 @@ export const renderQuranReader = (container, cache, props) => {
             </div>
 
             <div class="fixed bottom-4 md:bottom-6 inset-x-2 md:inset-x-4 z-30 pointer-events-none">
-                <div class="max-w-lg mx-auto flex items-center justify-between bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl shadow-2xl rounded-full p-1.5 md:p-2 border border-slate-200 dark:border-slate-800 pointer-events-auto transition-all">
-                    <button id="reader-prev-surah" class="p-3 md:p-4 text-slate-400 hover:text-theme-600 ${s.number === 1 ? 'opacity-10 cursor-not-allowed' : ''}" ${s.number === 1 ? 'disabled' : ''}>${SkipBackwardIcon({className: "w-5 h-5 md:w-6 md:h-6"})}</button>
-                    <button id="jump-trigger" class="flex-grow px-3 py-2.5 md:px-4 md:py-3 bg-theme-600 text-white rounded-full font-bold shadow-lg shadow-theme-500/20 active:scale-95 transition-all text-[10px] md:text-sm">
-                        ${t('surah')} ${s.number} • ${t('ayah')} ${state.activeAyah}
+                <div class="max-w-lg mx-auto flex items-center justify-between bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl shadow-2xl rounded-full p-1 md:p-2 border border-slate-200 dark:border-slate-800 pointer-events-auto transition-all">
+                    <button id="reader-prev-surah" class="p-2 md:p-4 text-slate-400 hover:text-theme-600 ${s.number === 1 ? 'opacity-10 cursor-not-allowed' : ''}" ${s.number === 1 ? 'disabled' : ''}>${SkipBackwardIcon({className: "w-5 h-5 md:w-6 md:h-6"})}</button>
+                    <button id="jump-trigger" class="flex-grow px-3 py-2 md:px-4 md:py-3 bg-theme-600 text-white rounded-full font-bold shadow-lg shadow-theme-500/20 active:scale-95 transition-all text-[10px] md:text-sm">
+                        <span class="sm:hidden">${s.number}:${state.activeAyah}</span>
+                        <span class="hidden sm:inline">${t('surah')} ${s.number} • ${t('ayah')} ${state.activeAyah}</span>
                     </button>
-                    <button id="reader-next-surah" class="p-3 md:p-4 text-slate-400 hover:text-theme-600 ${s.number === 114 ? 'opacity-10 cursor-not-allowed' : ''}" ${s.number === 114 ? 'disabled' : ''}>${SkipForwardIcon({className: "w-5 h-5 md:w-6 md:h-6"})}</button>
+                    <button id="reader-next-surah" class="p-2 md:p-4 text-slate-400 hover:text-theme-600 ${s.number === 114 ? 'opacity-10 cursor-not-allowed' : ''}" ${s.number === 114 ? 'disabled' : ''}>${SkipForwardIcon({className: "w-5 h-5 md:w-6 md:h-6"})}</button>
                 </div>
             </div>`;
 
@@ -475,6 +510,13 @@ export const renderQuranReader = (container, cache, props) => {
             setState({ view: 'list', pageData: null });
             if (setReaderMode) setReaderMode(false);
         };
+        
+        const btt = contentArea.querySelector('#back-to-top');
+        if (btt) {
+            btt.onclick = () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+        }
         contentArea.querySelector('#ayah-container').onclick = (e) => {
             const bookmarkBtn = e.target.closest('.bookmark-ayah-btn');
             if (bookmarkBtn) {
@@ -515,16 +557,6 @@ export const renderQuranReader = (container, cache, props) => {
         contentArea.querySelector('#settings-trigger').onclick = () => setState({ isSettingsModal: true });
         contentArea.querySelector('#reader-prev-surah').onclick = () => fetchPage(s.number - 1);
         contentArea.querySelector('#reader-next-surah').onclick = () => fetchPage(s.number + 1);
-
-        contentArea.addEventListener('touchstart', e => { 
-            touchStartX = e.changedTouches[0].screenX;
-            touchStartY = e.changedTouches[0].screenY;
-        }, { passive: true });
-        contentArea.addEventListener('touchend', e => { 
-            const distX = e.changedTouches[0].screenX - touchStartX;
-            const distY = e.changedTouches[0].screenY - touchStartY;
-            handleSwipe(distX, distY);
-        }, { passive: true });
     };
 
     const fetchTafsir = async (surah, ayah) => {
@@ -684,7 +716,17 @@ export const renderQuranReader = (container, cache, props) => {
             { id: 'almarai', name: t('font_almarai') },
             { id: 'tajawal', name: t('font_tajawal') },
             { id: 'lateef', name: t('font_lateef') },
+            { id: 'reem_kufi', name: t('font_reem_kufi') },
+            { id: 'alkalami', name: t('font_alkalami') },
+            { id: 'gulzar', name: t('font_gulzar') },
+            { id: 'el_messiri', name: t('font_el_messiri') },
+            { id: 'changa', name: t('font_changa') },
+            { id: 'mada', name: t('font_mada') },
+            { id: 'harmattan', name: t('font_harmattan') },
+            { id: 'lalezar', name: t('font_lalezar') },
+            { id: 'kufam', name: t('font_kufam') },
             { id: 'aref_ruqaa', name: t('font_aref_ruqaa') },
+            { id: 'mirza', name: t('font_mirza') },
         ];
 
         const sizeOptions = [
@@ -693,6 +735,8 @@ export const renderQuranReader = (container, cache, props) => {
             { id: 'medium', name: t('fontSizeMedium') },
             { id: 'large', name: t('fontSizeLarge') },
             { id: 'x-large', name: t('fontSizeXLarge') },
+            { id: 'xx-large', name: t('fontSizeXXLarge') || (getCurrentLanguage() === 'ar' ? 'ضخم' : 'XX-Large') },
+            { id: 'xxx-large', name: t('fontSizeXXXLarge') || (getCurrentLanguage() === 'ar' ? 'ضخم جداً' : 'XXX-Large') },
         ];
 
         modal.innerHTML = `
@@ -716,11 +760,11 @@ export const renderQuranReader = (container, cache, props) => {
                     </div>
                     <div class="space-y-2">
                         <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">${t('arabicFont')}</label>
-                        <div class="space-y-2">
+                        <div class="grid grid-cols-1 gap-2">
                             ${fontOptions.map(opt => `
-                                <button data-font="${opt.id}" class="font-btn w-full px-4 py-3 text-sm font-bold rounded-xl border text-right flex justify-between items-center transition-all ${props.arabicFont === opt.id ? 'bg-theme-600 border-theme-600 text-white shadow-lg shadow-theme-500/20' : 'bg-slate-50 dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-400'}">
-                                    <span class="font-amiri text-lg">${opt.name === 'Amiri' || opt.name === 'أميري' ? 'بسم الله' : 'نص تجريبي'}</span>
-                                    <span>${opt.name}</span>
+                                <button data-font="${opt.id}" class="font-btn w-full px-4 py-3 text-sm font-bold rounded-xl border flex justify-between items-center transition-all ${props.arabicFont === opt.id ? 'bg-theme-600 border-theme-600 text-white shadow-lg shadow-theme-500/20' : 'bg-slate-50 dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-400'}">
+                                    <span class="preview-${opt.id} text-xl md:text-2xl">${opt.id === 'noto_naskh_arabic' ? 'بِسْمِ اللهِ' : 'بِسْمِ اللهِ'}</span>
+                                    <span class="text-xs opacity-70">${opt.name}</span>
                                 </button>
                             `).join('')}
                         </div>
@@ -765,7 +809,7 @@ export const renderQuranReader = (container, cache, props) => {
     // Initialize
     fetchSurahList().then(() => {
         if (isReaderMode && readerConfig?.surah && !state.pageData) {
-            fetchPage(readerConfig.surah.number);
+            fetchPage(readerConfig.surah.number, readerConfig.ayah || 1);
         } else {
             render();
         }
@@ -774,16 +818,34 @@ export const renderQuranReader = (container, cache, props) => {
     let lastScrollY = 0;
     const handleScroll = (e) => {
         const header = document.getElementById('reader-header');
+        const btt = document.getElementById('back-to-top');
         if (!header) return;
         
-        const scrollTarget = e.target === document ? document.documentElement : (e.target.scrollTop !== undefined ? e.target : document.documentElement);
-        const scrollTop = scrollTarget.scrollTop || window.scrollY;
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
 
+        // Header logic
         if (scrollTop > lastScrollY && scrollTop > 100) {
             header.style.transform = 'translateY(-100%)';
         } else {
             header.style.transform = 'translateY(0)';
+            if (scrollTop > 50) {
+                header.classList.add('shadow-xl');
+            } else {
+                header.classList.remove('shadow-xl');
+            }
         }
+
+        // Back to top logic
+        if (btt) {
+            if (scrollTop > 500) {
+                btt.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
+                btt.classList.add('opacity-100', 'translate-y-0', 'pointer-events-auto');
+            } else {
+                btt.classList.add('opacity-0', 'translate-y-10', 'pointer-events-none');
+                btt.classList.remove('opacity-100', 'translate-y-0', 'pointer-events-auto');
+            }
+        }
+
         lastScrollY = scrollTop;
     };
     

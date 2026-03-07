@@ -8,9 +8,10 @@ import { renderHisnMuslim } from './components/HisnMuslim.js';
 import { renderTasbih } from './components/Tasbih.js';
 import { renderSeerah } from './components/Seerah.js';
 import { renderBookmarks } from './components/Bookmarks.js';
+import { renderQuiz } from './components/Quiz.js';
 import { 
     HomeIcon, QuranIcon, HadithIcon, PrayerIcon, SettingsIcon, AiIcon, ShieldIcon, BeadsIcon, 
-    ArrowLeftIcon, ArrowRightIcon, BookOpenIcon, BookmarkIcon 
+    ArrowLeftIcon, ArrowRightIcon, BookOpenIcon, BookmarkIcon, QuizIcon
 } from './components/Icons.js';
 import { THEME_COLORS } from './theme.js';
 import { initI18n, t, setLanguage as setI18nLanguage } from './i18n.js';
@@ -62,7 +63,6 @@ const App = (rootElement) => {
         { id: 'hisn', label: t('hisnMuslim'), icon: ShieldIcon, mobileLabel: t('adhkarTab') },
         { id: 'tasbih', label: t('tasbih'), icon: BeadsIcon, mobileLabel: t('tasbihTab') },
         { id: 'seerah', label: t('seerah'), icon: BookOpenIcon, mobileLabel: t('seerahTab') },
-        { id: 'bookmarks', label: t('bookmarks') || 'Bookmarks', icon: BookmarkIcon, mobileLabel: t('bookmarksTab') || 'Bookmarks' },
         { id: 'adhan', label: t('prayerTimes'), icon: PrayerIcon, mobileLabel: t('adhanTab') },
     ];
 
@@ -246,6 +246,7 @@ const App = (rootElement) => {
             case 'tasbih': renderTasbih(mainContent, props); break;
             case 'seerah': renderSeerah(mainContent, props); break;
             case 'bookmarks': renderBookmarks(mainContent, props); break;
+            case 'quiz': renderQuiz(mainContent, props); break;
             case 'adhan': currentContentCleanup = renderAdhanTimes(mainContent, props); break;
             case 'settings': renderSettingsPage(mainContent, props); break;
         }
