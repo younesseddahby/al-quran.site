@@ -333,6 +333,12 @@ const loadTranslations = () => {
       colorRose: "وردي",
       colorOrange: "برتقالي",
       colorSlate: "رمادي",
+      suggestFeatures: "اقتراح أفكار أو ميزات جديدة",
+      suggestFeaturesDesc: "هل لديك فكرة لتحسين التطبيق؟ أرسلها إلينا!",
+      subject: "الموضوع",
+      message: "الرسالة",
+      sendFeedback: "إرسال الاقتراح",
+      feedbackSuccess: "شكراً لاقتراحك! تم إرسال رسالتك بنجاح.",
     },
     en: {
       // App
@@ -661,6 +667,12 @@ const loadTranslations = () => {
       colorRose: "Rose",
       colorOrange: "Orange",
       colorSlate: "Slate",
+      suggestFeatures: "Suggest Ideas or New Features",
+      suggestFeaturesDesc: "Have an idea to improve the app? Send it to us!",
+      subject: "Subject",
+      message: "Message",
+      sendFeedback: "Send Suggestion",
+      feedbackSuccess: "Thank you for your suggestion! Your message has been sent successfully.",
     },
     id: {
       appName: "Al-Qur'an Al-Karim",

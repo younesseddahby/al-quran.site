@@ -109,11 +109,11 @@
       ::-webkit-scrollbar { width: 6px; }
       ::-webkit-scrollbar-track { background: transparent; }
       ::-webkit-scrollbar-thumb { 
-        background-color: rgba(var(--theme-color-500-rgb, 181 137 0), 0.3); 
+        background-color: rgb(var(--theme-color-500-rgb, 181 137 0) / 0.3); 
         border-radius: 10px; 
       }
       ::-webkit-scrollbar-thumb:hover { 
-        background-color: rgba(var(--theme-color-500-rgb, 181 137 0), 0.6); 
+        background-color: rgb(var(--theme-color-500-rgb, 181 137 0) / 0.6); 
       }
 
       /* Animations */
@@ -122,13 +122,13 @@
       
       /* Ayah Highlight Styles */
       .active-ayah-span {
-        background-color: rgba(var(--theme-color-500-rgb), 0.1);
+        background-color: rgb(var(--theme-color-500-rgb) / 0.1);
         border-radius: 4px;
-        box-shadow: 0 0 0 4px rgba(var(--theme-color-500-rgb), 0.05);
+        box-shadow: 0 0 0 4px rgb(var(--theme-color-500-rgb) / 0.05);
         transition: all 0.3s ease;
       }
       html.dark .active-ayah-span {
-        background-color: rgba(var(--theme-color-500-rgb), 0.15);
+        background-color: rgb(var(--theme-color-500-rgb) / 0.15);
       }
 
       .ayah-span {
@@ -219,6 +219,14 @@
       }
       @keyframes toastIn { from { opacity: 0; transform: translateY(1rem); } to { opacity: 1; transform: translateY(0); } }
       @keyframes toastOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(1rem); } }
+      
+      @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+      }
+      .animate-float {
+        animation: float 3s ease-in-out infinite;
+      }
     </style>
 
     <script>

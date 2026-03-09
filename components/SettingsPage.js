@@ -106,7 +106,7 @@ export const renderSettingsPage = (container, props) => {
                             <!-- Appearance Section -->
                             <section id="section-appearance" class="scroll-mt-28 space-y-6">
                                 <div class="flex items-center gap-3 px-2">
-                                    <div class="w-10 h-10 rounded-2xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 dark:text-amber-400 shadow-sm">
+                                    <div class="w-10 h-10 rounded-2xl bg-theme-100 dark:bg-theme-900/30 flex items-center justify-center text-theme-600 dark:text-theme-400 shadow-sm">
                                         ${SunIcon({className: "w-6 h-6"})}
                                     </div>
                                     <h2 class="text-2xl font-bold text-slate-900 dark:text-white">${t('appearance')}</h2>
@@ -122,7 +122,7 @@ export const renderSettingsPage = (container, props) => {
                             <!-- Language & Text Section -->
                             <section id="section-language" class="scroll-mt-28 space-y-6">
                                 <div class="flex items-center gap-3 px-2">
-                                    <div class="w-10 h-10 rounded-2xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-sm">
+                                    <div class="w-10 h-10 rounded-2xl bg-theme-100 dark:bg-theme-900/30 flex items-center justify-center text-theme-600 dark:text-theme-400 shadow-sm">
                                         <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" /></svg>
                                     </div>
                                     <h2 class="text-2xl font-bold text-slate-900 dark:text-white">${t('languageAndText')}</h2>
@@ -138,7 +138,7 @@ export const renderSettingsPage = (container, props) => {
                             <!-- Interface Section -->
                             <section id="section-interface" class="scroll-mt-28 space-y-6">
                                 <div class="flex items-center gap-3 px-2">
-                                    <div class="w-10 h-10 rounded-2xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-sm">
+                                    <div class="w-10 h-10 rounded-2xl bg-theme-100 dark:bg-theme-900/30 flex items-center justify-center text-theme-600 dark:text-theme-400 shadow-sm">
                                         ${GridViewIcon({className: "w-6 h-6"})}
                                     </div>
                                     <h2 class="text-2xl font-bold text-slate-900 dark:text-white">${t('uiSettings')}</h2>
@@ -155,7 +155,7 @@ export const renderSettingsPage = (container, props) => {
                             <!-- About Section -->
                             <section id="section-about" class="scroll-mt-28 space-y-6">
                                 <div class="flex items-center gap-3 px-2">
-                                    <div class="w-10 h-10 rounded-2xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 dark:text-purple-400 shadow-sm">
+                                    <div class="w-10 h-10 rounded-2xl bg-theme-100 dark:bg-theme-900/30 flex items-center justify-center text-theme-600 dark:text-theme-400 shadow-sm">
                                         ${UserIcon({className: "w-6 h-6"})}
                                     </div>
                                     <h2 class="text-2xl font-bold text-slate-900 dark:text-white">${t('about')}</h2>

@@ -188,6 +188,14 @@ export const renderQuiz = (container, props) => {
         render();
     };
 
+    const shuffleArray = (array) => {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    };
+
     const startQuiz = (level, category) => {
         const lang = getCurrentLanguage();
         const langData = QUIZ_DATA[lang] || QUIZ_DATA.en;
@@ -198,12 +206,11 @@ export const renderQuiz = (container, props) => {
         state.category = category;
         
         // Shuffle questions and for each question, shuffle answers
-        state.questions = [...categoryQuestions]
-            .sort(() => Math.random() - 0.5)
+        state.questions = shuffleArray([...categoryQuestions])
             .slice(0, 10)
             .map(q => {
                 const originalCorrectAnswer = q.a[q.c];
-                const shuffledAnswers = [...q.a].sort(() => Math.random() - 0.5);
+                const shuffledAnswers = shuffleArray([...q.a]);
                 const newCorrectIndex = shuffledAnswers.indexOf(originalCorrectAnswer);
                 return {
                     ...q,
