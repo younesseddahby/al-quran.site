@@ -9,6 +9,7 @@ import { renderTasbih } from './components/Tasbih.js';
 import { renderSeerah } from './components/Seerah.js';
 import { renderBookmarks } from './components/Bookmarks.js';
 import { renderQuiz } from './components/Quiz.js';
+import { renderProphetStories } from './components/ProphetStories.js';
 import { 
     HomeIcon, QuranIcon, HadithIcon, PrayerIcon, SettingsIcon, AiIcon, ShieldIcon, BeadsIcon, 
     ArrowLeftIcon, ArrowRightIcon, BookOpenIcon, BookmarkIcon, QuizIcon
@@ -247,6 +248,7 @@ const App = (rootElement) => {
             case 'seerah': renderSeerah(mainContent, props); break;
             case 'bookmarks': renderBookmarks(mainContent, props); break;
             case 'quiz': renderQuiz(mainContent, props); break;
+            case 'stories': renderProphetStories(mainContent, props); break;
             case 'adhan': currentContentCleanup = renderAdhanTimes(mainContent, props); break;
             case 'settings': renderSettingsPage(mainContent, props); break;
         }

@@ -339,6 +339,12 @@ const loadTranslations = () => {
       message: "الرسالة",
       sendFeedback: "إرسال الاقتراح",
       feedbackSuccess: "شكراً لاقتراحك! تم إرسال رسالتك بنجاح.",
+      prophetStories: "قصص الأنبياء",
+      prophetStoriesTab: "القصص",
+      prophetStoriesDesc: "قصص الأنبياء عليهم السلام من القرآن والسنة.",
+      readStory: "اقرأ القصة",
+      searchStories: "ابحث في القصص...",
+      noStoriesFound: "لم يتم العثور على قصص.",
     },
     en: {
       // App
@@ -673,6 +679,12 @@ const loadTranslations = () => {
       message: "Message",
       sendFeedback: "Send Suggestion",
       feedbackSuccess: "Thank you for your suggestion! Your message has been sent successfully.",
+      prophetStories: "Prophet Stories",
+      prophetStoriesTab: "Stories",
+      prophetStoriesDesc: "Stories of the Prophets (PBUH) from the Quran and Sunnah.",
+      readStory: "Read Story",
+      searchStories: "Search stories...",
+      noStoriesFound: "No stories found.",
     },
     id: {
       appName: "Al-Qur'an Al-Karim",

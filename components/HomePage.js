@@ -182,6 +182,7 @@ const renderQuickLinks = (container) => {
         { nav: "hadith", icon: HadithIcon({className: 'w-8 h-8 md:w-10 md:h-10'}), title: t('discoverHadith'), desc: t('discoverHadithDesc') },
         { nav: "bookmarks", icon: BookmarkIcon({className: 'w-8 h-8 md:w-10 md:h-10'}), title: t('bookmarks') || 'Bookmarks', desc: t('bookmarksTab') || 'View your saved verses and hadiths' },
         { nav: "quiz", icon: QuizIcon({className: 'w-8 h-8 md:w-10 md:h-10'}), title: t('islamicQuiz'), desc: t('testYourKnowledge') || 'Test your Islamic knowledge with different levels.' },
+        { nav: "stories", icon: BookOpenIcon({className: 'w-8 h-8 md:w-10 md:h-10'}), title: t('prophetStories'), desc: t('prophetStoriesDesc') },
         { nav: "feedback", icon: EmailIcon({className: 'w-8 h-8 md:w-10 md:h-10'}), title: t('suggestFeatures'), desc: t('suggestFeaturesDesc') },
     ];
     linksContainer.innerHTML = linkItems.map(link => `
