@@ -3,7 +3,6 @@ import { renderHadithViewer } from './components/HadithViewer.js';
 import { renderAdhanTimes } from './components/AdhanTimes.js';
 import { renderSettingsPage, resetSettingsPageState } from './components/SettingsPage.js';
 import { renderHomePage } from './components/HomePage.js';
-import { renderAITafsir } from './components/AITafsir.js';
 import { renderHisnMuslim } from './components/HisnMuslim.js';
 import { renderTasbih } from './components/Tasbih.js';
 import { renderSeerah } from './components/Seerah.js';
@@ -12,7 +11,7 @@ import { renderQuiz } from './components/Quiz.js';
 import { renderProphetStories } from './components/ProphetStories.js';
 import { renderAsmaUlHusna } from './components/AsmaUlHusna.js';
 import { 
-    HomeIcon, QuranIcon, HadithIcon, PrayerIcon, SettingsIcon, AiIcon, ShieldIcon, BeadsIcon, 
+    HomeIcon, QuranIcon, HadithIcon, PrayerIcon, SettingsIcon, ShieldIcon, BeadsIcon, 
     ArrowLeftIcon, ArrowRightIcon, BookOpenIcon, BookmarkIcon, QuizIcon
 } from './components/Icons.js';
 import { THEME_COLORS } from './theme.js';
@@ -43,8 +42,6 @@ const App = (rootElement) => {
         isReaderMode: false,
         readerConfig: null,
         quranMode: 'read',
-        isAiChatOpen: false,
-        aiInitialPrompt: null,
     };
 
     const appContainer = document.createElement('div');
@@ -52,8 +49,6 @@ const App = (rootElement) => {
     const mainContent = document.createElement('main');
     const mobileNav = document.createElement('nav');
     const mobileNavPlaceholder = document.createElement('div');
-    const aiChatContainer = document.createElement('div');
-    aiChatContainer.id = 'ai-chat-widget-container';
 
     let currentContentCleanup = null;
     let lastRenderedTab = null;
@@ -271,45 +266,16 @@ const App = (rootElement) => {
         lastRenderedTab = state.activeTab;
     };
 
-    const renderAIChat = () => {
-        if (state.isAiChatOpen) {
-            if (aiChatContainer.dataset.rendered === 'true' && !state.aiInitialPrompt) return;
-            aiChatContainer.dataset.rendered = 'true';
-            renderAITafsir(aiChatContainer, {
-                onClose: () => { 
-                    state.isAiChatOpen = false; 
-                    aiChatContainer.dataset.rendered = 'false';
-                    renderAIChat(); 
-                },
-                initialPrompt: state.aiInitialPrompt
-            });
-            state.aiInitialPrompt = null; // Clear it after passing to widget
-        } else {
-             aiChatContainer.dataset.rendered = 'false';
-             aiChatContainer.innerHTML = `
-                <button id="open-ai-chat-btn" class="fixed bottom-20 right-4 md:bottom-8 md:right-8 w-14 h-14 bg-theme-600 text-white rounded-full shadow-lg hover:bg-theme-700 transition-transform z-40 flex items-center justify-center">
-                    ${AiIcon()}
-                </button>`;
-            aiChatContainer.querySelector('#open-ai-chat-btn')?.addEventListener('click', () => {
-                state.isAiChatOpen = true; state.aiInitialPrompt = null; renderAIChat();
-            });
-        }
-    };
-
     const render = () => {
-        renderHeader(); renderMobileNav(); renderContent(); renderAIChat();
+        renderHeader(); renderMobileNav(); renderContent();
     };
 
     initI18n(state.language);
     applyStyles();
     appContainer.className = 'min-h-screen bg-parchment dark:bg-night text-ink transition-colors duration-300';
-    [header, mainContent, mobileNavPlaceholder, mobileNav, aiChatContainer].forEach(el => appContainer.appendChild(el));
+    [header, mainContent, mobileNavPlaceholder, mobileNav].forEach(el => appContainer.appendChild(el));
     rootElement.innerHTML = ''; rootElement.appendChild(appContainer);
     render();
-
-    document.addEventListener('ask-ai-tafsir', (e) => {
-        state.isAiChatOpen = true; state.aiInitialPrompt = e.detail.prompt; renderAIChat();
-    });
 };
 
 export default App;

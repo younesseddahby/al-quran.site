@@ -1,6 +1,6 @@
 import { createSpinner } from './Spinner.js';
 import { renderErrorState, renderSkeletonGrid } from './UI.js';
-import { CloseIcon, SkipBackwardIcon, SkipForwardIcon, SlidersHorizontalIcon, ArrowLeftIcon, ArrowRightIcon, ChevronRightIcon, MinusIcon, PlusIcon, AiIcon, BookmarkIcon, BookmarkSolidIcon, ArrowUpIcon } from './Icons.js';
+import { CloseIcon, SkipBackwardIcon, SkipForwardIcon, SlidersHorizontalIcon, ArrowLeftIcon, ArrowRightIcon, ChevronRightIcon, MinusIcon, PlusIcon, BookmarkIcon, BookmarkSolidIcon, ArrowUpIcon } from './Icons.js';
 import { t, getCurrentLanguage } from '../i18n.js';
 import { fetchWithRetry } from '../utils/fetchUtils.js';
 
@@ -695,11 +695,6 @@ export const renderQuranReader = (container, cache, props) => {
                     ` : (state.tafsirData?.text || t('tafsirNotFound'))}
                 </div>
 
-                ${!state.loadingTafsir && state.tafsirData ? `
-                <button id="tafsir-ai-btn" class="w-full p-6 bg-gradient-to-r from-theme-600 to-indigo-600 text-white rounded-[2rem] flex items-center justify-center gap-4 font-bold shadow-xl shadow-theme-500/20 hover:shadow-theme-500/40 transition-all group border border-white/10">
-                    <span class="p-2 bg-white/20 rounded-xl group-hover:scale-110 transition-transform">${AiIcon({className: "w-6 h-6"})}</span> 
-                    <span class="text-sm uppercase tracking-widest">${t('askAIAboutAyah')}</span>
-                </button>` : ''}
             </div>`;
         
         modal.querySelector('#close-tafsir').onclick = () => setState({ isTafsirModal: false, loadingTafsir: false });

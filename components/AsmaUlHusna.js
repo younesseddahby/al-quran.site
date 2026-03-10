@@ -131,7 +131,7 @@ export const renderAsmaUlHusna = (container, { navigateTo }) => {
     };
 
     const renderNameCard = (name) => `
-        <div data-name-id="${name.id}" class="name-card text-center p-4 bg-white dark:bg-slate-900 rounded-xl shadow-sm cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-200">
+        <div data-name-id="${name.id}" class="name-card text-center p-4 glass-card rounded-xl shadow-sm cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-200">
             <h3 class="font-amiri text-2xl font-bold text-slate-800 dark:text-slate-200">${name.name_ar}</h3>
             <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">${name.transliteration}</p>
             <p class="text-xs text-slate-500 dark:text-slate-500">${name.translation_en}</p>
@@ -174,7 +174,7 @@ export const renderAsmaUlHusna = (container, { navigateTo }) => {
         
         modalContainer.innerHTML = `
             <div id="asma-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 opacity-0 transition-opacity duration-300"></div>
-            <div id="asma-panel" class="fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-slate-900 rounded-t-2xl shadow-2xl max-h-[85vh] flex flex-col translate-y-full transition-transform duration-300 ease-out">
+            <div id="asma-panel" class="fixed bottom-0 left-0 right-0 z-50 glass-card rounded-t-2xl shadow-2xl max-h-[85vh] flex flex-col translate-y-full transition-transform duration-300 ease-out">
                 <header class="p-4 border-b dark:border-slate-700 flex-shrink-0 text-center relative">
                     <h3 class="text-2xl font-bold text-slate-800 dark:text-slate-100 font-amiri">${name_ar}</h3>
                     <p class="text-slate-600 dark:text-slate-400">${transliteration} - ${translation_en}</p>
@@ -186,7 +186,7 @@ export const renderAsmaUlHusna = (container, { navigateTo }) => {
                         <h4 class="font-bold text-slate-800 dark:text-slate-200 mb-2">${t('relatedVerses')}</h4>
                         <div class="space-y-2">
                             ${verses.map(v => `
-                                <a href="#" class="verse-link block p-3 rounded-lg bg-slate-100 dark:bg-slate-800/50 hover:bg-slate-200 dark:hover:bg-slate-700/50" data-surah="${v.surah}" data-ayah="${v.ayah}">
+                                <a href="#" class="verse-link block p-3 rounded-lg glass hover:bg-slate-200 dark:hover:bg-slate-700/50" data-surah="${v.surah}" data-ayah="${v.ayah}">
                                     ${t('surah')} ${v.surah}, ${t('ayah')} ${v.ayah} <span class="text-theme-600 dark:text-theme-400 float-right">${ChevronRightIcon()}</span>
                                 </a>
                             `).join('')}

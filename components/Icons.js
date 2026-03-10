@@ -90,12 +90,6 @@ export const SettingsIcon = ({className = 'w-6 h-6'} = {}) => `
   </svg>
 `;
 
-export const AiIcon = ({className = 'w-6 h-6'} = {}) => `
-  <svg class="${className}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-    <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a1.24 1.24 0 0 0-.855-.855L15.85 7.6l1.035-.259a1.24 1.24 0 0 0 .855-.855L18 5.45l.259 1.035a1.24 1.24 0 0 0 .855.855L20.15 7.6l-1.035.259a1.24 1.24 0 0 0-.855.855ZM18.259 16.215 18 17.25l-.259-1.035a1.24 1.24 0 0 0-.855-.855L15.85 15.1l1.035-.259a1.24 1.24 0 0 0 .855-.855L18 12.95l.259 1.035a1.24 1.24 0 0 0 .855.855L20.15 15.1l-1.035.259a1.24 1.24 0 0 0-.855.855Z" />
-  </svg>
-`;
-
 export const ShieldIcon = ({className = 'w-6 h-6'} = {}) => `
   <svg class="${className}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751A11.959 11.959 0 0 1 12 2.714z" />
