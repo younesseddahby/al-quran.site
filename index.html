@@ -6,36 +6,6 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>The Holy Quran</title>
-    <script>
-      tailwind.config = {
-        darkMode: 'class',
-        theme: {
-          extend: {
-            colors: {
-              parchment: 'rgb(var(--bg-light))',
-              night: 'rgb(var(--bg-dark))',
-              ink: 'rgb(var(--text-light))',
-              cream: 'rgb(var(--text-dark))',
-              line: 'rgba(var(--text-light) / 0.1)',
-              'line-dark': 'rgba(var(--text-dark) / 0.1)',
-              theme: {
-                50: 'rgb(var(--theme-color-50-rgb) / <alpha-value>)',
-                100: 'rgb(var(--theme-color-100-rgb) / <alpha-value>)',
-                200: 'rgb(var(--theme-color-200-rgb) / <alpha-value>)',
-                300: 'rgb(var(--theme-color-300-rgb) / <alpha-value>)',
-                400: 'rgb(var(--theme-color-400-rgb) / <alpha-value>)',
-                500: 'rgb(var(--theme-color-500-rgb) / <alpha-value>)',
-                600: 'rgb(var(--theme-color-600-rgb) / <alpha-value>)',
-                700: 'rgb(var(--theme-color-700-rgb) / <alpha-value>)',
-                800: 'rgb(var(--theme-color-800-rgb) / <alpha-value>)',
-                900: 'rgb(var(--theme-color-900-rgb) / <alpha-value>)',
-                950: 'rgb(var(--theme-color-950-rgb) / <alpha-value>)',
-              },
-            }
-          },
-        },
-      };
-    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -309,6 +279,35 @@
         document.documentElement.lang = lang;
         document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
       })();
+
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              parchment: 'rgb(var(--bg-light))',
+              night: 'rgb(var(--bg-dark))',
+              ink: 'rgb(var(--text-light))',
+              cream: 'rgb(var(--text-dark))',
+              line: 'rgba(var(--text-light) / 0.1)',
+              'line-dark': 'rgba(var(--text-dark) / 0.1)',
+              theme: {
+                50: 'rgb(var(--theme-color-50-rgb) / <alpha-value>)',
+                100: 'rgb(var(--theme-color-100-rgb) / <alpha-value>)',
+                200: 'rgb(var(--theme-color-200-rgb) / <alpha-value>)',
+                300: 'rgb(var(--theme-color-300-rgb) / <alpha-value>)',
+                400: 'rgb(var(--theme-color-400-rgb) / <alpha-value>)',
+                500: 'rgb(var(--theme-color-500-rgb) / <alpha-value>)',
+                600: 'rgb(var(--theme-color-600-rgb) / <alpha-value>)',
+                700: 'rgb(var(--theme-color-700-rgb) / <alpha-value>)',
+                800: 'rgb(var(--theme-color-800-rgb) / <alpha-value>)',
+                900: 'rgb(var(--theme-color-900-rgb) / <alpha-value>)',
+                950: 'rgb(var(--theme-color-950-rgb) / <alpha-value>)',
+              },
+            }
+          },
+        },
+      };
 
       // Global toast helper
       window.showToast = (message, type = 'info') => {
