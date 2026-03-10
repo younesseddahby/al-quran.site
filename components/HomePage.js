@@ -173,14 +173,15 @@ const renderQuickLinks = (container) => {
     const linksContainer = document.createElement('div');
     linksContainer.className = "grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6";
     const linkItems = [
+        { nav: "asma", icon: BookOpenIcon({className: 'w-8 h-8 md:w-10 md:h-10'}), title: t('asmaUlHusna'), desc: t('asmaUlHusnaDesc') || 'The 99 Names of Allah' },
+        { nav: "quiz", icon: QuizIcon({className: 'w-8 h-8 md:w-10 md:h-10'}), title: t('islamicQuiz'), desc: t('testYourKnowledge') || 'Test your Islamic knowledge with different levels.' },
+        { nav: "stories", icon: BookOpenIcon({className: 'w-8 h-8 md:w-10 md:h-10'}), title: t('prophetStories'), desc: t('prophetStoriesDesc') },
+        { nav: "bookmarks", icon: BookmarkIcon({className: 'w-8 h-8 md:w-10 md:h-10'}), title: t('bookmarks') || 'Bookmarks', desc: t('bookmarksTab') || 'View your saved verses and hadiths' },
         { nav: "quran", subNav: "read", icon: BookOpenIcon({className: 'w-8 h-8 md:w-10 md:h-10'}), title: t('readQuran'), desc: t('continueReadingDesc') },
         { nav: "quran", subNav: "listen", icon: ListenIcon({className: 'w-8 h-8 md:w-10 md:h-10'}), title: t('exploreRecitations'), desc: t('exploreRecitationsDesc') },
         { nav: "hisn", icon: ShieldIcon({className: 'w-8 h-8 md:w-10 md:h-10'}), title: t('readHisn'), desc: t('readHisnDesc') },
         { nav: "tasbih", icon: BeadsIcon({className: 'w-8 h-8 md:w-10 md:h-10'}), title: t('tasbih'), desc: t('tasbihDesc') },
         { nav: "hadith", icon: HadithIcon({className: 'w-8 h-8 md:w-10 md:h-10'}), title: t('discoverHadith'), desc: t('discoverHadithDesc') },
-        { nav: "bookmarks", icon: BookmarkIcon({className: 'w-8 h-8 md:w-10 md:h-10'}), title: t('bookmarks') || 'Bookmarks', desc: t('bookmarksTab') || 'View your saved verses and hadiths' },
-        { nav: "quiz", icon: QuizIcon({className: 'w-8 h-8 md:w-10 md:h-10'}), title: t('islamicQuiz'), desc: t('testYourKnowledge') || 'Test your Islamic knowledge with different levels.' },
-        { nav: "stories", icon: BookOpenIcon({className: 'w-8 h-8 md:w-10 md:h-10'}), title: t('prophetStories'), desc: t('prophetStoriesDesc') },
     ];
     linksContainer.innerHTML = linkItems.map((link, i) => `
         <a href="#" data-nav="${link.nav}" ${link.subNav ? `data-sub-nav="${link.subNav}"` : ''} class="quick-link-card group p-6 md:p-8 glass-card rounded-[2rem] md:rounded-[2.5rem] hover:-translate-y-2 transition-all duration-700 flex flex-col gap-4 md:gap-6 hover:shadow-2xl hover:shadow-theme-500/10 active:scale-[0.98] stagger-${(i % 3) + 1}">

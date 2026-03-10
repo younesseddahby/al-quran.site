@@ -10,6 +10,7 @@ import { renderSeerah } from './components/Seerah.js';
 import { renderBookmarks } from './components/Bookmarks.js';
 import { renderQuiz } from './components/Quiz.js';
 import { renderProphetStories } from './components/ProphetStories.js';
+import { renderAsmaUlHusna } from './components/AsmaUlHusna.js';
 import { 
     HomeIcon, QuranIcon, HadithIcon, PrayerIcon, SettingsIcon, AiIcon, ShieldIcon, BeadsIcon, 
     ArrowLeftIcon, ArrowRightIcon, BookOpenIcon, BookmarkIcon, QuizIcon
@@ -227,6 +228,14 @@ const App = (rootElement) => {
             setReaderDisplayMode: (m) => { state.readerDisplayMode = m; localStorage.setItem('readerDisplayMode', m); render(); },
             setDebugMode: (d) => { state.debugMode = d; localStorage.setItem('debugMode', d); render(); },
             setAnimationsEnabled: (e) => { state.animationsEnabled = e; applyStyles(); localStorage.setItem('animationsEnabled', e); render(); },
+            navigateTo: ({ surahNumber, ayahNumber }) => {
+                state.activeTab = 'quran';
+                state.quranMode = 'read';
+                CACHE.selectedSurah = { number: surahNumber };
+                CACHE.activeAyahForNav = ayahNumber;
+                CACHE.readerView = 'reader';
+                render();
+            },
             toggleBookmark: (type, item) => {
                 const bookmarks = { ...state.bookmarks };
                 const list = bookmarks[type];
@@ -255,6 +264,7 @@ const App = (rootElement) => {
             case 'bookmarks': renderBookmarks(mainContent, props); break;
             case 'quiz': renderQuiz(mainContent, props); break;
             case 'stories': renderProphetStories(mainContent, props); break;
+            case 'asma': renderAsmaUlHusna(mainContent, props); break;
             case 'adhan': currentContentCleanup = renderAdhanTimes(mainContent, props); break;
             case 'settings': renderSettingsPage(mainContent, props); break;
         }
