@@ -40,7 +40,7 @@ export const renderSeerah = (container, props) => {
                         <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-theme-500 transition-colors">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                         </div>
-                        <input id="seerah-search" type="text" value="${state.searchQuery}" placeholder="${t('searchSeerah')}" class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-theme-500/50 focus:border-theme-500 transition-all dark:text-white shadow-sm text-sm">
+                        <input id="seerah-search" type="text" value="${state.searchQuery}" placeholder="${t('searchSeerah')}" class="w-full pl-10 pr-4 py-2.5 glass rounded-xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-theme-500/50 focus:border-theme-500 transition-all dark:text-white shadow-sm text-sm">
                     </div>
                 </div>
 
@@ -61,7 +61,7 @@ export const renderSeerah = (container, props) => {
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     ${SEERAH_CHAPTERS.filter(c => t(c.titleKey).toLowerCase().includes(state.searchQuery.toLowerCase())).map((chapter, index) => `
-                        <button data-chapter-id="${chapter.id}" class="p-5 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md hover:border-theme-500/30 transition-all flex items-center justify-between group">
+                        <button data-chapter-id="${chapter.id}" class="p-5 glass-card rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md hover:border-theme-500/30 transition-all flex items-center justify-between group">
                             <div class="flex items-center gap-4">
                                 <span class="text-2xl font-bold text-slate-200 dark:text-slate-700 font-display">${(index + 1).toString().padStart(2, '0')}</span>
                                 <span class="font-bold text-slate-700 dark:text-slate-200 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-colors">${t(chapter.titleKey)}</span>
@@ -104,9 +104,9 @@ export const renderSeerah = (container, props) => {
         wrapper.innerHTML = `
             <div class="space-y-8">
                 <div class="flex items-center justify-between">
-                    <button id="seerah-back" class="p-2 -ml-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all flex items-center gap-2 text-slate-900 dark:text-white">
+                    <button id="seerah-back" class="p-2 -ml-2 rounded-full glass hover:bg-theme-100 dark:hover:bg-theme-900/30 transition-all active:scale-90 flex items-center gap-2 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-800">
                         ${BackIcon({className: "w-5 h-5"})}
-                        <span class="font-bold text-sm">${t('back')}</span>
+                        <span class="text-xs font-bold uppercase tracking-wider">${t('back')}</span>
                     </button>
                     <div class="flex items-center gap-2">
                         <button id="seerah-bookmark" class="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all ${state.bookmark === state.selectedChapter ? 'text-theme-500 bg-theme-50 dark:bg-theme-900/20' : 'text-slate-400'}">
@@ -118,7 +118,7 @@ export const renderSeerah = (container, props) => {
                     </div>
                 </div>
 
-                <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 md:p-10 shadow-xl border border-slate-100 dark:border-slate-800 space-y-6">
+                <div class="glass-card rounded-3xl p-6 md:p-10 shadow-xl border border-slate-100 dark:border-slate-800 space-y-6">
                     <h1 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white font-display tracking-tight">${t(chapter.titleKey)}</h1>
                     <div class="w-20 h-1.5 bg-theme-500 rounded-full"></div>
                     <div class="prose prose-slate dark:prose-invert max-w-none">
@@ -130,14 +130,14 @@ export const renderSeerah = (container, props) => {
 
                 <div class="flex items-center justify-between gap-4 pt-6">
                     ${getPrevChapter() ? `
-                        <button id="seerah-prev" class="flex-1 p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:border-theme-500/30 transition-all text-left ${isRtl ? 'text-right' : ''}">
+                        <button id="seerah-prev" class="flex-1 p-4 glass-card rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:border-theme-500/30 transition-all text-left ${isRtl ? 'text-right' : ''}">
                             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">${t('previous') || 'Previous'}</p>
                             <p class="font-bold text-slate-700 dark:text-slate-200 truncate">${t(getPrevChapter().titleKey)}</p>
                         </button>
                     ` : '<div class="flex-1"></div>'}
                     
                     ${getNextChapter() ? `
-                        <button id="seerah-next" class="flex-1 p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:border-theme-500/30 transition-all text-right ${isRtl ? 'text-left' : ''}">
+                        <button id="seerah-next" class="flex-1 p-4 glass-card rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:border-theme-500/30 transition-all text-right ${isRtl ? 'text-left' : ''}">
                             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">${t('next') || 'Next'}</p>
                             <p class="font-bold text-slate-700 dark:text-slate-200 truncate">${t(getNextChapter().titleKey)}</p>
                         </button>

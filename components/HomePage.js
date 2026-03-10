@@ -69,32 +69,30 @@ const getPrayerTimes = async () => {
 // --- RENDER FUNCTIONS ---
 const renderHeroSection = (container) => {
     const heroContainer = document.createElement('div');
-    heroContainer.className = "p-6 md:p-12 rounded-[2rem] md:rounded-[2.5rem] bg-white dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none relative overflow-hidden group";
+    heroContainer.className = "p-6 md:p-12 rounded-[2rem] md:rounded-[3rem] glass border border-white/20 dark:border-slate-800/50 shadow-2xl shadow-slate-200/50 dark:shadow-none relative overflow-hidden group transition-all duration-700 hover:shadow-theme-500/10";
     
     const greetingText = getGreeting();
 
     heroContainer.innerHTML = `
-        <div class="absolute top-0 right-0 w-64 h-64 bg-theme-500/5 rounded-bl-[10rem] -mr-20 -mt-20 transition-transform group-hover:scale-110 duration-1000"></div>
+        <div class="absolute top-0 right-0 w-96 h-96 bg-theme-500/10 rounded-full blur-[100px] -mr-32 -mt-32 transition-transform group-hover:scale-125 duration-1000"></div>
+        <div class="absolute bottom-0 left-0 w-64 h-64 bg-indigo-500/5 rounded-full blur-[80px] -ml-20 -mb-20 transition-transform group-hover:scale-125 duration-1000 delay-100"></div>
+        
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-center relative z-10">
-            <div class="space-y-3 md:space-y-4">
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-theme-50 dark:bg-theme-900/20 text-theme-700 dark:text-theme-400 text-[10px] md:text-xs font-bold tracking-wider uppercase">
-                    ${ClockIcon({className: 'w-3 h-3'})} ${t('welcome') || 'Welcome'}
+            <div class="space-y-4 md:space-y-6">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-theme-500/10 text-theme-700 dark:text-theme-400 text-[10px] md:text-xs font-bold tracking-widest uppercase border border-theme-500/20">
+                    <span class="w-2 h-2 rounded-full bg-theme-500 animate-ping"></span>
+                    ${t('welcome') || 'Welcome'}
                 </div>
-                <h1 class="text-4xl sm:text-5xl md:text-7xl font-bold font-display text-slate-900 dark:text-white tracking-tight leading-tight">${greetingText}</h1>
-                <p class="text-slate-500 dark:text-slate-400 text-base md:text-lg max-w-md leading-relaxed">${t('welcomeMessage')}</p>
-                <div class="pt-2">
-                    <button id="hero-suggest-btn" class="px-6 py-3 bg-theme-600 text-white rounded-full font-bold text-sm shadow-lg shadow-theme-500/20 hover:bg-theme-700 transition-all active:scale-95">
-                        ${t('suggestFeatures')}
-                    </button>
-                </div>
+                <h1 class="text-5xl sm:text-6xl md:text-8xl font-bold font-display text-slate-900 dark:text-white tracking-tighter leading-[0.9]">${greetingText}</h1>
+                <p class="text-slate-600 dark:text-slate-400 text-lg md:text-xl max-w-md leading-relaxed font-medium">${t('welcomeMessage')}</p>
             </div>
-            <div class="text-center md:text-right rtl:md:text-left space-y-3 md:space-y-4">
-                <div id="live-clock" class="text-5xl sm:text-6xl md:text-8xl font-bold text-theme-600 dark:text-theme-400 font-display tracking-tighter"></div>
-                <div class="flex flex-col md:items-end gap-1 md:gap-2 text-slate-500 dark:text-slate-400">
-                    <span class="flex items-center justify-center md:justify-end gap-2 text-xs md:text-sm font-medium">
+            <div class="text-center md:text-right rtl:md:text-left space-y-4 md:space-y-6">
+                <div id="live-clock" class="text-6xl sm:text-7xl md:text-9xl font-bold text-theme-600 dark:text-theme-400 font-display tracking-tighter drop-shadow-sm"></div>
+                <div class="flex flex-col md:items-end gap-2 md:gap-3 text-slate-500 dark:text-slate-400">
+                    <span class="flex items-center justify-center md:justify-end gap-3 text-sm md:text-base font-medium glass px-4 py-1.5 rounded-full border border-slate-200/50 dark:border-slate-700/50">
                         ${CalendarIcon({className: 'w-4 h-4 text-theme-500'})} <span id="gregorian-date"></span>
                     </span>
-                    <span class="flex items-center justify-center md:justify-end gap-2 text-xs md:text-sm font-bold text-slate-700 dark:text-slate-300">
+                    <span class="flex items-center justify-center md:justify-end gap-3 text-sm md:text-base font-bold text-slate-700 dark:text-slate-300 bg-theme-500/10 px-4 py-1.5 rounded-full border border-theme-500/20">
                         ${CalendarIcon({className: 'w-4 h-4 text-theme-500'})} <span id="hijri-date">${createSpinner('...').outerHTML}</span>
                     </span>
                 </div>
@@ -133,7 +131,7 @@ const renderPrayerWidget = (container, state) => {
         }
         
         prayerContainer.innerHTML = `
-            <div class="p-6 md:p-8 bg-white dark:bg-slate-900 rounded-[2rem] md:rounded-[2.5rem] h-full border border-slate-100 dark:border-slate-800 shadow-lg shadow-slate-200/50 dark:shadow-none flex flex-col">
+            <div class="p-6 md:p-8 glass-card rounded-[2rem] md:rounded-[2.5rem] h-full flex flex-col transition-all duration-500 hover:shadow-theme-500/5">
                 <div class="flex justify-between items-center mb-6 md:mb-8">
                     <h3 class="font-bold font-display text-xl md:text-2xl text-slate-900 dark:text-white">${t('prayerTimes')}</h3>
                     <a href="#" data-nav="adhan" class="text-xs md:text-sm font-bold text-theme-600 dark:text-theme-400 hover:text-theme-700 transition-colors flex items-center gap-1">
@@ -144,9 +142,9 @@ const renderPrayerWidget = (container, state) => {
                     ${prayerOrder.map(name => {
                         const isActive = name === nextPrayerName;
                         return `
-                        <div class="p-3 md:p-4 rounded-xl md:rounded-2xl flex items-center justify-between transition-all duration-300 ${isActive ? 'bg-theme-600 text-white shadow-lg shadow-theme-500/30 scale-[1.02]' : 'bg-slate-50 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'}">
+                        <div class="p-3 md:p-4 rounded-xl md:rounded-2xl flex items-center justify-between transition-all duration-500 ${isActive ? 'bg-theme-600 text-white shadow-xl shadow-theme-500/30 scale-[1.05] z-10' : 'glass-card text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800/50'}">
                             <div class="flex items-center gap-2 md:gap-3">
-                                <div class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full ${isActive ? 'bg-white animate-pulse' : 'bg-slate-300 dark:bg-slate-600'}"></div>
+                                <div class="w-2 h-2 rounded-full ${isActive ? 'bg-white animate-pulse' : 'bg-slate-300 dark:bg-slate-600'}"></div>
                                 <p class="text-[10px] md:text-sm font-bold uppercase tracking-wider">${t(`prayer_${name}`)}</p>
                             </div>
                             <p class="text-lg md:text-xl font-display font-bold">${timings[name]}</p>
@@ -157,8 +155,8 @@ const renderPrayerWidget = (container, state) => {
         `;
     } else {
          prayerContainer.innerHTML = `
-            <div class="p-6 md:p-8 bg-white dark:bg-slate-900 rounded-[2rem] md:rounded-[2.5rem] text-center h-full flex flex-col justify-center items-center border border-slate-100 dark:border-slate-800 shadow-lg shadow-slate-200/50 dark:shadow-none">
-                 <div class="w-12 h-12 md:w-16 md:h-16 bg-theme-50 dark:bg-theme-900/20 rounded-full flex items-center justify-center text-theme-600 dark:text-theme-400 mb-4 md:mb-6">
+            <div class="p-6 md:p-8 glass-card rounded-[2rem] md:rounded-[2.5rem] text-center h-full flex flex-col justify-center items-center border border-slate-100 dark:border-slate-800 shadow-lg shadow-slate-200/50 dark:shadow-none">
+                 <div class="w-12 h-12 md:w-16 md:h-16 glass rounded-full flex items-center justify-center text-theme-600 dark:text-theme-400 mb-4 md:mb-6">
                     ${ClockIcon({className: 'w-6 h-6 md:w-8 md:h-8'})}
                  </div>
                  <h4 class="text-lg md:text-xl font-bold text-slate-900 dark:text-white mb-2">${t('prayerTimes')}</h4>
@@ -183,100 +181,23 @@ const renderQuickLinks = (container) => {
         { nav: "bookmarks", icon: BookmarkIcon({className: 'w-8 h-8 md:w-10 md:h-10'}), title: t('bookmarks') || 'Bookmarks', desc: t('bookmarksTab') || 'View your saved verses and hadiths' },
         { nav: "quiz", icon: QuizIcon({className: 'w-8 h-8 md:w-10 md:h-10'}), title: t('islamicQuiz'), desc: t('testYourKnowledge') || 'Test your Islamic knowledge with different levels.' },
         { nav: "stories", icon: BookOpenIcon({className: 'w-8 h-8 md:w-10 md:h-10'}), title: t('prophetStories'), desc: t('prophetStoriesDesc') },
-        { nav: "feedback", icon: EmailIcon({className: 'w-8 h-8 md:w-10 md:h-10'}), title: t('suggestFeatures'), desc: t('suggestFeaturesDesc') },
     ];
-    linksContainer.innerHTML = linkItems.map(link => `
-        <a href="#" data-nav="${link.nav}" ${link.subNav ? `data-sub-nav="${link.subNav}"` : ''} class="quick-link-card group p-6 md:p-8 bg-white dark:bg-slate-900 rounded-[2rem] md:rounded-[2.5rem] hover:-translate-y-1 md:hover:-translate-y-2 transition-all duration-500 flex flex-col gap-4 md:gap-6 border border-slate-100 dark:border-slate-800 shadow-lg shadow-slate-200/50 dark:shadow-none hover:shadow-2xl hover:shadow-theme-500/10 active:scale-[0.98]">
-            <div class="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-theme-50 dark:bg-theme-900/20 flex items-center justify-center text-theme-600 dark:text-theme-400 group-hover:bg-theme-600 group-hover:text-white transition-all duration-500">
+    linksContainer.innerHTML = linkItems.map((link, i) => `
+        <a href="#" data-nav="${link.nav}" ${link.subNav ? `data-sub-nav="${link.subNav}"` : ''} class="quick-link-card group p-6 md:p-8 glass-card rounded-[2rem] md:rounded-[2.5rem] hover:-translate-y-2 transition-all duration-700 flex flex-col gap-4 md:gap-6 hover:shadow-2xl hover:shadow-theme-500/10 active:scale-[0.98] stagger-${(i % 3) + 1}">
+            <div class="w-14 h-14 md:w-20 md:h-20 rounded-2xl md:rounded-3xl bg-theme-500/10 dark:bg-theme-500/5 flex items-center justify-center text-theme-600 dark:text-theme-400 group-hover:bg-theme-600 group-hover:text-white transition-all duration-700 group-hover:rotate-6 group-hover:scale-110">
                 ${link.icon}
             </div>
             <div>
-                <h4 class="font-bold font-display text-xl md:text-2xl text-slate-900 dark:text-white mb-1 md:mb-2">${link.title}</h4>
-                <p class="text-xs md:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">${link.desc}</p>
+                <h4 class="font-bold font-display text-2xl md:text-3xl text-slate-900 dark:text-white mb-1 md:mb-2 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-colors">${link.title}</h4>
+                <p class="text-sm md:text-base text-slate-500 dark:text-slate-400 leading-relaxed font-medium">${link.desc}</p>
             </div>
-            <div class="mt-auto pt-2 md:pt-4 flex items-center gap-2 text-theme-600 dark:text-theme-400 font-bold text-xs md:text-sm">
+            <div class="mt-auto pt-2 md:pt-4 flex items-center gap-2 text-theme-600 dark:text-theme-400 font-bold text-sm md:text-base opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-2 group-hover:translate-y-0">
                 <span>${t('getStarted') || 'Get Started'}</span>
-                ${ChevronRightIcon({className: 'w-4 h-4 group-hover:translate-x-1 transition-transform'})}
+                ${ChevronRightIcon({className: 'w-5 h-5 group-hover:translate-x-2 transition-transform'})}
             </div>
         </a>
     `).join('');
     container.appendChild(linksContainer);
-};
-
-const renderFeedbackSection = (container) => {
-    const feedbackContainer = document.createElement('div');
-    feedbackContainer.id = 'feedback-section';
-    feedbackContainer.className = "mt-12 p-8 md:p-12 rounded-[2.5rem] bg-slate-900 dark:bg-slate-800/50 text-white relative overflow-hidden group border border-slate-800 scroll-mt-20";
-    
-    feedbackContainer.innerHTML = `
-        <div class="absolute top-0 right-0 w-64 h-64 bg-theme-500/10 rounded-bl-[10rem] -mr-20 -mt-20 transition-transform group-hover:scale-110 duration-1000"></div>
-        <div class="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div class="space-y-6">
-                <div class="w-16 h-16 rounded-2xl bg-theme-500/20 flex items-center justify-center text-theme-400">
-                    ${EmailIcon({className: 'w-8 h-8'})}
-                </div>
-                <h2 class="text-3xl md:text-5xl font-bold font-display tracking-tight">${t('suggestFeatures')}</h2>
-                <p class="text-slate-400 text-lg leading-relaxed max-w-md">${t('suggestFeaturesDesc')}</p>
-                <div class="flex items-center gap-4 text-slate-500 text-sm font-medium">
-                    <span class="flex items-center gap-2">
-                        ${CheckCircleIcon({className: 'w-4 h-4 text-theme-500'})} ${t('done')}
-                    </span>
-                </div>
-            </div>
-            <form id="feedback-form" class="space-y-4 bg-white/5 p-6 rounded-3xl backdrop-blur-sm border border-white/10">
-                <div id="feedback-success-msg" class="hidden p-4 bg-emerald-500/20 border border-emerald-500/50 rounded-2xl text-emerald-400 text-sm font-bold text-center mb-4">
-                    ${t('feedbackSuccess')}
-                </div>
-                <div class="feedback-inputs space-y-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">${t('subject')}</label>
-                        <input type="text" id="feedback-subject" required placeholder="e.g., New Reciter Request" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl outline-none focus:ring-2 focus:ring-theme-500/50 transition-all text-white text-sm">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">${t('message')}</label>
-                        <textarea id="feedback-message" required rows="4" placeholder="Describe your idea..." class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl outline-none focus:ring-2 focus:ring-theme-500/50 transition-all text-white text-sm resize-none"></textarea>
-                    </div>
-                    <button type="submit" id="feedback-submit-btn" class="w-full py-4 bg-theme-600 hover:bg-theme-700 text-white font-bold rounded-xl transition-all active:scale-95 shadow-lg shadow-theme-600/20 flex items-center justify-center gap-2">
-                        <span class="btn-text">${t('sendFeedback')}</span>
-                        <span class="btn-spinner hidden">${createSpinner().outerHTML}</span>
-                    </button>
-                </div>
-            </form>
-        </div>
-    `;
-    
-    feedbackContainer.querySelector('#feedback-form').onsubmit = async (e) => {
-        e.preventDefault();
-        const btn = e.target.querySelector('#feedback-submit-btn');
-        const text = btn.querySelector('.btn-text');
-        const spinner = btn.querySelector('.btn-spinner');
-        const inputs = e.target.querySelector('.feedback-inputs');
-        const successMsg = e.target.querySelector('#feedback-success-msg');
-
-        btn.disabled = true;
-        text.classList.add('hidden');
-        spinner.classList.remove('hidden');
-
-        // Simulate direct submission
-        await new Promise(r => setTimeout(r, 1500));
-
-        successMsg.classList.remove('hidden');
-        inputs.classList.add('hidden');
-        
-        window.showToast?.(t('feedbackSuccess'), 'success');
-        
-        // Reset after 3 seconds to allow another feedback
-        setTimeout(() => {
-            e.target.reset();
-            successMsg.classList.add('hidden');
-            inputs.classList.remove('hidden');
-            btn.disabled = false;
-            text.classList.remove('hidden');
-            spinner.classList.add('hidden');
-        }, 5000);
-    };
-
-    container.appendChild(feedbackContainer);
 };
 
 // --- MAIN COMPONENT ---
@@ -319,7 +240,6 @@ export const renderHomePage = (container, props) => {
         });
         
         renderQuickLinks(quickLinksContainer);
-        renderFeedbackSection(homeWrapper);
         
         setupLiveClock();
         setupHijriDate();
@@ -330,13 +250,6 @@ export const renderHomePage = (container, props) => {
     const setupLiveClock = () => {
         const clockEl = container.querySelector('#live-clock');
         const gregorianEl = container.querySelector('#gregorian-date');
-        const suggestBtn = container.querySelector('#hero-suggest-btn');
-
-        if (suggestBtn) {
-            suggestBtn.onclick = () => {
-                document.getElementById('feedback-section')?.scrollIntoView({ behavior: 'smooth' });
-            };
-        }
 
         if (!clockEl || !gregorianEl) return;
         const update = () => {
@@ -364,11 +277,6 @@ export const renderHomePage = (container, props) => {
             e.preventDefault();
             const tabId = link.dataset.nav;
             
-            if (tabId === 'feedback') {
-                document.getElementById('feedback-section')?.scrollIntoView({ behavior: 'smooth' });
-                return;
-            }
-
             const subNav = link.dataset.subNav;
             if (subNav === 'listen') {
                 setQuranMode('listen');

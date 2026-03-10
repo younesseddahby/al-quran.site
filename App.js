@@ -84,6 +84,12 @@ const App = (rootElement) => {
             const rgb = hexToRgb(hex);
             if (rgb) root.style.setProperty(`--theme-color-${shade}-rgb`, rgb);
         });
+
+        // Update theme-color meta tag
+        const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+        if (metaThemeColor) {
+            metaThemeColor.setAttribute('content', colors[600] || colors[500]);
+        }
     };
 
     let lastScrollY = window.scrollY;
@@ -120,7 +126,7 @@ const App = (rootElement) => {
 
     const renderHeader = () => {
         const isHidden = state.activeTab === 'settings' || (state.activeTab === 'quran' && state.isReaderMode);
-        header.className = isHidden ? 'hidden' : 'bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl sticky top-0 z-40 border-b border-slate-200 dark:border-slate-800 transition-transform duration-300';
+        header.className = isHidden ? 'hidden' : 'glass sticky top-0 z-40 transition-transform duration-500 ease-out';
         if (isHidden) return;
 
         const isHome = state.activeTab === 'home';
@@ -132,9 +138,9 @@ const App = (rootElement) => {
                 <div class="flex justify-between items-center h-16 md:h-20">
                     <div class="flex items-center gap-3">
                         ${!isHome ? `
-                            <button id="header-back-btn" class="p-2 -ml-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 text-slate-600 dark:text-slate-300 transition-all active:scale-90 flex items-center gap-1">
-                                ${BackIcon({className: "w-6 h-6"})}
-                                <span class="hidden sm:inline text-sm font-bold">${t('back')}</span>
+                            <button id="header-back-btn" class="p-2 -ml-2 rounded-full glass hover:bg-theme-100 dark:hover:bg-theme-900/30 transition-all active:scale-90 flex items-center gap-1 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800">
+                                ${BackIcon({className: "w-5 h-5"})}
+                                <span class="hidden sm:inline text-xs font-bold uppercase tracking-wider">${t('back')}</span>
                             </button>
                         ` : ''}
                         <h1 class="text-base md:text-lg font-bold text-theme-700 dark:text-theme-400 font-display tracking-tight">${t('appName')}</h1>
@@ -173,7 +179,7 @@ const App = (rootElement) => {
 
     const renderMobileNav = () => {
         const isHidden = (state.isReaderMode && state.activeTab === 'quran') || state.activeTab === 'settings';
-        mobileNav.className = isHidden ? 'hidden' : 'md:hidden fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-lg border-t border-slate-200 dark:border-slate-800 z-50 transition-all duration-300';
+        mobileNav.className = isHidden ? 'hidden' : 'md:hidden fixed bottom-0 left-0 right-0 glass z-50 transition-all duration-500 ease-out';
         mobileNavPlaceholder.className = isHidden ? 'hidden' : 'md:hidden h-20';
         if (isHidden) return;
 

@@ -60,12 +60,40 @@
         --text-dark: 254 252 232;
       }
 
+      /* Glassmorphism */
+      .glass {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(12px) saturate(180%);
+        -webkit-backdrop-filter: blur(12px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      html.dark .glass {
+        background: rgba(15, 23, 42, 0.7);
+        backdrop-filter: blur(12px) saturate(180%);
+        -webkit-backdrop-filter: blur(12px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .glass-card {
+        background: rgba(255, 255, 255, 0.4);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+      }
+      html.dark .glass-card {
+        background: rgba(30, 41, 59, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+      }
+
       body {
         font-family: 'Lora', serif;
         background-color: rgb(var(--bg-light));
         color: rgb(var(--text-light));
-        transition: background-color 0.4s ease, color 0.4s ease;
+        transition: background-color 0.6s cubic-bezier(0.4, 0, 0.2, 1), color 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         -webkit-tap-highlight-color: transparent;
+        overflow-x: hidden;
       }
 
       html.dark body {
@@ -117,8 +145,15 @@
       }
 
       /* Animations */
-      @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-      .fade-in { animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+      @keyframes slideUp { 
+        from { opacity: 0; transform: translateY(30px) scale(0.98); } 
+        to { opacity: 1; transform: translateY(0) scale(1); } 
+      }
+      .fade-in { animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+      
+      .stagger-1 { animation-delay: 0.1s; }
+      .stagger-2 { animation-delay: 0.2s; }
+      .stagger-3 { animation-delay: 0.3s; }
       
       /* Ayah Highlight Styles */
       .active-ayah-span {
@@ -266,6 +301,7 @@
                 700: 'rgb(var(--theme-color-700-rgb) / <alpha-value>)',
                 800: 'rgb(var(--theme-color-800-rgb) / <alpha-value>)',
                 900: 'rgb(var(--theme-color-900-rgb) / <alpha-value>)',
+                950: 'rgb(var(--theme-color-950-rgb) / <alpha-value>)',
               },
             }
           },

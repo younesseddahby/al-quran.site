@@ -43,12 +43,12 @@ export const renderTasbih = (container, props = {}) => {
         
         container.innerHTML = `
             <div class="h-full flex flex-col items-center justify-center space-y-8 fade-in p-4 relative">
-                <div class="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-xl p-6 border border-slate-200 dark:border-slate-800 relative overflow-hidden">
+                <div class="w-full max-w-md glass-card rounded-2xl shadow-xl p-6 border border-slate-200 dark:border-slate-800 relative overflow-hidden">
                     <div class="flex justify-between items-center mb-6">
                         <div class="flex items-center gap-2">
-                            <button id="tasbih-back-btn" class="p-2 -ml-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-all active:scale-90 flex items-center gap-1 text-slate-900 dark:text-white">
-                                ${BackIcon({className: "w-6 h-6"})}
-                                <span class="hidden sm:inline text-sm font-bold">${t('back')}</span>
+                            <button id="tasbih-back-btn" class="p-2 -ml-2 rounded-full glass hover:bg-theme-100 dark:hover:bg-theme-900/30 transition-all active:scale-90 flex items-center gap-1 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-800">
+                                ${BackIcon({className: "w-5 h-5"})}
+                                <span class="hidden sm:inline text-xs font-bold uppercase tracking-wider">${t('back')}</span>
                             </button>
                             <div class="flex items-center gap-2 text-theme-600 dark:text-theme-400">
                                 ${BeadsIcon()}
@@ -67,10 +67,10 @@ export const renderTasbih = (container, props = {}) => {
 
                     <div class="relative mb-8">
                         <div class="flex items-center gap-2">
-                            <select id="phrase-select" class="flex-grow p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-center text-lg font-amiri cursor-pointer focus:ring-2 focus:ring-theme-500 focus:outline-none text-slate-900 dark:text-white">
+                            <select id="phrase-select" class="flex-grow p-3 glass border border-slate-200 dark:border-slate-700 rounded-xl text-center text-lg font-amiri cursor-pointer focus:ring-2 focus:ring-theme-500 focus:outline-none text-slate-900 dark:text-white">
                                 ${allPhrases.map((p, i) => `<option value="${i}" ${i === state.selectedPhraseIndex ? 'selected' : ''} class="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">${p.ar}</option>`).join('')}
                             </select>
-                            <button id="add-phrase-btn" class="p-3 rounded-xl bg-theme-50 dark:bg-theme-950/20 text-theme-600 dark:text-theme-400 hover:bg-theme-100 dark:hover:bg-theme-900/30 transition-colors">
+                            <button id="add-phrase-btn" class="p-3 rounded-xl glass text-theme-600 dark:text-theme-400 hover:bg-theme-100 dark:hover:bg-theme-900/30 transition-colors">
                                 ${PlusIcon({className: "w-6 h-6"})}
                             </button>
                         </div>
@@ -106,7 +106,7 @@ export const renderTasbih = (container, props = {}) => {
 
                     <!-- Settings Overlay -->
                     ${state.showSettings ? `
-                    <div class="absolute inset-0 bg-white dark:bg-slate-900 z-20 p-6 fade-in flex flex-col">
+                    <div class="absolute inset-0 glass-card z-20 p-6 fade-in flex flex-col">
                         <div class="flex justify-between items-center mb-6">
                             <h3 class="text-lg font-bold text-slate-900 dark:text-white">${t('tasbihSettings') || 'Tasbih Settings'}</h3>
                             <button id="close-settings" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
@@ -119,17 +119,17 @@ export const renderTasbih = (container, props = {}) => {
                                 <label class="text-sm font-bold text-slate-500 uppercase tracking-wider">${t('target')}</label>
                                 <div class="grid grid-cols-3 gap-2">
                                     ${[33, 99, 100, 1000, 0].map(val => `
-                                        <button data-target="${val}" class="target-btn py-2 rounded-xl border ${state.target === val ? 'bg-theme-600 text-white border-theme-600' : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300'} text-sm font-bold transition-all">
+                                        <button data-target="${val}" class="target-btn py-2 rounded-xl border ${state.target === val ? 'bg-theme-600 text-white border-theme-600' : 'glass border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300'} text-sm font-bold transition-all">
                                             ${val === 0 ? '∞' : val}
                                         </button>
                                     `).join('')}
-                                    <button id="custom-target-btn" class="py-2 rounded-xl border bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-sm font-bold transition-all">
+                                    <button id="custom-target-btn" class="py-2 rounded-xl border glass border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-sm font-bold transition-all">
                                         ${t('custom') || 'Custom'}
                                     </button>
                                 </div>
                             </div>
 
-                            <div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl">
+                            <div class="flex items-center justify-between p-4 glass rounded-2xl">
                                 <div class="flex flex-col">
                                     <span class="font-bold text-slate-900 dark:text-white">${t('hapticFeedback') || 'Haptic Feedback'}</span>
                                     <span class="text-xs text-slate-500">${t('vibrateOnTap') || 'Vibrate on every tap'}</span>
@@ -145,7 +145,7 @@ export const renderTasbih = (container, props = {}) => {
                                     ${state.customPhrases.map((p, i) => {
                                         const isSelected = state.selectedPhraseIndex === (PREDEFINED_TASBIH.length + i);
                                         return `
-                                        <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800 rounded-xl border ${isSelected ? 'border-theme-500 ring-1 ring-theme-500' : 'border-slate-200 dark:border-slate-700'}">
+                                        <div class="flex items-center justify-between p-3 glass rounded-xl border ${isSelected ? 'border-theme-500 ring-1 ring-theme-500' : 'border-slate-200 dark:border-slate-700'}">
                                             <div class="flex flex-col">
                                                 <span class="font-amiri text-slate-900 dark:text-white">${p.ar}</span>
                                                 ${p.en ? `<span class="text-[10px] text-slate-400">${p.en}</span>` : ''}
@@ -175,7 +175,7 @@ export const renderTasbih = (container, props = {}) => {
 
                     <!-- Add Phrase Overlay -->
                     ${state.showAddPhrase ? `
-                    <div class="absolute inset-0 bg-white dark:bg-slate-900 z-30 p-6 fade-in flex flex-col">
+                    <div class="absolute inset-0 glass-card z-30 p-6 fade-in flex flex-col">
                         <div class="flex justify-between items-center mb-6">
                             <h3 class="text-lg font-bold text-slate-900 dark:text-white">${t('addCustomPhrase') || 'Add Custom Phrase'}</h3>
                             <button id="close-add-phrase" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
@@ -185,18 +185,18 @@ export const renderTasbih = (container, props = {}) => {
                         <div class="space-y-4 flex-grow">
                             <div class="space-y-2">
                                 <label class="text-xs font-bold text-slate-500 uppercase">${t('arabicText') || 'Arabic Text'}</label>
-                                <input id="new-phrase-ar" type="text" dir="rtl" class="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-right font-amiri text-xl outline-none focus:ring-2 focus:ring-theme-500 text-slate-900 dark:text-white placeholder:text-slate-400" placeholder="سُبْحَانَ ٱللَّٰهِ">
+                                <input id="new-phrase-ar" type="text" dir="rtl" class="w-full p-3 glass border border-slate-200 dark:border-slate-700 rounded-xl text-right font-amiri text-xl outline-none focus:ring-2 focus:ring-theme-500 text-slate-900 dark:text-white placeholder:text-slate-400" placeholder="سُبْحَانَ ٱللَّٰهِ">
                             </div>
                             <div class="space-y-2">
                                 <label class="text-xs font-bold text-slate-500 uppercase">${t('translation') || 'Translation (Optional)'}</label>
-                                <input id="new-phrase-en" type="text" class="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-theme-500 text-slate-900 dark:text-white placeholder:text-slate-400" placeholder="Glory be to Allah">
+                                <input id="new-phrase-en" type="text" class="w-full p-3 glass border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-theme-500 text-slate-900 dark:text-white placeholder:text-slate-400" placeholder="Glory be to Allah">
                             </div>
                             <button id="save-new-phrase" class="w-full py-3 bg-theme-600 text-white rounded-xl font-bold shadow-lg shadow-theme-600/20 active:scale-95 transition-all mt-4">
                                 ${t('save') || 'Save Phrase'}
                             </button>
                         </div>
                         <div class="pt-4">
-                            <button id="done-add-phrase-btn" class="w-full py-3 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl font-bold active:scale-95 transition-all">
+                            <button id="done-add-phrase-btn" class="w-full py-3 glass text-slate-600 dark:text-slate-300 rounded-xl font-bold active:scale-95 transition-all">
                                 ${t('done')}
                             </button>
                         </div>

@@ -291,12 +291,16 @@ export const renderQuiz = (container, props) => {
     };
 
     const renderLanding = () => {
+        const lang = getCurrentLanguage();
+        const isRtl = lang === 'ar';
+        const BackIcon = isRtl ? ArrowRightIcon : ArrowLeftIcon;
+
         container.innerHTML = `
             <div class="max-w-4xl mx-auto space-y-8 fade-in">
                 <div class="flex items-center justify-between mb-8">
                     <div class="flex items-center gap-4">
-                        <button id="quiz-back-btn" class="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 text-slate-600 dark:text-slate-400 transition-all">
-                            ${ArrowLeftIcon({className: "w-6 h-6"})}
+                        <button id="quiz-back-btn" class="p-2 rounded-full glass hover:bg-theme-100 dark:hover:bg-theme-900/30 text-slate-600 dark:text-slate-400 transition-all border border-slate-200 dark:border-slate-800">
+                            ${BackIcon({className: "w-5 h-5"})}
                         </button>
                         <h2 class="text-3xl font-bold font-display text-slate-900 dark:text-white">${t('islamicQuiz')}</h2>
                     </div>
@@ -314,11 +318,11 @@ export const renderQuiz = (container, props) => {
                         </h3>
                         <div class="grid grid-cols-1 gap-4">
                             ${['easy', 'medium', 'hard'].map((lvl, idx) => `
-                                <button data-level="${lvl}" class="level-btn p-6 rounded-3xl border-2 border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 text-left transition-all hover:border-theme-500 hover:shadow-xl group relative overflow-hidden">
+                                <button data-level="${lvl}" class="level-btn p-6 rounded-3xl border-2 border-slate-100 dark:border-slate-800 glass-card text-left transition-all hover:border-theme-500 hover:shadow-xl group relative overflow-hidden">
                                     <div class="absolute top-0 right-0 w-24 h-24 bg-theme-500/5 rounded-bl-full -mr-8 -mt-8"></div>
                                     <div class="flex justify-between items-center relative z-10">
                                         <div class="flex items-center gap-4">
-                                            <div class="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-xl font-bold text-slate-400 group-hover:bg-theme-600 group-hover:text-white transition-all">
+                                            <div class="w-12 h-12 rounded-2xl glass flex items-center justify-center text-xl font-bold text-slate-400 group-hover:bg-theme-600 group-hover:text-white transition-all">
                                                 ${idx + 1}
                                             </div>
                                             <div>
@@ -341,8 +345,8 @@ export const renderQuiz = (container, props) => {
                         </h3>
                         <div class="grid grid-cols-2 gap-4">
                             ${['quran', 'hadith', 'sunnah', 'adhkar'].map(cat => `
-                                <button data-category="${cat}" class="category-btn p-6 rounded-3xl border-2 border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 text-center transition-all hover:border-theme-500 hover:shadow-xl group">
-                                    <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-theme-50 dark:bg-theme-900/20 flex items-center justify-center text-theme-600 dark:text-theme-400 group-hover:bg-theme-600 group-hover:text-white transition-all">
+                                <button data-category="${cat}" class="category-btn p-6 rounded-3xl border-2 border-slate-100 dark:border-slate-800 glass-card text-center transition-all hover:border-theme-500 hover:shadow-xl group">
+                                    <div class="w-14 h-14 mx-auto mb-4 rounded-2xl glass flex items-center justify-center text-theme-600 dark:text-theme-400 group-hover:bg-theme-600 group-hover:text-white transition-all">
                                         ${cat === 'quran' ? BrainIcon({className: 'w-8 h-8'}) : TrophyIcon({className: 'w-8 h-8'})}
                                     </div>
                                     <h4 class="font-bold capitalize text-slate-900 dark:text-white">${t(cat)}</h4>
@@ -365,12 +369,12 @@ export const renderQuiz = (container, props) => {
 
         const updateSelection = () => {
             levelBtns.forEach(b => {
-                if (b.dataset.level === selectedLevel) b.classList.add('border-theme-500', 'bg-theme-50/50', 'dark:bg-theme-900/10', 'scale-[1.02]');
-                else b.classList.remove('border-theme-500', 'bg-theme-50/50', 'dark:bg-theme-900/10', 'scale-[1.02]');
+                if (b.dataset.level === selectedLevel) b.classList.add('border-theme-500', 'bg-theme-50/50', 'dark:bg-theme-900/10', 'scale-[1.02]', 'ring-2', 'ring-theme-500/20');
+                else b.classList.remove('border-theme-500', 'bg-theme-50/50', 'dark:bg-theme-900/10', 'scale-[1.02]', 'ring-2', 'ring-theme-500/20');
             });
             catBtns.forEach(b => {
-                if (b.dataset.category === selectedCategory) b.classList.add('border-theme-500', 'bg-theme-50/50', 'dark:bg-theme-900/10', 'scale-[1.02]');
-                else b.classList.remove('border-theme-500', 'bg-theme-50/50', 'dark:bg-theme-900/10', 'scale-[1.02]');
+                if (b.dataset.category === selectedCategory) b.classList.add('border-theme-500', 'bg-theme-50/50', 'dark:bg-theme-900/10', 'scale-[1.02]', 'ring-2', 'ring-theme-500/20');
+                else b.classList.remove('border-theme-500', 'bg-theme-50/50', 'dark:bg-theme-900/10', 'scale-[1.02]', 'ring-2', 'ring-theme-500/20');
             });
         };
 
@@ -436,7 +440,7 @@ export const renderQuiz = (container, props) => {
                     <div class="h-full bg-theme-600 rounded-full transition-all duration-700 ease-out shadow-sm" style="width: ${progress}%"></div>
                 </div>
 
-                <div class="p-8 md:p-16 rounded-[3rem] bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-2xl relative overflow-hidden">
+                <div class="p-8 md:p-16 rounded-[3rem] glass-card border border-slate-100 dark:border-slate-800 shadow-2xl relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-theme-500/5 rounded-bl-full -mr-16 -mt-16"></div>
                     <h2 class="text-2xl md:text-4xl font-bold text-slate-900 dark:text-white text-center leading-tight mb-12 relative z-10">${question.q}</h2>
                     
@@ -445,7 +449,7 @@ export const renderQuiz = (container, props) => {
                             <button data-index="${idx}" class="quiz-option w-full p-6 rounded-2xl border-2 border-slate-100 dark:border-slate-800 text-left font-bold text-slate-700 dark:text-slate-300 hover:border-theme-500 hover:bg-theme-50/50 dark:hover:bg-theme-900/10 transition-all active:scale-[0.98] group">
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center gap-4">
-                                        <div class="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-sm text-slate-400 group-hover:bg-theme-600 group-hover:text-white transition-all">
+                                        <div class="w-10 h-10 rounded-xl glass flex items-center justify-center text-sm text-slate-400 group-hover:bg-theme-600 group-hover:text-white transition-all">
                                             ${String.fromCharCode(65 + idx)}
                                         </div>
                                         <span class="text-lg">${ans}</span>
@@ -485,11 +489,11 @@ export const renderQuiz = (container, props) => {
 
         container.innerHTML = `
             <div class="max-w-3xl mx-auto space-y-8 fade-in text-center">
-                <div class="p-12 md:p-20 rounded-[4rem] bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-2xl relative overflow-hidden">
+                <div class="p-12 md:p-20 rounded-[4rem] glass-card border border-slate-100 dark:border-slate-800 shadow-2xl relative overflow-hidden">
                     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-theme-500/5 rounded-full -mt-48"></div>
                     
                     <div class="relative z-10 space-y-8">
-                        <div class="w-28 h-28 mx-auto bg-theme-100 dark:bg-theme-900/30 rounded-full flex items-center justify-center text-theme-600 dark:text-theme-400 shadow-inner">
+                        <div class="w-28 h-28 mx-auto glass rounded-full flex items-center justify-center text-theme-600 dark:text-theme-400 shadow-inner">
                             ${TrophyIcon({className: 'w-14 h-14'})}
                         </div>
                         
@@ -513,7 +517,7 @@ export const renderQuiz = (container, props) => {
                             <button id="retry-quiz-btn" class="flex-1 px-8 py-5 bg-theme-600 text-white font-bold rounded-2xl shadow-xl shadow-theme-500/30 hover:bg-theme-700 transition-all active:scale-95 flex items-center justify-center gap-2">
                                 ${RefreshIcon({className: 'w-5 h-5'})} ${t('tryAgain')}
                             </button>
-                            <button id="finish-quiz-btn" class="flex-1 px-8 py-5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold rounded-2xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-all active:scale-95">
+                            <button id="finish-quiz-btn" class="flex-1 px-8 py-5 glass text-slate-700 dark:text-slate-300 font-bold rounded-2xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-all active:scale-95">
                                 ${t('backToHome')}
                             </button>
                         </div>
@@ -524,7 +528,7 @@ export const renderQuiz = (container, props) => {
                     <h3 class="text-2xl font-bold text-slate-800 dark:text-slate-200 px-6">${t('reviewAnswers')}</h3>
                     <div class="space-y-4">
                         ${state.userAnswers.map((ans, idx) => `
-                            <div class="p-8 rounded-[2.5rem] bg-white dark:bg-slate-900 border ${ans.isCorrect ? 'border-emerald-100 dark:border-emerald-900/20' : 'border-red-100 dark:border-red-900/20'} shadow-sm hover:shadow-md transition-shadow">
+                            <div class="p-8 rounded-[2.5rem] glass-card border ${ans.isCorrect ? 'border-emerald-100 dark:border-emerald-900/20' : 'border-red-100 dark:border-red-900/20'} shadow-sm hover:shadow-md transition-shadow">
                                 <div class="flex gap-6">
                                     <div class="mt-1 flex-shrink-0">
                                         ${ans.isCorrect ? CheckCircleIcon({className: 'w-8 h-8 text-emerald-500'}) : XCircleIcon({className: 'w-8 h-8 text-red-500'})}

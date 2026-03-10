@@ -15,7 +15,7 @@ export const renderQuranHub = (container, cache, props) => {
             container.innerHTML = `
                 <div class="space-y-4 md:space-y-8">
                     <div class="flex justify-center">
-                        <div class="inline-flex p-1 bg-slate-100 dark:bg-slate-800/50 rounded-[2rem] shadow-inner backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50">
+                        <div class="inline-flex p-1 glass rounded-[2rem] shadow-inner border border-slate-200/50 dark:border-slate-700/50">
                             <button data-mode="read" class="mode-btn px-4 sm:px-8 py-2 md:py-3 text-xs md:text-sm font-bold rounded-[1.5rem] flex items-center gap-2 md:gap-2.5 transition-all duration-500 transform active:scale-95">
                                 ${QuranIcon({className: "w-4 h-4 md:w-5 md:h-5"})} <span>${t('read')}</span>
                             </button>
@@ -52,7 +52,7 @@ export const renderQuranHub = (container, cache, props) => {
         container.querySelectorAll('.mode-btn').forEach(btn => {
             const isActive = btn.dataset.mode === mode;
             btn.className = `mode-btn px-4 sm:px-8 py-2 md:py-3 text-xs md:text-sm font-bold rounded-[1.5rem] flex items-center gap-2 md:gap-2.5 transition-all duration-500 transform active:scale-95 ${
-                isActive ? 'bg-white dark:bg-slate-700 text-theme-700 dark:text-theme-300 shadow-xl shadow-slate-200/50 dark:shadow-none' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
+                isActive ? 'glass text-theme-700 dark:text-theme-300 shadow-xl shadow-slate-200/50 dark:shadow-none' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
             }`;
         });
 

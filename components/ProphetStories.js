@@ -39,9 +39,9 @@ export const renderProphetStories = (container, props) => {
 
         wrapper.innerHTML = `
             <div class="flex items-center justify-between mb-8">
-                <button id="stories-back-btn" class="p-2 -ml-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 text-slate-600 dark:text-slate-300 transition-all active:scale-90 flex items-center gap-2">
-                    ${BackIcon({className: "w-6 h-6"})}
-                    <span class="text-sm font-bold">${t('back')}</span>
+                <button id="stories-back-btn" class="p-2 -ml-2 rounded-full glass hover:bg-theme-100 dark:hover:bg-theme-900/30 text-slate-600 dark:text-slate-300 transition-all active:scale-90 flex items-center gap-2 border border-slate-200 dark:border-slate-800">
+                    ${BackIcon({className: "w-5 h-5"})}
+                    <span class="text-xs font-bold uppercase tracking-wider">${t('back')}</span>
                 </button>
                 <h2 class="text-2xl md:text-3xl font-bold font-display text-slate-900 dark:text-white">${t('prophetStories') || 'Prophet Stories'}</h2>
                 <div class="w-10"></div>
@@ -51,14 +51,14 @@ export const renderProphetStories = (container, props) => {
                 <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none text-slate-400">
                     ${SearchIcon({className: 'w-5 h-5'})}
                 </div>
-                <input type="text" id="stories-search" placeholder="${t('searchStories') || 'Search stories...'}" value="${state.searchQuery}" class="w-full pl-12 pr-4 py-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl outline-none focus:ring-2 focus:ring-theme-500/50 transition-all shadow-sm">
+                <input type="text" id="stories-search" placeholder="${t('searchStories') || 'Search stories...'}" value="${state.searchQuery}" class="w-full pl-12 pr-4 py-4 glass border border-slate-200/50 dark:border-slate-800/50 rounded-2xl outline-none focus:ring-4 focus:ring-theme-500/20 focus:border-theme-500 transition-all shadow-lg text-slate-800 dark:text-white placeholder:text-slate-400">
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 ${filteredStories.map(story => `
-                    <button data-story-id="${story.id}" class="story-card group p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-left rtl:text-right flex items-center justify-between">
+                    <button data-story-id="${story.id}" class="story-card group p-6 glass-card rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-left rtl:text-right flex items-center justify-between">
                         <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-2xl bg-theme-50 dark:bg-theme-900/20 flex items-center justify-center text-theme-600 dark:text-theme-400 group-hover:bg-theme-600 group-hover:text-white transition-colors">
+                            <div class="w-12 h-12 rounded-2xl glass flex items-center justify-center text-theme-600 dark:text-theme-400 group-hover:bg-theme-600 group-hover:text-white transition-colors">
                                 ${BookOpenIcon({className: 'w-6 h-6'})}
                             </div>
                             <div>
@@ -115,19 +115,19 @@ export const renderProphetStories = (container, props) => {
 
         wrapper.innerHTML = `
             <div class="flex items-center justify-between mb-8">
-                <button id="story-back-btn" class="p-2 -ml-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 text-slate-600 dark:text-slate-300 transition-all active:scale-90 flex items-center gap-2">
-                    ${BackIcon({className: "w-6 h-6"})}
-                    <span class="text-sm font-bold">${t('back')}</span>
+                <button id="story-back-btn" class="p-2 -ml-2 rounded-full glass hover:bg-theme-100 dark:hover:bg-theme-900/30 text-slate-600 dark:text-slate-300 transition-all active:scale-90 flex items-center gap-2 border border-slate-200 dark:border-slate-800">
+                    ${BackIcon({className: "w-5 h-5"})}
+                    <span class="text-xs font-bold uppercase tracking-wider">${t('back')}</span>
                 </button>
                 <div class="w-10"></div>
             </div>
 
-            <article class="bg-white dark:bg-slate-900 rounded-[2.5rem] p-6 md:p-16 shadow-xl border border-slate-100 dark:border-slate-800 relative overflow-hidden">
+            <article class="glass-card rounded-[2.5rem] p-6 md:p-16 shadow-xl border border-slate-100 dark:border-slate-800 relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-96 h-96 bg-theme-500/5 rounded-bl-[15rem] -mr-32 -mt-32"></div>
                 
                 <div class="relative z-10 space-y-10">
                     <header class="text-center space-y-6">
-                        <div class="w-24 h-24 bg-theme-50 dark:bg-theme-900/20 rounded-[2rem] flex items-center justify-center text-theme-600 dark:text-theme-400 mx-auto shadow-inner">
+                        <div class="w-24 h-24 glass rounded-[2rem] flex items-center justify-center text-theme-600 dark:text-theme-400 mx-auto shadow-inner">
                             ${BookOpenIcon({className: 'w-12 h-12'})}
                         </div>
                         <h2 class="text-3xl md:text-5xl lg:text-6xl font-bold font-display text-slate-900 dark:text-white tracking-tight leading-tight">${story.title}</h2>

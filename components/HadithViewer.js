@@ -53,26 +53,29 @@ export const renderHadithViewer = (container, props = {}) => {
     
     wrapper.innerHTML = `
       <div class="flex items-center gap-3 mb-8">
-        <button id="hadith-main-back-btn" class="p-2 -ml-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-all active:scale-90 flex items-center gap-1">
-          ${BackIcon({className: "w-6 h-6"})}
-          <span class="hidden sm:inline text-sm font-bold">${t('back')}</span>
+        <button id="hadith-main-back-btn" class="p-2 -ml-2 rounded-full glass hover:bg-theme-100 dark:hover:bg-theme-900/30 transition-all active:scale-90 flex items-center gap-1 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800">
+          ${BackIcon({className: "w-5 h-5"})}
+          <span class="hidden sm:inline text-xs font-bold uppercase tracking-wider">${t('back')}</span>
         </button>
         <div>
-          <h2 class="text-2xl md:text-3xl font-bold font-display text-ink dark:text-cream tracking-tight">${t('hadithCollection')}</h2>
-          <p class="text-sm text-ink/60 dark:text-cream/60 mt-1">${t('selectCollection') || 'Select a collection to read'}</p>
+          <h2 class="text-2xl md:text-3xl font-bold font-display text-slate-900 dark:text-white tracking-tight">${t('hadithCollection')}</h2>
+          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">${t('selectCollection') || 'Select a collection to read'}</p>
         </div>
       </div>
       
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         ${COLLECTIONS.map(col => `
-          <button data-collection="${col.slug}" class="group text-left ${isRtl ? 'text-right' : ''} p-6 bg-white dark:bg-slate-800 rounded-2xl border border-line dark:border-line-dark shadow-sm hover:shadow-md hover:border-theme-500/50 transition-all flex flex-col gap-4 relative overflow-hidden">
-            <div class="absolute -right-4 -top-4 w-24 h-24 bg-theme-50 dark:bg-theme-900/20 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div class="w-12 h-12 rounded-xl bg-theme-50 dark:bg-theme-900/30 text-theme-600 dark:text-theme-400 flex items-center justify-center relative z-10">
-              ${BookOpenIcon({className: "w-6 h-6"})}
+          <button data-collection="${col.slug}" class="group text-left ${isRtl ? 'text-right' : ''} p-8 glass rounded-[2.5rem] border border-white/10 shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-95 transition-all flex flex-col gap-6 relative overflow-hidden">
+            <div class="absolute -right-8 -top-8 w-32 h-32 bg-theme-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+            <div class="w-14 h-14 rounded-2xl glass border border-white/10 text-theme-600 dark:text-theme-400 flex items-center justify-center relative z-10 shadow-sm group-hover:scale-110 transition-transform duration-500">
+              ${BookOpenIcon({className: "w-7 h-7"})}
             </div>
             <div class="relative z-10">
-              <h3 class="text-lg font-bold text-ink dark:text-cream font-display">${lang === 'ar' ? col.name_ar : col.name_en}</h3>
-              <p class="text-sm text-ink/60 dark:text-cream/60 mt-1">${lang === 'ar' ? col.desc_ar : col.desc_en}</p>
+              <h3 class="text-xl font-bold text-slate-900 dark:text-white font-display tracking-tight">${lang === 'ar' ? col.name_ar : col.name_en}</h3>
+              <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">${lang === 'ar' ? col.desc_ar : col.desc_en}</p>
+            </div>
+            <div class="absolute bottom-4 right-6 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-x-4 group-hover:translate-x-0">
+              <svg class="w-5 h-5 text-theme-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
             </div>
           </button>
         `).join('')}
@@ -103,33 +106,36 @@ export const renderHadithViewer = (container, props = {}) => {
     
     wrapper.innerHTML = `
       <div class="flex items-center gap-3 mb-8">
-        <button id="sections-back-btn" class="p-2 -ml-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-all active:scale-90 flex items-center gap-1">
-          ${BackIcon({className: "w-6 h-6"})}
-          <span class="hidden sm:inline text-sm font-bold">${t('back')}</span>
+        <button id="sections-back-btn" class="p-2 -ml-2 rounded-full glass hover:bg-theme-100 dark:hover:bg-theme-900/30 transition-all active:scale-90 flex items-center gap-1 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800">
+          ${BackIcon({className: "w-5 h-5"})}
+          <span class="hidden sm:inline text-xs font-bold uppercase tracking-wider">${t('back')}</span>
         </button>
         <div>
-          <h2 class="text-2xl md:text-3xl font-bold font-display text-ink dark:text-cream tracking-tight">${lang === 'ar' ? state.selectedCollection.name_ar : state.selectedCollection.name_en}</h2>
-          <p class="text-sm text-ink/60 dark:text-cream/60 mt-1">${t('selectSection') || 'Select a section'}</p>
+          <h2 class="text-2xl md:text-3xl font-bold font-display text-slate-900 dark:text-white tracking-tight">${lang === 'ar' ? state.selectedCollection.name_ar : state.selectedCollection.name_en}</h2>
+          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">${t('selectSection') || 'Select a section'}</p>
         </div>
       </div>
       
-      <div id="sections-list" class="grid grid-cols-1 gap-3">
+      <div id="sections-list" class="grid grid-cols-1 gap-4">
         ${state.loading ? `
           ${Array(6).fill(0).map(() => `
-            <div class="h-16 bg-white dark:bg-slate-800 rounded-xl border border-line animate-pulse"></div>
+            <div class="h-20 glass rounded-2xl border border-white/10 animate-pulse"></div>
           `).join('')}
         ` : state.error ? `
           <div class="col-span-full">${renderErrorState(state.error, () => fetchCollectionData())}</div>
         ` : state.sections.map(sec => `
-          <button data-section="${sec.id}" class="group text-left ${isRtl ? 'text-right' : ''} p-4 bg-white dark:bg-slate-800 rounded-xl border border-line dark:border-line-dark shadow-sm hover:shadow-md hover:border-theme-500 transition-all flex items-center justify-between gap-4">
-            <div class="flex items-center gap-4">
-                <div class="w-8 h-8 rounded-lg bg-theme-50 dark:bg-theme-900/30 text-theme-600 dark:text-theme-400 flex items-center justify-center text-xs font-bold">
+          <button data-section="${sec.id}" class="group text-left ${isRtl ? 'text-right' : ''} p-5 glass rounded-2xl border border-white/10 shadow-lg hover:shadow-xl hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-between gap-6">
+            <div class="flex items-center gap-5">
+                <div class="w-10 h-10 rounded-xl glass border border-white/10 text-theme-600 dark:text-theme-400 flex items-center justify-center text-sm font-bold shadow-inner group-hover:bg-theme-500 group-hover:text-white transition-all">
                     ${sec.id}
                 </div>
-                <span class="text-sm font-bold text-ink dark:text-cream group-hover:text-theme-600 transition-colors">${sec.title || t('section') + ' ' + sec.id}</span>
+                <span class="text-base font-bold text-slate-900 dark:text-white group-hover:text-theme-600 transition-colors tracking-tight">${sec.title || t('section') + ' ' + sec.id}</span>
             </div>
-            <div class="text-[10px] font-bold text-ink/40 dark:text-cream/40 uppercase tracking-widest">
-                ${sec.hadithCount} ${t('hadiths') || 'Hadiths'}
+            <div class="flex items-center gap-3">
+                <div class="px-3 py-1 glass rounded-full border border-white/10 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
+                    ${sec.hadithCount} ${t('hadiths') || 'Hadiths'}
+                </div>
+                <svg class="w-5 h-5 text-slate-300 dark:text-slate-700 group-hover:text-theme-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
             </div>
           </button>
         `).join('')}
@@ -159,14 +165,14 @@ export const renderHadithViewer = (container, props = {}) => {
     const lang = getCurrentLanguage();
     
     wrapper.innerHTML = `
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sticky top-16 md:top-20 z-30 bg-parchment/90 dark:bg-night/90 backdrop-blur-md py-4 -mx-4 px-4 sm:mx-0 sm:px-0">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sticky top-16 md:top-20 z-30 glass py-4 -mx-4 px-4 sm:mx-0 sm:px-0">
         <div class="flex items-center gap-3">
-          <button id="hadith-back-btn" class="p-2 -ml-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-all active:scale-90 flex items-center gap-1">
-            ${BackIcon({className: "w-6 h-6"})}
-            <span class="hidden sm:inline text-sm font-bold">${t('back')}</span>
+          <button id="hadith-back-btn" class="p-2 -ml-2 rounded-full glass hover:bg-theme-100 dark:hover:bg-theme-900/30 transition-all active:scale-90 flex items-center gap-1 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800">
+            ${BackIcon({className: "w-5 h-5"})}
+            <span class="hidden sm:inline text-xs font-bold uppercase tracking-wider">${t('back')}</span>
           </button>
           <div>
-            <h2 class="text-xl md:text-2xl font-bold font-display text-ink dark:text-cream">${state.selectedSection?.title || (lang === 'ar' ? state.selectedCollection.name_ar : state.selectedCollection.name_en)}</h2>
+            <h2 class="text-xl md:text-2xl font-bold font-display text-slate-900 dark:text-white">${state.selectedSection?.title || (lang === 'ar' ? state.selectedCollection.name_ar : state.selectedCollection.name_en)}</h2>
           </div>
         </div>
       </div>
@@ -191,7 +197,7 @@ export const renderHadithViewer = (container, props = {}) => {
 
     if (state.loading && state.page === 1) {
       listContainer.innerHTML = Array(3).fill(0).map(() => `
-        <div class="p-6 bg-white dark:bg-slate-800 rounded-2xl border border-line dark:border-line-dark shadow-sm animate-pulse">
+        <div class="p-6 glass-card rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm animate-pulse">
             <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-1/4 mb-4"></div>
             <div class="space-y-3">
                 <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-full"></div>
@@ -213,7 +219,7 @@ export const renderHadithViewer = (container, props = {}) => {
 
       if (state.hasMore && state.hadiths.length > 0) {
         loadMoreContainer.innerHTML = `
-          <button id="load-more-btn" class="px-6 py-3 bg-white dark:bg-slate-800 text-theme-600 dark:text-theme-400 text-sm font-bold rounded-xl border border-line dark:border-line-dark hover:border-theme-500 transition-all shadow-sm flex items-center gap-2">
+          <button id="load-more-btn" class="px-6 py-3 glass-card text-theme-600 dark:text-theme-400 text-sm font-bold rounded-xl border border-slate-100 dark:border-slate-800 hover:border-theme-500 transition-all shadow-sm flex items-center gap-2">
             ${t('loadMore')}
           </button>
         `;
@@ -226,7 +232,7 @@ export const renderHadithViewer = (container, props = {}) => {
 
   const createHadithCard = (hadith) => {
     const card = document.createElement('div');
-    card.className = 'p-6 md:p-8 bg-white dark:bg-slate-800 rounded-3xl border border-slate-100 dark:border-slate-700/50 shadow-sm hover:shadow-xl hover:border-theme-500/30 transition-all duration-300 relative group overflow-hidden z-0';
+    card.className = 'p-8 md:p-10 glass rounded-[2.5rem] border border-white/10 shadow-2xl hover:shadow-theme-500/10 transition-all duration-500 relative group overflow-hidden';
     
     const lang = getCurrentLanguage();
     const isAr = lang === 'ar';
@@ -266,29 +272,29 @@ export const renderHadithViewer = (container, props = {}) => {
     }
 
     card.innerHTML = `
-        <div class="absolute top-0 right-0 w-32 h-32 bg-theme-50 dark:bg-theme-900/10 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
-        <div class="flex justify-between items-start mb-6">
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-2xl bg-theme-50 dark:bg-theme-900/30 flex items-center justify-center text-theme-600 dark:text-theme-400 font-bold font-display shadow-inner">
+        <div class="absolute top-0 right-0 w-48 h-48 bg-theme-500/5 rounded-bl-[4rem] blur-3xl -z-10 transition-transform group-hover:scale-150 duration-700"></div>
+        <div class="flex justify-between items-start mb-8">
+            <div class="flex items-center gap-5">
+                <div class="w-14 h-14 rounded-2xl glass border border-white/10 flex items-center justify-center text-theme-600 dark:text-theme-400 font-bold font-display shadow-inner text-lg">
                     ${hadithNumber}
                 </div>
                 <div>
-                    <h4 class="text-sm font-bold text-slate-900 dark:text-white capitalize">${state.selectedCollection.slug.replace('-', ' ')}</h4>
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">${t('hadith')} ${hadithNumber}</p>
+                    <h4 class="text-base font-bold text-slate-900 dark:text-white capitalize tracking-tight">${state.selectedCollection.slug.replace('-', ' ')}</h4>
+                    <p class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] mt-1">${t('hadith')} ${hadithNumber}</p>
                 </div>
             </div>
-            <div class="flex items-center gap-1">
-                <button class="bookmark-btn p-2.5 rounded-xl hover:bg-theme-50 dark:hover:bg-theme-900/30 text-slate-400 hover:text-theme-600 transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
-                    ${isBookmarked ? BookmarkSolidIcon({className: "w-5 h-5 text-theme-600"}) : BookmarkIcon({className: "w-5 h-5"})}
+            <div class="flex items-center gap-2">
+                <button class="bookmark-btn p-3 rounded-2xl glass border border-white/10 hover:bg-theme-500 hover:text-white text-slate-400 transition-all active:scale-90">
+                    ${isBookmarked ? BookmarkSolidIcon({className: "w-5 h-5 text-theme-600 group-hover:text-white"}) : BookmarkIcon({className: "w-5 h-5"})}
                 </button>
-                <button class="share-btn p-2.5 rounded-xl hover:bg-theme-50 dark:hover:bg-theme-900/30 text-slate-400 hover:text-theme-600 transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
+                <button class="share-btn p-3 rounded-2xl glass border border-white/10 hover:bg-theme-500 hover:text-white text-slate-400 transition-all active:scale-90">
                     ${ShareIcon({className: "w-5 h-5"})}
                 </button>
             </div>
         </div>
         <div class="relative">
-            <span class="absolute -top-4 -left-2 text-6xl text-slate-100 dark:text-slate-800 font-serif opacity-50 select-none">"</span>
-            <p class="text-lg md:text-xl leading-relaxed text-slate-700 dark:text-slate-300 font-serif ${textAlign} relative z-10" dir="${textDir}">
+            <div class="absolute -top-10 -left-4 text-9xl text-theme-500/5 font-serif select-none pointer-events-none">"</div>
+            <p class="text-xl md:text-2xl leading-relaxed text-slate-800 dark:text-slate-200 font-serif ${textAlign} relative z-10" dir="${textDir}">
                 ${hadithText}
             </p>
         </div>
