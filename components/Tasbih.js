@@ -21,8 +21,11 @@ export const renderTasbih = (container, props = {}) => {
         selectedPhraseIndex: parseInt(localStorage.getItem('tasbihPhraseIndex') || '0', 10),
         customPhrases: JSON.parse(localStorage.getItem('tasbihCustomPhrases') || '[]'),
         hapticEnabled: localStorage.getItem('tasbihHaptic') !== 'false',
+        totalCount: parseInt(localStorage.getItem('tasbihTotalCount') || '0', 10),
+        sessions: parseInt(localStorage.getItem('tasbihSessions') || '0', 10),
         showSettings: false,
         showAddPhrase: false,
+        showPhraseDropdown: false
     };
 
     const saveState = () => {
@@ -31,6 +34,8 @@ export const renderTasbih = (container, props = {}) => {
         localStorage.setItem('tasbihPhraseIndex', state.selectedPhraseIndex);
         localStorage.setItem('tasbihCustomPhrases', JSON.stringify(state.customPhrases));
         localStorage.setItem('tasbihHaptic', state.hapticEnabled);
+        localStorage.setItem('tasbihTotalCount', state.totalCount);
+        localStorage.setItem('tasbihSessions', state.sessions);
     };
 
     const getAllPhrases = () => [...PREDEFINED_TASBIH, ...state.customPhrases];
@@ -39,313 +44,343 @@ export const renderTasbih = (container, props = {}) => {
         const lang = getCurrentLanguage();
         const allPhrases = getAllPhrases();
         const phrase = allPhrases[state.selectedPhraseIndex] || allPhrases[0];
-        const progress = state.target > 0 ? Math.min((state.count / state.target) * 100, 100) : 0;
+        const progress = state.target > 0 ? Math.min(state.count / state.target, 1) : 0;
         
         container.innerHTML = `
-            <div class="h-full flex flex-col items-center justify-center space-y-8 fade-in p-4 relative">
-                <div class="w-full max-w-md glass-card rounded-2xl shadow-xl p-6 border border-slate-200 dark:border-slate-800 relative overflow-hidden">
-                    <div class="flex justify-between items-center mb-6">
-                        <div class="flex items-center gap-2">
-                            <button id="tasbih-back-btn" class="p-2 -ml-2 rounded-full glass hover:bg-theme-100 dark:hover:bg-theme-900/30 transition-all active:scale-90 flex items-center gap-1 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-800">
-                                ${BackIcon({className: "w-5 h-5"})}
-                                <span class="hidden sm:inline text-xs font-bold uppercase tracking-wider">${t('back')}</span>
-                            </button>
-                            <div class="flex items-center gap-2 text-theme-600 dark:text-theme-400">
-                                ${BeadsIcon()}
-                                <h2 class="text-xl font-bold font-amiri">${t('tasbih')}</h2>
-                            </div>
-                        </div>
-                        <div class="flex gap-2">
-                            <button id="tasbih-settings-btn" class="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-slate-600 dark:text-slate-300">
-                                ${SettingsIcon({className: "w-5 h-5"})}
-                            </button>
-                            <button id="reset-btn" class="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-slate-600 dark:text-slate-300" title="${t('reset')}">
-                                ${RefreshIcon()}
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="relative mb-8">
-                        <div class="flex items-center gap-2">
-                            <select id="phrase-select" class="flex-grow p-3 glass border border-slate-200 dark:border-slate-700 rounded-xl text-center text-lg font-amiri cursor-pointer focus:ring-2 focus:ring-theme-500 focus:outline-none text-slate-900 dark:text-white">
-                                ${allPhrases.map((p, i) => `<option value="${i}" ${i === state.selectedPhraseIndex ? 'selected' : ''} class="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">${p.ar}</option>`).join('')}
-                            </select>
-                            <button id="add-phrase-btn" class="p-3 rounded-xl glass text-theme-600 dark:text-theme-400 hover:bg-theme-100 dark:hover:bg-theme-900/30 transition-colors">
-                                ${PlusIcon({className: "w-6 h-6"})}
-                            </button>
-                        </div>
-                        <div class="mt-2 text-center text-sm text-slate-500 dark:text-slate-400">
-                            ${phrase.en || phrase.translation || ''}
-                        </div>
-                    </div>
-
-                    <div class="flex justify-center mb-8">
-                        <button id="counter-btn" class="relative w-64 h-64 rounded-full bg-gradient-to-br from-theme-50 to-white dark:from-slate-800 dark:to-slate-900 shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff] dark:shadow-[8px_8px_16px_#0f172a,-8px_-8px_16px_#1e293b] flex items-center justify-center group active:scale-95 transition-all duration-300 select-none outline-none ring-4 ring-slate-100 dark:ring-slate-800">
-                            <div class="absolute inset-4 rounded-full bg-theme-500/10 dark:bg-theme-500/20 transition-all duration-500 blur-xl" style="transform: scale(${progress / 100}); opacity: ${progress > 0 ? 1 : 0}"></div>
-                            
-                            <svg class="absolute inset-0 w-full h-full -rotate-90 pointer-events-none" viewBox="0 0 100 100">
-                                <circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" stroke-width="4" class="text-slate-100 dark:text-slate-800" />
-                                <circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" stroke-width="4" stroke-dasharray="289" stroke-dashoffset="${289 - (289 * progress / 100)}" class="text-theme-500 transition-all duration-300 ease-out" stroke-linecap="round" />
-                            </svg>
-                            
-                            <div class="flex flex-col items-center z-10">
-                                <span class="text-6xl font-bold font-mono text-slate-800 dark:text-slate-100 tracking-tighter transition-colors">${state.count}</span>
-                                ${state.target > 0 ? `<span class="text-xs text-slate-400 mt-1 uppercase tracking-widest">${t('target')}: ${state.target}</span>` : ''}
-                            </div>
+            <div class="flex flex-col h-full max-w-2xl mx-auto fade-in">
+                <!-- Header -->
+                <div class="flex items-center justify-between p-4 md:p-6 pb-2">
+                    <div class="flex items-center gap-3">
+                        <button id="tasbih-back-btn" class="w-9 h-9 flex items-center justify-center rounded-xl glass border border-white/10 text-slate-500 hover:text-theme-600 hover:bg-theme-50 dark:hover:bg-theme-950/20 transition-all">
+                            ${BackIcon({className: "w-5 h-5"})}
                         </button>
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-800 dark:text-white leading-tight">${t('tasbih')}</h2>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">${t('dailyDhikr')}</p>
+                        </div>
                     </div>
-
-                    <div class="flex justify-center mb-6">
-                        <button id="reset-btn-large" class="flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-all active:scale-95 font-bold text-sm border border-slate-200 dark:border-slate-700">
+                    <div class="flex items-center gap-2">
+                        <button id="tasbih-settings-btn" class="w-9 h-9 flex items-center justify-center rounded-xl glass border border-white/10 text-slate-500 hover:text-theme-600 hover:bg-theme-50 dark:hover:bg-theme-950/20 transition-all">
+                            ${SettingsIcon({className: "w-4 h-4"})}
+                        </button>
+                        <button id="reset-btn" class="w-9 h-9 flex items-center justify-center rounded-xl glass border border-white/10 text-slate-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20 transition-all">
                             ${RefreshIcon({className: "w-4 h-4"})}
-                            ${t('reset')}
                         </button>
                     </div>
-                    
-                    <p class="text-center text-xs text-slate-400">${t('tapToCount')}</p>
+                </div>
 
-                    <!-- Settings Overlay -->
-                    ${state.showSettings ? `
-                    <div class="absolute inset-0 glass-card z-20 p-6 fade-in flex flex-col">
-                        <div class="flex justify-between items-center mb-6">
-                            <h3 class="text-lg font-bold text-slate-900 dark:text-white">${t('tasbihSettings') || 'Tasbih Settings'}</h3>
-                            <button id="close-settings" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
-                                ${XMarkIcon({className: "w-5 h-5"})}
-                            </button>
-                        </div>
-                        
-                        <div class="space-y-6 flex-grow overflow-y-auto pr-2">
-                            <div class="space-y-3">
-                                <label class="text-sm font-bold text-slate-500 uppercase tracking-wider">${t('target')}</label>
-                                <div class="grid grid-cols-3 gap-2">
-                                    ${[33, 99, 100, 1000, 0].map(val => `
-                                        <button data-target="${val}" class="target-btn py-2 rounded-xl border ${state.target === val ? 'bg-theme-600 text-white border-theme-600' : 'glass border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300'} text-sm font-bold transition-all">
-                                            ${val === 0 ? '∞' : val}
-                                        </button>
-                                    `).join('')}
-                                    <button id="custom-target-btn" class="py-2 rounded-xl border glass border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-sm font-bold transition-all">
-                                        ${t('custom') || 'Custom'}
-                                    </button>
-                                </div>
+                <!-- Main Counter Area -->
+                <div class="flex-grow flex flex-col items-center justify-center p-4 md:p-8 relative">
+                    <!-- Phrase Selection -->
+                    <div class="w-full max-w-sm mb-6 relative z-10">
+                        <button id="phrase-select-btn" class="w-full p-3.5 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 flex items-center justify-between group hover:border-theme-500/30 transition-all duration-300">
+                            <div class="text-left min-w-0 flex-grow">
+                                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">${t('currentPhrase')}</p>
+                                <h3 class="font-amiri text-lg text-slate-800 dark:text-white truncate leading-tight">${phrase.ar}</h3>
+                                <p class="text-[11px] text-slate-500 dark:text-slate-400 truncate">${phrase.en || phrase.translation || ''}</p>
                             </div>
+                            <div class="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover:text-theme-600 transition-colors ml-3 flex-shrink-0">
+                                ${ArrowRightIcon({className: `w-3.5 h-3.5 transition-transform duration-300 ${state.showPhraseDropdown ? 'rotate-90' : 'rotate-0'}`})}
+                            </div>
+                        </button>
 
-                            <div class="flex items-center justify-between p-4 glass rounded-2xl">
-                                <div class="flex flex-col">
-                                    <span class="font-bold text-slate-900 dark:text-white">${t('hapticFeedback') || 'Haptic Feedback'}</span>
-                                    <span class="text-xs text-slate-500">${t('vibrateOnTap') || 'Vibrate on every tap'}</span>
-                                </div>
-                                <button id="haptic-toggle" class="w-12 h-6 rounded-full relative transition-colors ${state.hapticEnabled ? 'bg-theme-600' : 'bg-slate-300 dark:bg-slate-700'}">
-                                    <div class="absolute top-1 start-1 w-4 h-4 bg-white rounded-full transition-transform ${state.hapticEnabled ? 'ltr:translate-x-6 rtl:-translate-x-6' : ''}"></div>
+                        <!-- Phrase Dropdown -->
+                        <div id="phrase-dropdown" class="absolute top-full left-0 right-0 mt-2 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 shadow-2xl z-50 ${state.showPhraseDropdown ? 'block' : 'hidden'} max-h-[280px] overflow-y-auto custom-scrollbar">
+                            <div class="p-1.5 space-y-1">
+                                ${allPhrases.map((p, i) => `
+                                    <button data-index="${i}" class="phrase-option w-full p-2.5 rounded-xl text-left transition-all ${state.selectedPhraseIndex === i ? 'bg-theme-500/10 border border-theme-500/20' : 'hover:bg-slate-50 dark:hover:bg-slate-800/50'}">
+                                        <p class="font-amiri text-base text-slate-800 dark:text-white leading-tight">${p.ar}</p>
+                                        <p class="text-[9px] text-slate-500 dark:text-slate-400 mt-0.5">${p.en || p.translation || ''}</p>
+                                    </button>
+                                `).join('')}
+                                <button id="add-custom-phrase-btn" class="w-full p-2.5 rounded-xl text-left border border-dashed border-slate-300 dark:border-slate-700 hover:border-theme-500/50 hover:bg-theme-50/50 dark:hover:bg-theme-900/10 transition-all group">
+                                    <div class="flex items-center gap-2 text-theme-600 dark:text-theme-400">
+                                        ${PlusIcon({className: "w-3.5 h-3.5"})}
+                                        <span class="text-[10px] font-bold uppercase tracking-wider">${t('addCustomPhrase')}</span>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Counter Circle -->
+                    <div id="tasbih-tap-area" class="relative w-60 h-60 md:w-64 md:h-64 flex items-center justify-center cursor-pointer group active:scale-[0.98] transition-transform duration-150">
+                        <!-- Progress Ring -->
+                        <svg class="absolute inset-0 w-full h-full -rotate-90">
+                            <circle cx="50%" cy="50%" r="46%" class="stroke-slate-100 dark:stroke-slate-800/50 fill-none" stroke-width="6"></circle>
+                            <circle id="tasbih-progress-ring" cx="50%" cy="50%" r="46%" class="stroke-theme-500 fill-none transition-all duration-300" stroke-width="6" stroke-dasharray="289" stroke-dashoffset="${289 - (progress * 289)}" stroke-linecap="round"></circle>
+                        </svg>
+
+                        <!-- Inner Circle -->
+                        <div class="w-[88%] h-[88%] rounded-full glass-card border border-slate-200/50 dark:border-slate-700/50 shadow-inner flex flex-col items-center justify-center relative overflow-hidden group-hover:border-theme-500/30 transition-colors">
+                            <div class="absolute inset-0 bg-theme-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.25em] mb-1">${t('count')}</span>
+                            <span id="tasbih-count" class="text-6xl md:text-7xl font-display font-bold text-slate-800 dark:text-white tabular-nums tracking-tighter">${state.count}</span>
+                            <div class="mt-1 flex flex-col items-center">
+                                <span class="text-[10px] font-bold text-theme-600 dark:text-theme-400">${Math.floor(progress * 100)}%</span>
+                                <span class="text-[9px] text-slate-400 font-medium uppercase tracking-wider">${t('target')}: ${state.target}</span>
+                            </div>
+                        </div>
+
+                        <!-- Tap Ripple Effect Container -->
+                        <div id="ripple-container" class="absolute inset-0 pointer-events-none overflow-hidden rounded-full"></div>
+                    </div>
+
+                    <!-- Total Stats -->
+                    <div class="mt-10 flex items-center gap-8">
+                        <div class="text-center">
+                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">${t('total')}</p>
+                            <p class="text-base font-bold text-slate-700 dark:text-slate-300">${state.totalCount.toLocaleString()}</p>
+                        </div>
+                        <div class="w-px h-6 bg-slate-200 dark:bg-slate-800"></div>
+                        <div class="text-center">
+                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">${t('sessions')}</p>
+                            <p class="text-base font-bold text-slate-700 dark:text-slate-300">${state.sessions.toLocaleString()}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Overlay -->
+                <div id="tasbih-settings-overlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[60] flex items-end sm:items-center justify-center p-4 ${state.showSettings ? 'flex' : 'hidden'}">
+                    <div class="w-full max-w-md glass-card rounded-3xl border border-white/20 shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-300">
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="text-xl font-bold text-slate-800 dark:text-white">${t('tasbihSettings')}</h3>
+                                <button id="close-settings-btn" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                                    ${XMarkIcon({className: "w-5 h-5"})}
                                 </button>
                             </div>
 
-                            <div class="space-y-3">
-                                <label class="text-sm font-bold text-slate-500 uppercase tracking-wider">${t('managePhrases') || 'Custom Phrases'}</label>
-                                <div class="space-y-2">
-                                    ${state.customPhrases.map((p, i) => {
-                                        const isSelected = state.selectedPhraseIndex === (PREDEFINED_TASBIH.length + i);
-                                        return `
-                                        <div class="flex items-center justify-between p-3 glass rounded-xl border ${isSelected ? 'border-theme-500 ring-1 ring-theme-500' : 'border-slate-200 dark:border-slate-700'}">
-                                            <div class="flex flex-col">
-                                                <span class="font-amiri text-slate-900 dark:text-white">${p.ar}</span>
-                                                ${p.en ? `<span class="text-[10px] text-slate-400">${p.en}</span>` : ''}
-                                            </div>
-                                            <div class="flex items-center gap-1">
-                                                <button data-select-phrase="${PREDEFINED_TASBIH.length + i}" class="px-2 py-1 text-[10px] font-bold uppercase rounded bg-theme-100 dark:bg-theme-900/30 text-theme-600 dark:text-theme-400 hover:bg-theme-200 transition-colors">
-                                                    ${t('select')}
-                                                </button>
-                                                <button data-delete-phrase="${i}" class="p-1.5 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/20 rounded-lg transition-colors">
+                            <div class="space-y-6">
+                                <!-- Target Selection -->
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-3">${t('targetCount')}</label>
+                                    <div class="grid grid-cols-4 gap-2 mb-3">
+                                        ${[33, 99, 100, 1000].map(val => `
+                                            <button data-target="${val}" class="target-option py-2 rounded-xl border transition-all font-bold text-sm ${state.target === val ? 'bg-theme-500 border-theme-500 text-white shadow-lg shadow-theme-500/30' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-theme-500/50'}">
+                                                ${val}
+                                            </button>
+                                        `).join('')}
+                                    </div>
+                                    <div class="relative">
+                                        <input id="custom-target-input" type="number" value="${state.target}" class="w-full p-3 pl-10 glass rounded-xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-theme-500/50 text-sm font-bold" placeholder="${t('enterCustomTarget')}">
+                                        <div class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                                            ${BeadsIcon({className: "w-4 h-4"})}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Haptic Feedback -->
+                                <div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-200/50 dark:border-slate-700/50">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-xl bg-theme-500/10 flex items-center justify-center text-theme-600 dark:text-theme-400">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-bold text-slate-800 dark:text-white">${t('hapticFeedback')}</p>
+                                            <p class="text-[10px] text-slate-500 dark:text-slate-400">${t('vibrateOnTap')}</p>
+                                        </div>
+                                    </div>
+                                    <button id="haptic-toggle" class="w-12 h-6 rounded-full relative transition-colors ${state.hapticEnabled ? 'bg-theme-500' : 'bg-slate-300 dark:bg-slate-700'}">
+                                        <div class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${state.hapticEnabled ? 'translate-x-6' : ''}"></div>
+                                    </button>
+                                </div>
+
+                                <!-- Custom Phrases Management -->
+                                <div>
+                                    <div class="flex items-center justify-between mb-3">
+                                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">${t('customPhrases')}</label>
+                                        <button id="add-phrase-inline-btn" class="text-[10px] font-bold text-theme-600 dark:text-theme-400 uppercase tracking-wider hover:underline">${t('add')}</button>
+                                    </div>
+                                    <div class="space-y-2 max-h-[150px] overflow-y-auto custom-scrollbar pr-1">
+                                        ${state.customPhrases.length === 0 ? `
+                                            <p class="text-xs text-slate-400 italic text-center py-4">${t('noCustomPhrases')}</p>
+                                        ` : state.customPhrases.map((p, i) => `
+                                            <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200/50 dark:border-slate-700/50 group">
+                                                <div class="min-w-0">
+                                                    <p class="font-amiri text-sm text-slate-800 dark:text-white truncate">${p.ar}</p>
+                                                    <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate">${p.en || ''}</p>
+                                                </div>
+                                                <button data-delete-phrase="${i}" class="p-1.5 text-slate-400 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100">
                                                     ${TrashIcon({className: "w-4 h-4"})}
                                                 </button>
                                             </div>
-                                        </div>
-                                    `}).join('')}
-                                    ${state.customPhrases.length === 0 ? `<p class="text-xs text-slate-400 text-center py-4 italic">${t('noCustomPhrases') || 'No custom phrases added'}</p>` : ''}
+                                        `).join('')}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="pt-4 mt-auto">
-                            <button id="done-settings-btn" class="w-full py-3 bg-theme-600 text-white rounded-xl font-bold shadow-lg shadow-theme-600/20 active:scale-95 transition-all">
+                            <button id="settings-done-btn" class="w-full mt-8 py-3 bg-theme-600 hover:bg-theme-700 text-white font-bold rounded-2xl shadow-lg shadow-theme-500/30 transition-all active:scale-95">
                                 ${t('done')}
                             </button>
                         </div>
                     </div>
-                    ` : ''}
+                </div>
 
-                    <!-- Add Phrase Overlay -->
-                    ${state.showAddPhrase ? `
-                    <div class="absolute inset-0 glass-card z-30 p-6 fade-in flex flex-col">
-                        <div class="flex justify-between items-center mb-6">
-                            <h3 class="text-lg font-bold text-slate-900 dark:text-white">${t('addCustomPhrase') || 'Add Custom Phrase'}</h3>
-                            <button id="close-add-phrase" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
-                                ${XMarkIcon({className: "w-5 h-5"})}
-                            </button>
-                        </div>
-                        <div class="space-y-4 flex-grow">
-                            <div class="space-y-2">
-                                <label class="text-xs font-bold text-slate-500 uppercase">${t('arabicText') || 'Arabic Text'}</label>
-                                <input id="new-phrase-ar" type="text" dir="rtl" class="w-full p-3 glass border border-slate-200 dark:border-slate-700 rounded-xl text-right font-amiri text-xl outline-none focus:ring-2 focus:ring-theme-500 text-slate-900 dark:text-white placeholder:text-slate-400" placeholder="سُبْحَانَ ٱللَّٰهِ">
+                <!-- Add Phrase Overlay -->
+                <div id="add-phrase-overlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[70] flex items-end sm:items-center justify-center p-4 ${state.showAddPhrase ? 'flex' : 'hidden'}">
+                    <div class="w-full max-w-md glass-card rounded-3xl border border-white/20 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-6">${t('addCustomPhrase')}</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">${t('arabicText')}</label>
+                                    <textarea id="new-phrase-arabic" class="w-full p-4 glass rounded-2xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-theme-500/50 font-amiri text-xl text-right" rows="2" placeholder="سبحان الله"></textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">${t('translation')}</label>
+                                    <input id="new-phrase-translation" type="text" class="w-full p-4 glass rounded-2xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-theme-500/50 text-sm" placeholder="Glory be to Allah">
+                                </div>
                             </div>
-                            <div class="space-y-2">
-                                <label class="text-xs font-bold text-slate-500 uppercase">${t('translation') || 'Translation (Optional)'}</label>
-                                <input id="new-phrase-en" type="text" class="w-full p-3 glass border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-theme-500 text-slate-900 dark:text-white placeholder:text-slate-400" placeholder="Glory be to Allah">
+                            <div class="flex gap-3 mt-8">
+                                <button id="cancel-add-phrase-btn" class="flex-1 py-3 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-bold rounded-2xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">
+                                    ${t('cancel')}
+                                </button>
+                                <button id="save-phrase-btn" class="flex-1 py-3 bg-theme-600 hover:bg-theme-700 text-white font-bold rounded-2xl shadow-lg shadow-theme-500/30 transition-all">
+                                    ${t('save')}
+                                </button>
                             </div>
-                            <button id="save-new-phrase" class="w-full py-3 bg-theme-600 text-white rounded-xl font-bold shadow-lg shadow-theme-600/20 active:scale-95 transition-all mt-4">
-                                ${t('save') || 'Save Phrase'}
-                            </button>
-                        </div>
-                        <div class="pt-4">
-                            <button id="done-add-phrase-btn" class="w-full py-3 glass text-slate-600 dark:text-slate-300 rounded-xl font-bold active:scale-95 transition-all">
-                                ${t('done')}
-                            </button>
                         </div>
                     </div>
-                    ` : ''}
                 </div>
             </div>
         `;
 
         // Event Listeners
-        const backBtn = container.querySelector('#tasbih-back-btn');
-        const counterBtn = container.querySelector('#counter-btn');
-        const resetBtn = container.querySelector('#reset-btn');
-        const resetBtnLarge = container.querySelector('#reset-btn-large');
-        const phraseSelect = container.querySelector('#phrase-select');
-        const settingsBtn = container.querySelector('#tasbih-settings-btn');
-        const addPhraseBtn = container.querySelector('#add-phrase-btn');
-
-        backBtn?.addEventListener('click', () => props.onBack?.());
+        container.querySelector('#tasbih-back-btn')?.addEventListener('click', () => props.onBack?.());
         
-        counterBtn?.addEventListener('click', () => {
+        const tapArea = container.querySelector('#tasbih-tap-area');
+        tapArea?.addEventListener('click', (e) => {
             state.count++;
-            if (state.target > 0 && state.count > state.target) {
-                state.count = 1;
-                if (state.hapticEnabled && navigator.vibrate) navigator.vibrate([20, 50, 20]); // Double pulse on target
+            state.totalCount++;
+            
+            // Ripple effect
+            const rippleContainer = container.querySelector('#ripple-container');
+            const ripple = document.createElement('div');
+            ripple.className = 'absolute rounded-full bg-theme-500/20 animate-ripple pointer-events-none';
+            const rect = tapArea.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            ripple.style.width = ripple.style.height = `${size}px`;
+            ripple.style.left = `${e.clientX - rect.left - size/2}px`;
+            ripple.style.top = `${e.clientY - rect.top - size/2}px`;
+            rippleContainer.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 600);
+
+            if (state.target > 0 && state.count >= state.target) {
+                state.sessions++;
+                state.count = 0;
+                if (state.hapticEnabled && navigator.vibrate) navigator.vibrate([100, 50, 100]);
             } else if (state.hapticEnabled && navigator.vibrate) {
-                navigator.vibrate(15);
+                navigator.vibrate(20);
             }
+            
             saveState();
             render();
         });
 
-        const handleReset = (e) => {
-            if (e) e.preventDefault();
-            state.count = 0;
-            saveState();
-            render();
-        };
-        resetBtn?.addEventListener('click', handleReset);
-        resetBtnLarge?.addEventListener('click', handleReset);
-
-        phraseSelect?.addEventListener('change', (e) => {
-            state.selectedPhraseIndex = parseInt(e.target.value, 10);
+        container.querySelector('#reset-btn')?.addEventListener('click', () => {
             state.count = 0;
             saveState();
             render();
         });
 
-        settingsBtn?.addEventListener('click', () => {
+        container.querySelector('#phrase-select-btn')?.addEventListener('click', () => {
+            state.showPhraseDropdown = !state.showPhraseDropdown;
+            render();
+        });
+
+        container.querySelectorAll('.phrase-option').forEach(btn => {
+            btn.addEventListener('click', () => {
+                state.selectedPhraseIndex = parseInt(btn.dataset.index, 10);
+                state.count = 0;
+                state.showPhraseDropdown = false;
+                saveState();
+                render();
+            });
+        });
+
+        container.querySelector('#tasbih-settings-btn')?.addEventListener('click', () => {
             state.showSettings = true;
             render();
         });
 
-        addPhraseBtn?.addEventListener('click', () => {
+        container.querySelector('#close-settings-btn')?.addEventListener('click', () => {
+            state.showSettings = false;
+            render();
+        });
+
+        container.querySelector('#settings-done-btn')?.addEventListener('click', () => {
+            state.showSettings = false;
+            render();
+        });
+
+        container.querySelectorAll('.target-option').forEach(btn => {
+            btn.addEventListener('click', () => {
+                state.target = parseInt(btn.dataset.target, 10);
+                state.count = 0;
+                saveState();
+                render();
+            });
+        });
+
+        container.querySelector('#custom-target-input')?.addEventListener('change', (e) => {
+            const val = parseInt(e.target.value, 10);
+            if (val > 0) {
+                state.target = val;
+                state.count = 0;
+                saveState();
+                render();
+            }
+        });
+
+        container.querySelector('#haptic-toggle')?.addEventListener('click', () => {
+            state.hapticEnabled = !state.hapticEnabled;
+            saveState();
+            render();
+        });
+
+        container.querySelector('#add-custom-phrase-btn')?.addEventListener('click', () => {
+            state.showPhraseDropdown = false;
             state.showAddPhrase = true;
             render();
         });
 
-        // Settings Listeners
-        if (state.showSettings) {
-            container.querySelector('#close-settings')?.addEventListener('click', () => {
-                state.showSettings = false;
+        container.querySelector('#add-phrase-inline-btn')?.addEventListener('click', () => {
+            state.showAddPhrase = true;
+            render();
+        });
+
+        container.querySelector('#cancel-add-phrase-btn')?.addEventListener('click', () => {
+            state.showAddPhrase = false;
+            render();
+        });
+
+        container.querySelector('#save-phrase-btn')?.addEventListener('click', () => {
+            const ar = container.querySelector('#new-phrase-arabic').value.trim();
+            const en = container.querySelector('#new-phrase-translation').value.trim();
+            if (ar) {
+                state.customPhrases.push({ ar, en });
+                state.showAddPhrase = false;
+                state.selectedPhraseIndex = getAllPhrases().length - 1;
+                state.count = 0;
+                saveState();
                 render();
-            });
+            }
+        });
 
-            container.querySelector('#done-settings-btn')?.addEventListener('click', () => {
-                state.showSettings = false;
-                render();
-            });
-
-            container.querySelectorAll('.target-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    state.target = parseInt(btn.dataset.target, 10);
-                    state.count = 0;
-                    saveState();
-                    render();
-                });
-            });
-
-            container.querySelector('#custom-target-btn')?.addEventListener('click', () => {
-                const val = prompt(t('enterCustomTarget') || 'Enter custom target:', state.target);
-                if (val !== null) {
-                    const num = parseInt(val, 10);
-                    if (!isNaN(num) && num >= 0) {
-                        state.target = num;
-                        state.count = 0;
-                        saveState();
-                        render();
-                    }
+        container.querySelectorAll('[data-delete-phrase]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const idx = parseInt(btn.dataset.deletePhrase, 10);
+                state.customPhrases.splice(idx, 1);
+                const predefinedCount = PREDEFINED_TASBIH.length;
+                if (state.selectedPhraseIndex >= predefinedCount + idx) {
+                    state.selectedPhraseIndex = Math.max(0, state.selectedPhraseIndex - 1);
                 }
-            });
-
-            container.querySelector('#haptic-toggle')?.addEventListener('click', () => {
-                state.hapticEnabled = !state.hapticEnabled;
                 saveState();
                 render();
             });
-
-            container.querySelectorAll('[data-select-phrase]').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    state.selectedPhraseIndex = parseInt(btn.dataset.selectPhrase, 10);
-                    state.count = 0;
-                    saveState();
-                    render();
-                });
-            });
-
-            container.querySelectorAll('[data-delete-phrase]').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const idx = parseInt(btn.dataset.deletePhrase, 10);
-                    state.customPhrases.splice(idx, 1);
-                    // Adjust selected index if needed
-                    const predefinedCount = PREDEFINED_TASBIH.length;
-                    if (state.selectedPhraseIndex >= predefinedCount + idx) {
-                        state.selectedPhraseIndex = Math.max(0, state.selectedPhraseIndex - 1);
-                    }
-                    saveState();
-                    render();
-                });
-            });
-        }
-
-        // Add Phrase Listeners
-        if (state.showAddPhrase) {
-            container.querySelector('#close-add-phrase')?.addEventListener('click', () => {
-                state.showAddPhrase = false;
-                render();
-            });
-
-            container.querySelector('#done-add-phrase-btn')?.addEventListener('click', () => {
-                state.showAddPhrase = false;
-                render();
-            });
-
-            container.querySelector('#save-new-phrase')?.addEventListener('click', () => {
-                const ar = container.querySelector('#new-phrase-ar').value.trim();
-                const en = container.querySelector('#new-phrase-en').value.trim();
-                if (ar) {
-                    state.customPhrases.push({ ar, en });
-                    state.showAddPhrase = false;
-                    state.selectedPhraseIndex = getAllPhrases().length - 1;
-                    state.count = 0;
-                    saveState();
-                    render();
-                } else {
-                    alert(t('pleaseEnterArabicText') || 'Please enter Arabic text');
-                }
-            });
-        }
+        });
     };
 
     render();

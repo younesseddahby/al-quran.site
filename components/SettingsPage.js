@@ -66,35 +66,35 @@ export const renderSettingsPage = (container, props) => {
 
         container.innerHTML = `
             <div class="fade-in min-h-screen bg-slate-50 dark:bg-slate-950 pb-32">
-                <header class="sticky top-0 z-30 glass">
-                    <div class="max-w-5xl mx-auto px-4 h-16 md:h-20 flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <button id="main-back-btn" class="p-2.5 rounded-2xl glass hover:bg-theme-100 dark:hover:bg-theme-900/30 transition-all active:scale-95 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
-                                ${BackIcon({className: "w-6 h-6"})}
+                <header class="sticky top-0 z-30 glass border-b border-slate-200/50 dark:border-slate-800/50">
+                    <div class="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <button id="main-back-btn" class="p-2 rounded-xl glass hover:bg-theme-100 dark:hover:bg-theme-900/30 transition-all active:scale-95 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                                ${BackIcon({className: "w-5 h-5"})}
                             </button>
                             <div>
-                                <h1 class="text-xl md:text-2xl font-bold text-slate-900 dark:text-white">${t('settings')}</h1>
-                                <p class="text-[10px] md:text-xs text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider">${t('customizeExperience') || 'Customize your experience'}</p>
+                                <h1 class="text-base md:text-lg font-bold text-slate-900 dark:text-white">${t('settings')}</h1>
+                                <p class="text-[9px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">${t('customizeExperience') || 'Customize your experience'}</p>
                             </div>
                         </div>
                     </div>
                 </header>
 
-                <main class="max-w-5xl mx-auto px-4 py-8 md:py-12">
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <main class="max-w-5xl mx-auto px-4 py-6 md:py-8">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
                         <!-- Left Column: Navigation/Sections -->
                         <div class="lg:col-span-4 space-y-4">
-                                <div class="glass-card rounded-[2.5rem] p-8 shadow-2xl border border-white/10">
-                                    <h2 class="text-sm font-bold text-slate-400 uppercase tracking-[0.2em] mb-8 px-2">${t('sections') || 'Sections'}</h2>
-                                    <nav class="space-y-3">
-                                        ${renderNavButton('appearance', t('appearance'), SunIcon({className: "w-5 h-5"}))}
-                                        ${renderNavButton('language', t('languageAndText'), BookOpenIcon({className: "w-5 h-5"}))}
-                                        ${renderNavButton('interface', t('uiSettings'), GridViewIcon({className: "w-5 h-5"}))}
-                                        ${renderNavButton('about', t('about'), UserIcon({className: "w-5 h-5"}))}
+                                <div class="glass-card rounded-3xl p-6 shadow-xl border border-slate-200 dark:border-slate-800">
+                                    <h2 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6 px-2">${t('sections') || 'Sections'}</h2>
+                                    <nav class="space-y-1.5">
+                                        ${renderNavButton('appearance', t('appearance'), SunIcon({className: "w-4 h-4"}))}
+                                        ${renderNavButton('language', t('languageAndText'), BookOpenIcon({className: "w-4 h-4"}))}
+                                        ${renderNavButton('interface', t('uiSettings'), GridViewIcon({className: "w-4 h-4"}))}
+                                        ${renderNavButton('about', t('about'), UserIcon({className: "w-4 h-4"}))}
                                     </nav>
-                                    <div class="mt-10 pt-8 border-t border-slate-100/10 dark:border-slate-800/50">
-                                        <button id="reset-settings-btn" class="w-full flex items-center justify-center gap-3 p-4 rounded-2xl bg-rose-500/10 text-rose-600 dark:text-rose-400 font-bold text-sm hover:bg-rose-500/20 transition-all active:scale-95 border border-rose-500/10">
-                                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                                    <div class="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800">
+                                        <button id="reset-settings-btn" class="w-full flex items-center justify-center gap-2 p-3 rounded-xl bg-rose-500/5 text-rose-600 dark:text-rose-400 font-bold text-[10px] uppercase tracking-wider hover:bg-rose-500/10 transition-all active:scale-95 border border-rose-500/10">
+                                            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
                                             ${t('resetToDefaults') || 'Reset to Defaults'}
                                         </button>
                                     </div>
@@ -102,16 +102,16 @@ export const renderSettingsPage = (container, props) => {
                         </div>
 
                         <!-- Right Column: Content -->
-                        <div class="lg:col-span-8 space-y-10">
+                        <div class="lg:col-span-8 space-y-8">
                             <!-- Appearance Section -->
-                            <section id="section-appearance" class="scroll-mt-28 space-y-6">
+                            <section id="section-appearance" class="scroll-mt-24 space-y-4">
                                 <div class="flex items-center gap-3 px-2">
-                                    <div class="w-10 h-10 rounded-2xl bg-theme-500/10 flex items-center justify-center text-theme-600 dark:text-theme-400 shadow-sm border border-theme-500/20">
-                                        ${SunIcon({className: "w-6 h-6"})}
+                                    <div class="w-8 h-8 rounded-xl bg-theme-500/10 flex items-center justify-center text-theme-600 dark:text-theme-400 shadow-sm border border-theme-500/10">
+                                        ${SunIcon({className: "w-4 h-4"})}
                                     </div>
-                                    <h2 class="text-2xl font-bold text-slate-900 dark:text-white">${t('appearance')}</h2>
+                                    <h2 class="text-lg font-bold text-slate-900 dark:text-white tracking-tight">${t('appearance')}</h2>
                                 </div>
-                                <div class="glass-card rounded-[2.5rem] overflow-hidden divide-y divide-slate-100 dark:divide-slate-800/50">
+                                <div class="glass-card rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800/50">
                                     ${renderSettingItem(t('theme'), t('themeSettingsSubtitle'), renderThemeSelector())}
                                     ${renderSettingItem(t('colorTheme'), t('colorThemeSubtitle'), renderBaseThemeSelector())}
                                     ${renderSettingItem(t('accentColor'), t('accentColorSubtitle') || 'Choose your favorite highlight color', renderAccentColorSelector())}
@@ -120,14 +120,14 @@ export const renderSettingsPage = (container, props) => {
                             </section>
 
                             <!-- Language & Text Section -->
-                            <section id="section-language" class="scroll-mt-28 space-y-6">
+                            <section id="section-language" class="scroll-mt-24 space-y-4">
                                 <div class="flex items-center gap-3 px-2">
-                                    <div class="w-10 h-10 rounded-2xl bg-theme-500/10 flex items-center justify-center text-theme-600 dark:text-theme-400 shadow-sm border border-theme-500/20">
-                                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" /></svg>
+                                    <div class="w-8 h-8 rounded-xl bg-theme-500/10 flex items-center justify-center text-theme-600 dark:text-theme-400 shadow-sm border border-theme-500/10">
+                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" /></svg>
                                     </div>
-                                    <h2 class="text-2xl font-bold text-slate-900 dark:text-white">${t('languageAndText')}</h2>
+                                    <h2 class="text-lg font-bold text-slate-900 dark:text-white tracking-tight">${t('languageAndText')}</h2>
                                 </div>
-                                <div class="glass-card rounded-[2.5rem] overflow-hidden divide-y divide-slate-100 dark:divide-slate-800/50">
+                                <div class="glass-card rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800/50">
                                     ${renderSettingItem(t('language'), t('appLanguageSubtitle') || 'Select your preferred app language', renderLanguageSelector())}
                                     ${language !== 'ar' ? renderSettingItem(t('readerSettings'), t('readerSettingsSubtitle') || 'Configure how the Quran is displayed', renderReaderSettingsSelector()) : ''}
                                     ${renderSettingItem(t('arabicFont'), t('arabicFontSubtitle') || 'Choose a font for Arabic text', renderArabicFontSelector())}
@@ -136,16 +136,16 @@ export const renderSettingsPage = (container, props) => {
                             </section>
 
                             <!-- Interface Section -->
-                            <section id="section-interface" class="scroll-mt-28 space-y-6">
+                            <section id="section-interface" class="scroll-mt-24 space-y-4">
                                 <div class="flex items-center gap-3 px-2">
-                                    <div class="w-10 h-10 rounded-2xl bg-theme-500/10 flex items-center justify-center text-theme-600 dark:text-theme-400 shadow-sm border border-theme-500/20">
-                                        ${GridViewIcon({className: "w-6 h-6"})}
+                                    <div class="w-8 h-8 rounded-xl bg-theme-500/10 flex items-center justify-center text-theme-600 dark:text-theme-400 shadow-sm border border-theme-500/10">
+                                        ${GridViewIcon({className: "w-4 h-4"})}
                                     </div>
-                                    <h2 class="text-2xl font-bold text-slate-900 dark:text-white">${t('uiSettings')}</h2>
+                                    <h2 class="text-lg font-bold text-slate-900 dark:text-white tracking-tight">${t('uiSettings')}</h2>
                                 </div>
-                                <div class="glass-card rounded-[2.5rem] overflow-hidden divide-y divide-slate-100 dark:divide-slate-800/50">
-                                    <div class="p-6 md:p-8">
-                                        <h4 class="font-bold text-slate-900 dark:text-white mb-4">${t('surahListLayout')}</h4>
+                                <div class="glass-card rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800/50">
+                                    <div class="p-5 md:p-6">
+                                        <h4 class="font-bold text-slate-900 dark:text-white mb-4 text-sm">${t('surahListLayout')}</h4>
                                         ${renderSurahLayoutSelector()}
                                     </div>
                                     ${renderSettingItem('Debug Mode', 'Show technical details for troubleshooting', renderDebugToggle())}
@@ -153,14 +153,14 @@ export const renderSettingsPage = (container, props) => {
                             </section>
 
                             <!-- About Section -->
-                            <section id="section-about" class="scroll-mt-28 space-y-6">
+                            <section id="section-about" class="scroll-mt-24 space-y-4">
                                 <div class="flex items-center gap-3 px-2">
-                                    <div class="w-10 h-10 rounded-2xl bg-theme-500/10 flex items-center justify-center text-theme-600 dark:text-theme-400 shadow-sm border border-theme-500/20">
-                                        ${UserIcon({className: "w-6 h-6"})}
+                                    <div class="w-8 h-8 rounded-xl bg-theme-500/10 flex items-center justify-center text-theme-600 dark:text-theme-400 shadow-sm border border-theme-500/10">
+                                        ${UserIcon({className: "w-4 h-4"})}
                                     </div>
-                                    <h2 class="text-2xl font-bold text-slate-900 dark:text-white">${t('about')}</h2>
+                                    <h2 class="text-lg font-bold text-slate-900 dark:text-white tracking-tight">${t('about')}</h2>
                                 </div>
-                                <div class="glass-card rounded-[2.5rem] p-6 md:p-10">
+                                <div class="glass-card rounded-3xl p-6 md:p-8 border border-slate-200 dark:border-slate-800">
                                     ${renderAboutInfo()}
                                 </div>
                             </section>
@@ -173,8 +173,8 @@ export const renderSettingsPage = (container, props) => {
     };
 
     const renderNavButton = (id, label, icon) => `
-        <button data-section="${id}" class="section-nav-btn w-full flex items-center gap-3 p-3.5 rounded-2xl transition-all hover:bg-slate-50 dark:hover:bg-slate-800/50 text-slate-600 dark:text-slate-400 font-bold text-sm">
-            <span class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800 group-hover:bg-white dark:group-hover:bg-slate-700 transition-colors shadow-sm">
+        <button data-section="${id}" class="section-nav-btn w-full flex items-center gap-3 p-2.5 rounded-xl transition-all hover:bg-slate-50 dark:hover:bg-slate-800/50 text-slate-600 dark:text-slate-400 font-bold text-xs group">
+            <span class="p-1.5 rounded-lg bg-slate-50 dark:bg-slate-800 group-hover:bg-white dark:group-hover:bg-slate-700 transition-colors shadow-sm border border-slate-200/50 dark:border-slate-700/50">
                 ${icon}
             </span>
             ${label}
@@ -182,10 +182,10 @@ export const renderSettingsPage = (container, props) => {
     `;
 
     const renderSettingItem = (title, subtitle, controlHTML) => `
-        <div class="p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div class="p-4 md:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors">
             <div class="min-w-0 flex-grow">
-                <h4 class="font-bold text-slate-900 dark:text-white text-base md:text-lg">${title}</h4>
-                ${subtitle ? `<p class="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-1 font-medium">${subtitle}</p>` : ''}
+                <h4 class="font-bold text-slate-900 dark:text-white text-xs md:text-sm">${title}</h4>
+                ${subtitle ? `<p class="text-[9px] md:text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 font-bold">${subtitle}</p>` : ''}
             </div>
             <div class="flex-shrink-0">
                 ${controlHTML}
@@ -317,27 +317,27 @@ export const renderSettingsPage = (container, props) => {
     `;
     
     const renderAboutInfo = () => `
-        <div class="space-y-8">
-            <div class="flex items-center gap-6">
-                <div class="w-20 h-20 rounded-[2rem] bg-gradient-to-br from-theme-500 to-indigo-600 flex items-center justify-center text-white font-bold text-3xl shadow-xl shadow-theme-500/20">Y</div>
+        <div class="space-y-6">
+            <div class="flex items-center gap-4">
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-theme-500 to-indigo-600 flex items-center justify-center text-white font-bold text-2xl shadow-xl shadow-theme-500/20">Y</div>
                 <div>
-                    <h4 class="text-xl font-bold text-slate-900 dark:text-white">Youness Eddahby</h4>
-                    <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Full Stack Developer & Designer</p>
-                    <div class="flex items-center gap-2 mt-2">
-                        <span class="px-2 py-0.5 rounded-md bg-theme-50 dark:bg-theme-900/20 text-[10px] font-bold text-theme-600 dark:text-theme-400 uppercase tracking-wider border border-theme-100 dark:border-theme-900/30">v1.2.0</span>
+                    <h4 class="text-lg font-bold text-slate-900 dark:text-white">Youness Eddahby</h4>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Full Stack Developer & Designer</p>
+                    <div class="flex items-center gap-2 mt-1">
+                        <span class="px-2 py-0.5 rounded-md bg-theme-50 dark:bg-theme-900/20 text-[9px] font-bold text-theme-600 dark:text-theme-400 uppercase tracking-wider border border-theme-100 dark:border-theme-900/30">v1.2.0</span>
                     </div>
                 </div>
             </div>
-            <div class="grid grid-cols-5 gap-3">
+            <div class="grid grid-cols-5 gap-2">
                 ${socialLinks.map(link => `
-                    <a href="${link.href}" target="_blank" class="flex items-center justify-center p-4 rounded-2xl glass text-slate-600 dark:text-slate-400 hover:bg-theme-600 hover:text-white dark:hover:bg-theme-600 transition-all active:scale-90 shadow-sm border border-slate-100 dark:border-slate-800" title="${link.label}">
+                    <a href="${link.href}" target="_blank" class="flex items-center justify-center p-3 rounded-xl glass text-slate-600 dark:text-slate-400 hover:bg-theme-600 hover:text-white dark:hover:bg-theme-600 transition-all active:scale-90 shadow-sm border border-slate-200 dark:border-slate-800" title="${link.label}">
                         ${link.icon}
                     </a>
                 `).join('')}
             </div>
-            <div class="pt-8 border-t border-slate-100 dark:border-slate-800 text-center">
-                <p class="text-[10px] text-slate-400 uppercase tracking-[0.3em] font-bold">${t('madeWithLove')}</p>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 font-medium">© 2024 The Holy Quran App. All rights reserved.</p>
+            <div class="pt-6 border-t border-slate-100 dark:border-slate-800 text-center">
+                <p class="text-[9px] text-slate-400 uppercase tracking-widest font-bold">${t('madeWithLove')}</p>
+                <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-1 font-medium">© 2024 The Holy Quran App. All rights reserved.</p>
             </div>
         </div>
     `;

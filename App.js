@@ -10,6 +10,7 @@ import { renderBookmarks } from './components/Bookmarks.js';
 import { renderQuiz } from './components/Quiz.js';
 import { renderProphetStories } from './components/ProphetStories.js';
 import { renderAsmaUlHusna } from './components/AsmaUlHusna.js';
+import { renderQiblaFinder } from './components/QiblaFinder.js';
 import { 
     HomeIcon, QuranIcon, HadithIcon, PrayerIcon, SettingsIcon, ShieldIcon, BeadsIcon, 
     ArrowLeftIcon, ArrowRightIcon, BookOpenIcon, BookmarkIcon, QuizIcon
@@ -122,7 +123,7 @@ const App = (rootElement) => {
 
     const renderHeader = () => {
         const isHidden = state.activeTab === 'settings' || (state.activeTab === 'quran' && state.isReaderMode);
-        header.className = isHidden ? 'hidden' : 'glass sticky top-0 z-40 transition-transform duration-500 ease-out';
+        header.className = isHidden ? 'hidden' : 'glass sticky top-0 z-40 transition-all duration-500 ease-out border-b border-slate-200/50 dark:border-slate-800/50 animate-fade';
         if (isHidden) return;
 
         const isHome = state.activeTab === 'home';
@@ -131,27 +132,25 @@ const App = (rootElement) => {
 
         header.innerHTML = `
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between items-center h-16 md:h-20">
-                    <div class="flex items-center gap-3">
+                <div class="flex justify-between items-center h-14 md:h-16">
+                    <div class="flex items-center gap-2 md:gap-3">
                         ${!isHome ? `
-                            <button id="header-back-btn" class="p-2 -ml-2 rounded-full glass hover:bg-theme-100 dark:hover:bg-theme-900/30 transition-all active:scale-90 flex items-center gap-1 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800">
+                            <button id="header-back-btn" class="p-2 -ml-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-all active:scale-90 flex items-center gap-1 text-slate-600 dark:text-slate-300">
                                 ${BackIcon({className: "w-5 h-5"})}
-                                <span class="hidden sm:inline text-xs font-bold uppercase tracking-wider">${t('back')}</span>
                             </button>
                         ` : ''}
-                        <h1 class="text-base md:text-lg font-bold text-theme-700 dark:text-theme-400 font-display tracking-tight">${t('appName')}</h1>
+                        <h1 class="text-base md:text-lg font-bold text-slate-900 dark:text-white font-display tracking-tight">${t('appName')}</h1>
                     </div>
-                    <nav class="hidden md:flex items-center gap-1 text-sm font-semibold">
+                    <nav class="hidden lg:flex items-center gap-1 text-sm font-medium">
                          ${getTabs().map(tab => `
-                            <button data-tab="${tab.id}" class="flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all hover:bg-black/5 dark:hover:bg-white/5 ${state.activeTab === tab.id ? 'text-theme-600 dark:text-theme-400 bg-theme-50 dark:bg-theme-900/20' : 'text-slate-600 dark:text-slate-400'}">
-                                ${tab.icon({className: "w-5 h-5"})} <span>${tab.label}</span>
+                            <button data-tab="${tab.id}" class="flex items-center gap-2 px-4 py-1.5 rounded-full transition-all duration-300 ${state.activeTab === tab.id ? 'text-theme-700 dark:text-theme-300 bg-theme-500/15 shadow-sm font-bold ring-1 ring-theme-500/20' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-slate-200'}">
+                                ${tab.icon({className: "w-4 h-4"})} <span>${tab.label}</span>
                             </button>
                         `).join('')}
                     </nav>
                     <div class="flex items-center gap-2">
-                        <button id="header-settings-btn" class="flex items-center gap-2 px-3 py-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 text-slate-600 dark:text-slate-400 transition-colors">
-                            ${SettingsIcon({className: "w-8 h-8"})}
-                            <span class="text-sm font-semibold">${t('settings')}</span>
+                        <button id="header-settings-btn" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-all active:scale-90 text-slate-600 dark:text-slate-300">
+                            ${SettingsIcon({className: "w-5 h-5"})}
                         </button>
                     </div>
                 </div>
@@ -175,18 +174,18 @@ const App = (rootElement) => {
 
     const renderMobileNav = () => {
         const isHidden = (state.isReaderMode && state.activeTab === 'quran') || state.activeTab === 'settings';
-        mobileNav.className = isHidden ? 'hidden' : 'md:hidden fixed bottom-0 left-0 right-0 glass z-50 transition-all duration-500 ease-out';
-        mobileNavPlaceholder.className = isHidden ? 'hidden' : 'md:hidden h-20';
+        mobileNav.className = isHidden ? 'hidden' : 'lg:hidden fixed bottom-0 left-0 right-0 glass z-50 transition-all duration-500 ease-out border-t border-slate-200/50 dark:border-slate-800/50 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.05)] dark:shadow-[0_-4px_20px_rgba(0,0,0,0.2)] animate-fade';
+        mobileNavPlaceholder.className = isHidden ? 'hidden' : 'lg:hidden h-16';
         if (isHidden) return;
 
         mobileNav.innerHTML = `
-            <div class="flex justify-around items-center h-20 px-2">
+            <div class="flex items-center justify-around h-16 px-2 overflow-x-auto hide-scrollbar relative">
                 ${getTabs().map(tab => `
-                    <button data-tab="${tab.id}" class="flex flex-col items-center justify-center w-full h-full space-y-1.5 transition-all ${state.activeTab === tab.id ? 'text-theme-600 dark:text-theme-400' : 'text-slate-400 dark:text-slate-500'}">
-                        <div class="p-1.5 rounded-xl ${state.activeTab === tab.id ? 'bg-theme-50 dark:bg-theme-900/20' : ''}">
-                            ${tab.icon({className: "w-6 h-6"})}
+                    <button data-tab="${tab.id}" class="relative flex-shrink-0 flex flex-col items-center justify-center w-16 h-full space-y-1 transition-all duration-300 ${state.activeTab === tab.id ? 'text-theme-600 dark:text-theme-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'}">
+                        <div class="p-1.5 rounded-xl transition-all duration-300 ${state.activeTab === tab.id ? 'bg-theme-500/10' : ''}">
+                            ${tab.icon({className: `w-5 h-5 transition-transform duration-300 ${state.activeTab === tab.id ? 'scale-110' : ''}`})}
                         </div>
-                        <span class="text-[10px] font-bold tracking-tight">${tab.mobileLabel}</span>
+                        <span class="text-[10px] font-bold tracking-tight truncate w-full text-center transition-all duration-300">${tab.mobileLabel}</span>
                     </button>`).join('')}
             </div>`;
         mobileNav.querySelectorAll('button').forEach(b => b.addEventListener('click', () => { 
@@ -260,6 +259,7 @@ const App = (rootElement) => {
             case 'quiz': renderQuiz(mainContent, props); break;
             case 'stories': renderProphetStories(mainContent, props); break;
             case 'asma': renderAsmaUlHusna(mainContent, props); break;
+            case 'qibla': renderQiblaFinder(mainContent, props); break;
             case 'adhan': currentContentCleanup = renderAdhanTimes(mainContent, props); break;
             case 'settings': renderSettingsPage(mainContent, props); break;
         }

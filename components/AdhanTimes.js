@@ -30,65 +30,65 @@ export const renderAdhanTimes = (container, props = {}) => {
 
     const render = () => {
         const locationInfo = state.location ? `
-            <div class="mt-6 p-5 glass rounded-3xl border border-white/20 shadow-xl animate-in relative overflow-hidden group">
-                <div class="absolute top-0 right-0 w-24 h-24 bg-theme-500/10 rounded-bl-[3rem] -mr-8 -mt-8 transition-transform group-hover:scale-150 duration-700"></div>
-                <div class="flex items-center gap-4 relative z-10">
-                    <div class="w-12 h-12 rounded-2xl glass border border-white/10 text-theme-600 dark:text-theme-400 flex items-center justify-center shadow-sm">
-                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+            <div class="mt-4 p-4 glass rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm animate-in relative overflow-hidden group">
+                <div class="absolute top-0 right-0 w-16 h-16 bg-theme-500/5 rounded-bl-[2rem] -mr-4 -mt-4 transition-transform group-hover:scale-150 duration-700"></div>
+                <div class="flex items-center gap-3 relative z-10">
+                    <div class="w-10 h-10 rounded-xl glass border border-slate-200 dark:border-slate-800 text-theme-600 dark:text-theme-400 flex items-center justify-center shadow-sm">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                     </div>
                     <div>
-                        <p class="text-[10px] font-bold text-theme-600 dark:text-theme-400 uppercase tracking-[0.3em]">${t('yourLocation')}</p>
-                        <p class="text-lg font-bold text-slate-900 dark:text-white tracking-tight">${state.location.city}${state.location.country ? ', ' + state.location.country : ''}</p>
+                        <p class="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">${t('yourLocation')}</p>
+                        <p class="text-base font-bold text-slate-900 dark:text-white tracking-tight">${state.location.city}${state.location.country ? ', ' + state.location.country : ''}</p>
                     </div>
                 </div>
             </div>
         ` : '';
 
         container.innerHTML = `
-            <div class="space-y-6">
+            <div class="space-y-6 fade-in p-4 max-w-5xl mx-auto">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-3">
-                        <button id="adhan-back-btn" class="p-2 -ml-2 rounded-full glass hover:bg-theme-100 dark:hover:bg-theme-900/30 text-slate-900 dark:text-white transition-all active:scale-90 flex items-center gap-1 border border-slate-200 dark:border-slate-800">
+                        <button id="adhan-back-btn" class="p-2 -ml-1 rounded-xl glass hover:bg-theme-100 dark:hover:bg-theme-900/30 text-slate-600 dark:text-slate-300 transition-all active:scale-90 flex items-center gap-1 border border-slate-200 dark:border-slate-800">
                             ${BackIcon({className: "w-5 h-5"})}
-                            <span class="hidden sm:inline text-xs font-bold uppercase tracking-wider">${t('back')}</span>
+                            <span class="hidden sm:inline text-[10px] font-bold uppercase tracking-wider">${t('back')}</span>
                         </button>
-                        <h2 class="text-3xl font-bold text-theme-700 dark:text-theme-400 font-amiri">${t('adhanAndPrayerTimes')}</h2>
+                        <h2 class="text-xl font-bold text-slate-900 dark:text-white font-display tracking-tight">${t('adhanAndPrayerTimes')}</h2>
                     </div>
                 </div>
 
-                <div class="glass rounded-[2.5rem] p-6 md:p-8 shadow-2xl border border-white/10 space-y-6">
-                    <div class="flex items-center justify-between p-4 glass rounded-2xl border border-white/10">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-2xl glass border border-white/10 flex items-center justify-center text-theme-600 dark:text-theme-400 shadow-sm">
-                                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                <div class="glass rounded-3xl p-5 md:p-6 shadow-xl border border-slate-200 dark:border-slate-800 space-y-5">
+                    <div class="flex items-center justify-between p-3.5 glass rounded-xl border border-slate-200 dark:border-slate-800">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl glass border border-slate-200 dark:border-slate-800 flex items-center justify-center text-theme-600 dark:text-theme-400 shadow-sm">
+                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                             </div>
                             <div>
-                                <p class="text-base font-bold text-slate-900 dark:text-white tracking-tight">${t('autoLocation')}</p>
-                                <p class="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-widest font-bold mt-0.5">${state.isAutoLocation ? t('currentLocation') : t('manualLocation')}</p>
+                                <p class="text-sm font-bold text-slate-900 dark:text-white tracking-tight">${t('autoLocation')}</p>
+                                <p class="text-[9px] text-slate-500 dark:text-slate-400 uppercase tracking-widest font-bold mt-0.5">${state.isAutoLocation ? t('currentLocation') : t('manualLocation')}</p>
                             </div>
                         </div>
-                        <button id="auto-location-toggle" class="w-14 h-7 rounded-full transition-all relative active:scale-95 ${state.isAutoLocation ? 'bg-theme-600 shadow-lg shadow-theme-500/30' : 'bg-slate-300 dark:bg-slate-700'}">
-                            <div class="absolute top-1.5 start-1.5 w-4 h-4 bg-white rounded-full shadow-md transition-transform ${state.isAutoLocation ? 'ltr:translate-x-7 rtl:-translate-x-7' : ''}"></div>
+                        <button id="auto-location-toggle" class="w-12 h-6 rounded-full transition-all relative active:scale-95 ${state.isAutoLocation ? 'bg-theme-600 shadow-lg shadow-theme-500/20' : 'bg-slate-200 dark:bg-slate-700'}">
+                            <div class="absolute top-1 start-1 w-4 h-4 bg-white rounded-full shadow-sm transition-transform ${state.isAutoLocation ? 'ltr:translate-x-6 rtl:-translate-x-6' : ''}"></div>
                         </button>
                     </div>
 
                     ${state.isAutoLocation ? locationInfo : `
-                        <form id="location-form" class="grid grid-cols-1 sm:grid-cols-2 gap-6 items-end animate-in">
+                        <form id="location-form" class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end animate-in">
                             <div class="relative sm:col-span-2">
-                                <label for="city" class="block text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em] mb-2 ml-1">${t('city')}</label>
-                                <input type="text" id="city" value="${state.location ? state.location.city : ''}" placeholder="${t('cityExample')}" class="w-full px-5 py-4 glass border border-white/10 rounded-2xl outline-none focus:ring-4 focus:ring-theme-500/20 focus:border-theme-500/50 transition-all dark:text-white text-sm font-medium">
-                                <div id="city-suggestions" class="absolute z-20 w-full mt-2 glass rounded-2xl shadow-2xl border border-white/10 hidden max-h-60 overflow-auto custom-scrollbar"></div>
+                                <label for="city" class="block text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1.5 ml-1">${t('city')}</label>
+                                <input type="text" id="city" value="${state.location ? state.location.city : ''}" placeholder="${t('cityExample')}" class="w-full px-4 py-3 glass border border-slate-200 dark:border-slate-800 rounded-xl outline-none focus:ring-2 focus:ring-theme-500/20 focus:border-theme-500/50 transition-all dark:text-white text-sm font-medium">
+                                <div id="city-suggestions" class="absolute z-20 w-full mt-1 glass rounded-xl shadow-2xl border border-slate-200 dark:border-slate-800 hidden max-h-60 overflow-auto custom-scrollbar"></div>
                             </div>
                             <div>
-                                <label for="country" class="block text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em] mb-2 ml-1">${t('country')}</label>
-                                <input type="text" id="country" value="${state.location ? state.location.country : ''}" placeholder="${t('countryExample')}" class="w-full px-5 py-4 glass border border-white/10 rounded-2xl outline-none focus:ring-4 focus:ring-theme-500/20 focus:border-theme-500/50 transition-all dark:text-white text-sm font-medium">
+                                <label for="country" class="block text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1.5 ml-1">${t('country')}</label>
+                                <input type="text" id="country" value="${state.location ? state.location.country : ''}" placeholder="${t('countryExample')}" class="w-full px-4 py-3 glass border border-slate-200 dark:border-slate-800 rounded-xl outline-none focus:ring-2 focus:ring-theme-500/20 focus:border-theme-500/50 transition-all dark:text-white text-sm font-medium">
                             </div>
-                            <button type="submit" class="w-full px-6 py-4 bg-gradient-to-r from-theme-600 to-indigo-600 text-white rounded-2xl font-bold hover:shadow-xl hover:shadow-theme-500/30 transition-all active:scale-95 uppercase tracking-widest text-xs border border-white/10">${t('showTimes')}</button>
+                            <button type="submit" class="w-full px-5 py-3 bg-theme-600 text-white rounded-xl font-bold hover:bg-theme-700 transition-all active:scale-95 uppercase tracking-widest text-[10px] shadow-lg shadow-theme-500/20">${t('showTimes')}</button>
                         </form>
                     `}
                 </div>
 
-                <div id="prayer-times-container" class="mt-6"></div>
+                <div id="prayer-times-container" class="mt-4"></div>
             </div>
         `;
 
@@ -317,18 +317,18 @@ export const renderAdhanTimes = (container, props = {}) => {
         const locationString = state.location && state.location.city ? `${state.location.city}${state.location.country ? ', ' + state.location.country : ''}` : t('currentLocation');
 
         contentContainer.innerHTML = `
-            <div class="fade-in space-y-8">
-                <div class="text-center p-8 md:p-12 glass rounded-[3rem] shadow-2xl border border-white/10 relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-theme-500/50 to-transparent"></div>
-                    <h3 class="text-2xl md:text-4xl font-bold text-slate-900 dark:text-white tracking-tight">${t('prayerTimesFor', { location: locationString })}</h3>
-                    <p class="text-[10px] md:text-xs text-slate-500 dark:text-slate-400 mt-2 uppercase tracking-[0.3em] font-bold">${t('calculationMethod', { method: meta.method.name })}</p>
-                    <div id="countdown-container" class="mt-10 p-6 glass rounded-3xl border border-white/10 inline-block"></div>
+            <div class="fade-in space-y-6">
+                <div class="text-center p-6 md:p-8 glass rounded-3xl shadow-xl border border-slate-200 dark:border-slate-800 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-theme-500/30 to-transparent"></div>
+                    <h3 class="text-xl md:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">${t('prayerTimesFor', { location: locationString })}</h3>
+                    <p class="text-[9px] text-slate-500 dark:text-slate-400 mt-1 uppercase tracking-widest font-bold">${t('calculationMethod', { method: meta.method.name })}</p>
+                    <div id="countdown-container" class="mt-6 p-4 glass rounded-2xl border border-slate-200 dark:border-slate-800 inline-block"></div>
                 </div>
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
                     ${prayerOrder.map(prayer => `
-                        <div id="prayer-${prayer}" class="prayer-card p-6 md:p-8 rounded-[2.5rem] text-center transition-all duration-700 ease-out glass border border-white/10 shadow-xl group hover:scale-[1.02] active:scale-95">
-                            <p class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] mb-4 group-hover:text-theme-500 transition-colors">${t(`prayer_${prayer}`)}</p>
-                            <p class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white font-mono tracking-tight">${timings[prayer]}</p>
+                        <div id="prayer-${prayer}" class="prayer-card p-5 md:p-6 rounded-2xl text-center transition-all duration-500 ease-out glass border border-slate-200 dark:border-slate-800 shadow-sm group hover:scale-[1.02] active:scale-95">
+                            <p class="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3 group-hover:text-theme-500 transition-colors">${t(`prayer_${prayer}`)}</p>
+                            <p class="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white font-mono tracking-tight">${timings[prayer]}</p>
                         </div>
                     `).join('')}
                 </div>

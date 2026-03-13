@@ -19,6 +19,8 @@ export const renderQuranReader = (container, cache, props) => {
         processing: false, // New state to handle heavy rendering
         activeAyah: cache.activeAyahForNav || 1,
         isJumpModal: false,
+        jumpTab: 'surah',
+        listTab: 'surah',
         isSettingsModal: cache.isSettingsModalOpen || false,
         isTafsirModal: false,
         loadingTafsir: false,
@@ -230,20 +232,20 @@ export const renderQuranReader = (container, cache, props) => {
             } else {
                 // Block style for translations
                 container.classList.remove('quran-arabic-text');
-                container.classList.add('space-y-8');
+                container.classList.add('space-y-2');
                 
                 html = batch.map((a, i) => {
                     const isBookmarked = props.bookmarks.quran.some(b => b.id === `${state.pageData.number}:${a.numberInSurah}`);
                     return `
-                    <div class="ayah-item group p-3 md:p-6 rounded-2xl md:rounded-3xl border border-transparent hover:border-theme-500/20 hover:bg-theme-50/30 dark:hover:bg-theme-900/10 transition-all cursor-pointer fade-in ${state.activeAyah == a.numberInSurah ? 'bg-theme-50 dark:bg-theme-900/20 border-theme-500/30' : ''}" 
+                    <div class="ayah-item group p-1 md:p-2 rounded-lg md:rounded-xl border border-transparent hover:border-theme-500/20 hover:bg-theme-50/30 dark:hover:bg-theme-900/10 transition-all cursor-pointer fade-in ${state.activeAyah == a.numberInSurah ? 'bg-theme-50 dark:bg-theme-900/20 border-theme-500/30' : ''}" 
                          style="animation-delay: ${i * 30}ms"
                          data-num="${a.numberInSurah}" 
                          data-ayah-number="${a.numberInSurah}">
-                        <div class="flex items-start justify-between gap-3 md:gap-6 mb-3 md:mb-4">
-                            <div class="flex items-center gap-2 md:gap-3">
-                                <span class="w-8 h-8 md:w-10 md:h-10 flex-shrink-0 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-lg md:rounded-xl text-[10px] md:text-xs font-bold text-slate-500 group-hover:bg-theme-600 group-hover:text-white transition-all">${a.numberInSurah}</span>
-                                <button class="bookmark-ayah-btn p-1.5 md:p-2 rounded-lg hover:bg-theme-100 dark:hover:bg-theme-800 text-slate-400 hover:text-theme-600 transition-all" data-surah="${state.pageData.number}" data-ayah="${a.numberInSurah}">
-                                    ${isBookmarked ? BookmarkSolidIcon({className: "w-4 h-4 md:w-5 md:h-5 text-theme-600"}) : BookmarkIcon({className: "w-4 h-4 md:w-5 md:h-5"})}
+                        <div class="flex items-start justify-between gap-1 md:gap-2 mb-1 md:mb-2">
+                            <div class="flex items-center gap-1 md:gap-1.5">
+                                <span class="w-6 h-6 md:w-8 md:h-8 flex-shrink-0 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-md text-[8px] md:text-xs font-bold text-slate-500 group-hover:bg-theme-600 group-hover:text-white transition-all">${a.numberInSurah}</span>
+                                <button class="bookmark-ayah-btn p-0.5 md:p-1 rounded-md hover:bg-theme-100 dark:hover:bg-theme-800 text-slate-400 hover:text-theme-600 transition-all" data-surah="${state.pageData.number}" data-ayah="${a.numberInSurah}">
+                                    ${isBookmarked ? BookmarkSolidIcon({className: "w-3 h-3 md:w-3.5 h-3.5 text-theme-600"}) : BookmarkIcon({className: "w-3 h-3 md:w-3.5 h-3.5"})}
                                 </button>
                             </div>
                             ${displayMode !== 'translation' ? `
@@ -304,6 +306,17 @@ export const renderQuranReader = (container, cache, props) => {
             
             // Update local state and UI without full re-render
             state.activeAyah = num;
+            
+            // Save last read
+            if (state.pageData) {
+                localStorage.setItem('quran_last_read', JSON.stringify({
+                    surah: state.pageData.number,
+                    ayah: num,
+                    surahName: state.pageData.englishName,
+                    totalAyahs: state.pageData.numberOfAyahs
+                }));
+            }
+
             const jumpTrigger = contentArea.querySelector('#jump-trigger');
             if (jumpTrigger) {
                 jumpTrigger.innerHTML = `${t('surah')} ${state.pageData.number} • ${t('ayah')} ${num}`;
@@ -350,7 +363,7 @@ export const renderQuranReader = (container, cache, props) => {
 
         contentArea.innerHTML = `
             <div class="max-w-7xl mx-auto px-4 py-6 md:py-10 fade-in">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
                     <div class="flex items-center gap-4">
                         <button id="reader-list-back" class="p-2.5 rounded-full glass hover:bg-theme-100 dark:hover:bg-theme-900/30 transition-all active:scale-90 flex items-center gap-2 text-slate-600 dark:text-slate-300 border border-white/20 shadow-lg group">
                             ${BackIcon({className: "w-5 h-5 group-hover:-translate-x-1 rtl:group-hover:translate-x-1 transition-transform"})}
@@ -368,33 +381,56 @@ export const renderQuranReader = (container, cache, props) => {
                         <input id="surah-search" type="text" value="${state.searchQuery}" placeholder="${t('searchSurahPlaceholder')}" class="w-full pl-12 pr-5 py-4 glass rounded-2xl border border-white/20 outline-none focus:ring-4 focus:ring-theme-500/20 focus:border-theme-500/50 transition-all dark:text-white shadow-xl placeholder:text-slate-400 font-medium">
                     </div>
                 </div>
-                <div id="surah-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    ${filtered.map(s => `
-                        <div data-num="${s.number}" class="surah-card p-6 glass-card rounded-[2.5rem] border border-white/20 cursor-pointer hover:border-theme-500/40 hover:shadow-[0_20px_50px_rgba(var(--theme-color-500-rgb),0.15)] transition-all duration-500 active:scale-[0.98] group relative overflow-hidden">
-                            <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-theme-500/10 to-transparent rounded-bl-[4rem] -mr-10 -mt-10 transition-transform group-hover:scale-125 duration-700"></div>
-                            <div class="flex items-center justify-between mb-8 relative z-10">
-                                <div class="flex items-center gap-4">
-                                    <div class="w-14 h-14 flex items-center justify-center glass rounded-2xl font-bold text-slate-700 dark:text-slate-200 group-hover:bg-theme-600 group-hover:text-white transition-all duration-500 shadow-inner">
-                                        <span class="text-lg">${s.number}</span>
+
+                <div class="flex p-1 bg-slate-100 dark:bg-slate-900/50 rounded-xl mb-8 w-fit">
+                    <button data-tab="surah" class="list-tab-btn px-6 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-all ${state.listTab === 'surah' ? 'bg-white dark:bg-slate-800 text-theme-600 shadow-sm' : 'text-slate-500'}">${t('surah')}</button>
+                    <button data-tab="juz" class="list-tab-btn px-6 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-all ${state.listTab === 'juz' ? 'bg-white dark:bg-slate-800 text-theme-600 shadow-sm' : 'text-slate-500'}">${t('juz')}</button>
+                </div>
+
+                <div id="surah-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
+                    ${state.listTab === 'surah' ? filtered.map(s => `
+                        <div data-num="${s.number}" class="surah-card p-3.5 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 shadow-sm hover:shadow-xl hover:shadow-theme-500/10 hover:border-theme-500/30 hover:-translate-y-1 transition-all duration-500 cursor-pointer group relative overflow-hidden">
+                            <div class="absolute -right-8 -top-8 w-24 h-24 bg-theme-500/5 rounded-full blur-[30px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                            <div class="flex items-center justify-between mb-2 relative z-10">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-9 h-9 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-xl font-bold text-slate-500 dark:text-slate-400 group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-all duration-500 shadow-sm font-display relative">
+                                        <span class="text-sm relative z-10">${s.number}</span>
+                                        <div class="absolute inset-0 bg-theme-500/20 rounded-xl scale-0 group-hover:scale-100 transition-transform duration-500"></div>
                                     </div>
-                                    <div>
-                                        <h3 class="font-bold text-xl text-slate-900 dark:text-slate-100 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-colors duration-300">${s.englishName}</h3>
-                                        <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] font-bold mt-0.5">${s.revelationType}</p>
+                                    <div class="min-w-0">
+                                        <h3 class="font-bold text-sm md:text-base text-slate-800 dark:text-slate-200 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-colors duration-300 truncate tracking-tight">${s.englishName}</h3>
+                                        <p class="text-[9px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mt-0.5">${s.revelationType}</p>
                                     </div>
                                 </div>
-                                <div class="text-right">
-                                    <p class="font-amiri text-3xl text-slate-800 dark:text-slate-100 leading-none group-hover:scale-110 transition-transform duration-500">${s.name}</p>
+                                <div class="text-right flex-shrink-0">
+                                    <p class="font-amiri text-lg text-slate-800 dark:text-slate-200 leading-none group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-colors duration-500">${s.name}</p>
                                 </div>
                             </div>
-                            <div class="flex items-center justify-between mt-4 pt-5 border-t border-white/10 relative z-10">
+                            <div class="flex items-center justify-between mt-2.5 pt-2.5 border-t border-slate-200/50 dark:border-slate-700/50 relative z-10">
                                 <div class="flex items-center gap-2">
-                                    <span class="px-3 py-1 rounded-full glass text-[10px] font-bold text-theme-600 dark:text-theme-400 uppercase tracking-wider border border-theme-500/20">${s.numberOfAyahs} ${t('ayahs')}</span>
+                                    <span class="px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-[9px] text-slate-500 dark:text-slate-400 font-bold whitespace-nowrap">${s.numberOfAyahs} ${t('ayahs')}</span>
                                 </div>
-                                <div class="w-10 h-10 rounded-full glass flex items-center justify-center text-slate-400 group-hover:bg-theme-500 group-hover:text-white group-hover:rotate-[-45deg] transition-all duration-500">
-                                    ${ChevronRightIcon({className: "w-5 h-5"})}
+                                <div class="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-all duration-500">
+                                    ${ChevronRightIcon({className: `w-3 h-3 ${isRtl ? 'rotate-180' : ''}`})}
                                 </div>
                             </div>
-                        </div>`).join('')}
+                        </div>`).join('') : Array.from({length: 30}, (_, i) => i + 1).map(j => {
+                            const mapping = JUZ_MAPPING.find(m => m.juz === j);
+                            const surah = state.surahs.find(s => s.number === mapping.surah);
+                            return `
+                            <div data-juz="${j}" class="juz-card p-3.5 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 shadow-sm hover:shadow-xl hover:shadow-theme-500/10 hover:border-theme-500/30 hover:-translate-y-1 transition-all duration-500 cursor-pointer group relative overflow-hidden">
+                                <div class="absolute -right-8 -top-8 w-24 h-24 bg-theme-500/5 rounded-full blur-[30px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                                <div class="flex items-center gap-3 relative z-10">
+                                    <div class="w-10 h-10 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-xl font-bold text-slate-500 dark:text-slate-400 group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-all duration-500 shadow-sm font-display relative">
+                                        <span class="text-sm relative z-10">${j}</span>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <h3 class="font-bold text-sm md:text-base text-slate-800 dark:text-slate-200 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-colors duration-300 truncate tracking-tight">${t('juz')} ${j}</h3>
+                                        <p class="text-[9px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mt-0.5">${surah ? surah.englishName : ''} • ${t('ayah')} ${mapping.ayah}</p>
+                                    </div>
+                                </div>
+                            </div>`;
+                        }).join('')}
                 </div>
             </div>`;
         
@@ -402,17 +438,36 @@ export const renderQuranReader = (container, cache, props) => {
             if (props.onBack) props.onBack();
         });
 
+        contentArea.querySelectorAll('.list-tab-btn').forEach(btn => {
+            btn.onclick = () => {
+                state.listTab = btn.dataset.tab;
+                renderListView();
+            };
+        });
+
         contentArea.querySelector('#surah-search')?.addEventListener('input', (e) => {
             state.searchQuery = e.target.value;
             const searchVal = e.target.value.toLowerCase();
-            contentArea.querySelectorAll('.surah-card').forEach(card => {
-                const s = state.surahs.find(x => x.number == card.dataset.num);
-                const matches = s.englishName.toLowerCase().includes(searchVal) || s.name.includes(searchVal) || card.dataset.num.includes(searchVal);
-                card.style.display = matches ? 'block' : 'none';
-            });
+            if (state.listTab === 'surah') {
+                contentArea.querySelectorAll('.surah-card').forEach(card => {
+                    const s = state.surahs.find(x => x.number == card.dataset.num);
+                    const matches = s.englishName.toLowerCase().includes(searchVal) || s.name.includes(searchVal) || card.dataset.num.includes(searchVal);
+                    card.style.display = matches ? 'block' : 'none';
+                });
+            } else {
+                contentArea.querySelectorAll('.juz-card').forEach(card => {
+                    const matches = card.innerText.toLowerCase().includes(searchVal);
+                    card.style.display = matches ? 'block' : 'none';
+                });
+            }
         });
 
         contentArea.querySelectorAll('.surah-card').forEach(c => c.addEventListener('click', () => fetchPage(parseInt(c.dataset.num))));
+        contentArea.querySelectorAll('.juz-card').forEach(c => c.addEventListener('click', () => {
+            const juzNum = parseInt(c.dataset.juz);
+            const mapping = JUZ_MAPPING.find(m => m.juz === juzNum);
+            fetchPage(mapping.surah, mapping.ayah);
+        }));
     };
 
     const renderReaderView = () => {
@@ -456,49 +511,54 @@ export const renderQuranReader = (container, cache, props) => {
 
         const percentageRead = (state.activeAyah / s.numberOfAyahs) * 100;
         contentArea.innerHTML = `
-            <div id="reader-header" class="fixed top-0 inset-x-0 h-16 md:h-20 glass z-[60] border-b border-white/10 flex items-center px-4 md:px-8 justify-between transition-all duration-500 transform -translate-y-full shadow-2xl backdrop-blur-2xl">
-                <div class="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-theme-500 to-indigo-500 transition-all duration-500 shadow-[0_0_15px_rgba(var(--theme-color-500-rgb),0.5)]" style="width: ${percentageRead}%"></div>
+            <div id="reader-header" class="fixed top-0 inset-x-0 h-14 md:h-16 glass z-[60] border-b border-white/10 flex items-center px-4 md:px-6 justify-between transition-all duration-500 transform -translate-y-full shadow-xl backdrop-blur-2xl">
+                <div class="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-theme-500 to-indigo-500 transition-all duration-500 shadow-[0_0_10px_rgba(var(--theme-color-500-rgb),0.5)]" style="width: ${percentageRead}%"></div>
                 
-                <button id="reader-back" class="p-2.5 rounded-full glass hover:bg-theme-100 dark:hover:bg-theme-900/30 text-slate-600 dark:text-slate-200 flex items-center gap-2 transition-all active:scale-90 border border-white/20 shadow-lg group">
-                    ${BackIcon({className: "w-5 h-5 md:w-6 md:h-6 group-hover:-translate-x-1 rtl:group-hover:translate-x-1 transition-transform"})}
-                    <span class="hidden sm:inline text-xs font-bold uppercase tracking-wider pr-1">${t('back')}</span>
+                <button id="reader-back" class="p-2 rounded-xl glass hover:bg-theme-100 dark:hover:bg-theme-900/30 text-slate-600 dark:text-slate-200 flex items-center gap-2 transition-all active:scale-90 border border-white/10 shadow-sm group">
+                    ${BackIcon({className: "w-4 h-4 md:w-5 md:h-5 group-hover:-translate-x-1 rtl:group-hover:translate-x-1 transition-transform"})}
+                    <span class="hidden sm:inline text-[10px] font-bold uppercase tracking-wider pr-1">${t('back')}</span>
                 </button>
 
                 <div class="text-center flex flex-col items-center">
-                    <h2 class="font-amiri text-2xl md:text-4xl font-bold leading-none text-slate-900 dark:text-white drop-shadow-sm">${s.name}</h2>
-                    <div class="flex items-center gap-2 mt-1">
-                        <span class="text-[8px] md:text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em] font-bold">${s.englishName}</span>
+                    <div class="flex items-center gap-3">
+                        <h2 class="font-amiri text-xl md:text-2xl font-bold leading-none text-slate-900 dark:text-white drop-shadow-sm">${s.name}</h2>
+                        <button id="jump-trigger" class="px-3 py-1 bg-theme-600 text-white rounded-full font-bold shadow-lg shadow-theme-500/20 active:scale-95 hover:shadow-theme-500/40 transition-all text-[9px] uppercase tracking-widest border border-white/10">
+                            ${s.number}:${state.activeAyah}
+                        </button>
+                    </div>
+                    <div class="flex items-center gap-2 mt-0.5">
+                        <span class="text-[7px] md:text-[8px] text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em] font-bold">${s.englishName}</span>
                         <span class="w-1 h-1 rounded-full bg-theme-500/40"></span>
-                        <span class="text-[8px] md:text-[10px] text-theme-600 dark:text-theme-400 uppercase tracking-[0.2em] font-bold">${t('surah')} ${s.number}</span>
+                        <span class="text-[7px] md:text-[8px] text-theme-600 dark:text-theme-400 uppercase tracking-[0.2em] font-bold">${t('surah')} ${s.number}</span>
                     </div>
                 </div>
 
-                <button id="settings-trigger" class="p-2.5 rounded-full glass hover:bg-theme-100 dark:hover:bg-theme-900/30 text-slate-600 dark:text-slate-200 transition-all active:scale-90 border border-white/20 shadow-lg group">
-                    ${SlidersHorizontalIcon({className: "w-5 h-5 md:w-6 md:h-6 group-hover:rotate-90 transition-transform duration-500"})}
+                <button id="settings-trigger" class="p-2 rounded-xl glass hover:bg-theme-100 dark:hover:bg-theme-900/30 text-slate-600 dark:text-slate-200 transition-all active:scale-90 border border-white/10 shadow-sm group">
+                    ${SlidersHorizontalIcon({className: "w-4 h-4 md:w-5 md:h-5 group-hover:rotate-90 transition-transform duration-500"})}
                 </button>
             </div>
             
-            <div class="pt-20 pb-24 md:pt-28 md:pb-36 max-w-5xl mx-auto px-4 md:px-6 ${fontSizeClass} ${fontClass}" id="reader-scroll-container">
-                <div class="glass-card rounded-[2.5rem] md:rounded-[4rem] p-6 md:p-12 lg:p-16 shadow-2xl page-texture border border-white/10 transition-all duration-500 relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-theme-500/5 to-transparent pointer-events-none"></div>
+            <div class="pt-16 pb-20 md:pt-24 md:pb-28 max-w-full mx-auto px-0 ${fontSizeClass} ${fontClass}" id="reader-scroll-container">
+                <div class="glass-card rounded-none md:rounded-xl p-1 md:p-2 lg:p-4 shadow-2xl page-texture border-x-0 md:border-x border-white/10 transition-all duration-500 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-theme-500/5 to-transparent pointer-events-none"></div>
                     
-                    <div class="text-center mb-8 relative z-10">
-                        <p class="text-[10px] font-bold text-theme-600/60 dark:text-theme-400/60 uppercase tracking-[0.3em] animate-pulse">
+                    <div class="text-center mb-2 relative z-10">
+                        <p class="text-[8px] font-bold text-theme-600/60 dark:text-theme-400/60 uppercase tracking-[0.3em] animate-pulse">
                             ${t('clickAyahForTafsir') || (getCurrentLanguage() === 'ar' ? 'انقر على الآية لعرض التفسير' : 'Click on any verse to view its Tafsir')}
                         </p>
                     </div>
 
-                    <div class="text-center mb-12 md:mb-20 relative z-10">
+                    <div class="text-center mb-4 md:mb-8 relative z-10">
                          ${(s.number !== 1 && s.number !== 9) ? `
-                            <div class="mb-8 md:mb-12">
-                                <p class="font-amiri text-4xl md:text-6xl lg:text-7xl text-slate-900 dark:text-white leading-relaxed drop-shadow-sm">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</p>
-                                <div class="w-24 h-1 bg-gradient-to-r from-transparent via-theme-500/30 to-transparent mx-auto mt-4"></div>
+                            <div class="mb-2 md:mb-6">
+                                <p class="font-amiri text-2xl md:text-4xl lg:text-5xl text-slate-900 dark:text-white leading-relaxed drop-shadow-sm">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</p>
+                                <div class="w-16 h-0.5 bg-gradient-to-r from-transparent via-theme-500/30 to-transparent mx-auto mt-2"></div>
                             </div>
                          ` : ''}
-                         <div class="inline-flex items-center gap-4 px-8 py-3 glass rounded-full border border-white/20 shadow-xl">
-                            <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.3em]">${s.revelationType}</span>
-                            <div class="w-2 h-2 rounded-full bg-theme-500 shadow-[0_0_10px_rgba(var(--theme-color-500-rgb),0.6)]"></div>
-                            <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.3em]">${s.numberOfAyahs} ${t('ayahs')}</span>
+                         <div class="inline-flex items-center gap-2 px-4 py-1.5 glass rounded-full border border-white/10 shadow-lg">
+                            <span class="text-[9px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.3em]">${s.revelationType}</span>
+                            <div class="w-1.5 h-1.5 rounded-full bg-theme-500 shadow-[0_0_8px_rgba(var(--theme-color-500-rgb),0.6)]"></div>
+                            <span class="text-[9px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.3em]">${s.numberOfAyahs} ${t('ayahs')}</span>
                          </div>
                     </div>
 
@@ -508,19 +568,16 @@ export const renderQuranReader = (container, cache, props) => {
                 </div>
             </div>
 
-            <div class="fixed bottom-6 md:bottom-10 inset-x-4 md:inset-x-8 z-[60] pointer-events-none">
-                <div class="max-w-xl mx-auto flex items-center justify-between glass shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-full p-2 border border-white/20 pointer-events-auto transition-all backdrop-blur-2xl">
-                    <button id="reader-prev-surah" class="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center rounded-full text-slate-400 hover:text-theme-600 hover:bg-white/10 transition-all ${s.number === 1 ? 'opacity-10 cursor-not-allowed' : ''}" ${s.number === 1 ? 'disabled' : ''}>
-                        ${SkipBackwardIcon({className: "w-6 h-6"})}
+            <div class="fixed bottom-4 md:bottom-8 inset-x-4 md:inset-x-8 z-[60] pointer-events-none">
+                <div class="max-w-[200px] mx-auto flex items-center justify-between glass shadow-[0_15px_40px_rgba(0,0,0,0.3)] rounded-full p-1.5 border border-white/10 pointer-events-auto transition-all backdrop-blur-2xl">
+                    <button id="reader-prev-surah" class="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full text-slate-400 hover:text-theme-600 hover:bg-white/5 transition-all ${s.number === 1 ? 'opacity-10 cursor-not-allowed' : ''}" ${s.number === 1 ? 'disabled' : ''}>
+                        ${SkipBackwardIcon({className: "w-5 h-5"})}
                     </button>
                     
-                    <button id="jump-trigger" class="flex-grow mx-2 px-6 py-3 md:py-4 bg-gradient-to-r from-theme-600 to-indigo-600 text-white rounded-full font-bold shadow-xl shadow-theme-500/20 active:scale-95 hover:shadow-theme-500/40 transition-all text-xs md:text-sm uppercase tracking-widest border border-white/10">
-                        <span class="sm:hidden">${s.number}:${state.activeAyah}</span>
-                        <span class="hidden sm:inline">${t('surah')} ${s.number} • ${t('ayah')} ${state.activeAyah}</span>
-                    </button>
+                    <div class="w-px h-6 bg-white/10 mx-1"></div>
                     
-                    <button id="reader-next-surah" class="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center rounded-full text-slate-400 hover:text-theme-600 hover:bg-white/10 transition-all ${s.number === 114 ? 'opacity-10 cursor-not-allowed' : ''}" ${s.number === 114 ? 'disabled' : ''}>
-                        ${SkipForwardIcon({className: "w-6 h-6"})}
+                    <button id="reader-next-surah" class="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full text-slate-400 hover:text-theme-600 hover:bg-white/5 transition-all ${s.number === 114 ? 'opacity-10 cursor-not-allowed' : ''}" ${s.number === 114 ? 'disabled' : ''}>
+                        ${SkipForwardIcon({className: "w-5 h-5"})}
                     </button>
                 </div>
             </div>`;
@@ -611,6 +668,15 @@ export const renderQuranReader = (container, cache, props) => {
 
             if (currentAyah !== state.activeAyah) {
                 state.activeAyah = currentAyah;
+                
+                // Save last read
+                localStorage.setItem('quran_last_read', JSON.stringify({
+                    surah: s.number,
+                    ayah: currentAyah,
+                    surahName: s.englishName,
+                    totalAyahs: s.numberOfAyahs
+                }));
+
                 const jumpTrigger = contentArea.querySelector('#jump-trigger');
                 if (jumpTrigger) {
                     jumpTrigger.innerHTML = `
@@ -724,6 +790,37 @@ export const renderQuranReader = (container, cache, props) => {
         });
     };
 
+    const JUZ_MAPPING = [
+        { juz: 1, surah: 1, ayah: 1 }, { juz: 2, surah: 2, ayah: 142 }, { juz: 3, surah: 2, ayah: 253 },
+        { juz: 4, surah: 3, ayah: 93 }, { juz: 5, surah: 4, ayah: 24 }, { juz: 6, surah: 4, ayah: 148 },
+        { juz: 7, surah: 5, ayah: 82 }, { juz: 8, surah: 6, ayah: 111 }, { juz: 9, surah: 7, ayah: 88 },
+        { juz: 10, surah: 8, ayah: 41 }, { juz: 11, surah: 9, ayah: 93 }, { juz: 12, surah: 11, ayah: 6 },
+        { juz: 13, surah: 12, ayah: 53 }, { juz: 14, surah: 15, ayah: 1 }, { juz: 15, surah: 17, ayah: 1 },
+        { juz: 16, surah: 18, ayah: 75 }, { juz: 17, surah: 21, ayah: 1 }, { juz: 18, surah: 23, ayah: 1 },
+        { juz: 19, surah: 25, ayah: 21 }, { juz: 20, surah: 27, ayah: 56 }, { juz: 21, surah: 29, ayah: 46 },
+        { juz: 22, surah: 33, ayah: 31 }, { juz: 23, surah: 36, ayah: 28 }, { juz: 24, surah: 39, ayah: 32 },
+        { juz: 25, surah: 41, ayah: 47 }, { juz: 26, surah: 46, ayah: 1 }, { juz: 27, surah: 51, ayah: 31 },
+        { juz: 28, surah: 58, ayah: 1 }, { juz: 29, surah: 67, ayah: 1 }, { juz: 30, surah: 78, ayah: 1 }
+    ];
+
+    const HIZB_MAPPING = [
+        { hizb: 1, surah: 1, ayah: 1 }, { hizb: 2, surah: 2, ayah: 75 }, { hizb: 3, surah: 2, ayah: 142 }, { hizb: 4, surah: 2, ayah: 203 },
+        { hizb: 5, surah: 2, ayah: 253 }, { hizb: 6, surah: 3, ayah: 15 }, { hizb: 7, surah: 3, ayah: 93 }, { hizb: 8, surah: 3, ayah: 171 },
+        { hizb: 9, surah: 4, ayah: 24 }, { hizb: 10, surah: 4, ayah: 88 }, { hizb: 11, surah: 4, ayah: 148 }, { hizb: 12, surah: 5, ayah: 27 },
+        { hizb: 13, surah: 5, ayah: 82 }, { hizb: 14, surah: 6, ayah: 36 }, { hizb: 15, surah: 6, ayah: 111 }, { hizb: 16, surah: 7, ayah: 1 },
+        { hizb: 17, surah: 7, ayah: 88 }, { hizb: 18, surah: 7, ayah: 171 }, { hizb: 19, surah: 8, ayah: 41 }, { hizb: 20, surah: 9, ayah: 34 },
+        { hizb: 21, surah: 9, ayah: 93 }, { hizb: 22, surah: 10, ayah: 26 }, { hizb: 23, surah: 11, ayah: 6 }, { hizb: 24, surah: 11, ayah: 84 },
+        { hizb: 25, surah: 12, ayah: 53 }, { hizb: 26, surah: 13, ayah: 19 }, { hizb: 27, surah: 15, ayah: 1 }, { hizb: 28, surah: 16, ayah: 51 },
+        { hizb: 29, surah: 17, ayah: 1 }, { hizb: 30, surah: 17, ayah: 105 }, { hizb: 31, surah: 18, ayah: 75 }, { hizb: 32, surah: 20, ayah: 1 },
+        { hizb: 33, surah: 21, ayah: 1 }, { hizb: 34, surah: 22, ayah: 38 }, { hizb: 35, surah: 23, ayah: 1 }, { hizb: 36, surah: 24, ayah: 21 },
+        { hizb: 37, surah: 25, ayah: 21 }, { hizb: 38, surah: 27, ayah: 1 }, { hizb: 39, surah: 27, ayah: 56 }, { hizb: 40, surah: 28, ayah: 51 },
+        { hizb: 41, surah: 29, ayah: 46 }, { hizb: 42, surah: 31, ayah: 22 }, { hizb: 43, surah: 33, ayah: 31 }, { hizb: 44, surah: 35, ayah: 1 },
+        { hizb: 45, surah: 36, ayah: 28 }, { hizb: 46, surah: 37, ayah: 145 }, { hizb: 47, surah: 39, ayah: 32 }, { hizb: 48, surah: 40, ayah: 41 },
+        { hizb: 49, surah: 41, ayah: 47 }, { hizb: 50, surah: 43, ayah: 24 }, { hizb: 51, surah: 46, ayah: 1 }, { hizb: 52, surah: 48, ayah: 18 },
+        { hizb: 53, surah: 51, ayah: 31 }, { hizb: 54, surah: 54, ayah: 9 }, { hizb: 55, surah: 58, ayah: 1 }, { hizb: 56, surah: 62, ayah: 10 },
+        { hizb: 57, surah: 67, ayah: 1 }, { hizb: 58, surah: 72, ayah: 1 }, { hizb: 59, surah: 78, ayah: 1 }, { hizb: 60, surah: 87, ayah: 1 }
+    ];
+
     const renderJumpToModal = () => {
         let modal = document.getElementById('jump-modal');
         if (!state.isJumpModal) { modal?.remove(); return; }
@@ -738,53 +835,112 @@ export const renderQuranReader = (container, cache, props) => {
         const currentAyahNum = state.activeAyah || 1;
 
         modal.innerHTML = `
-            <div class="glass rounded-[3rem] shadow-[0_20px_60px_rgba(0,0,0,0.5)] w-full max-w-sm p-8 md:p-10 fade-in border border-white/20 relative z-10 overflow-hidden">
+            <div class="glass rounded-[2rem] md:rounded-[3rem] shadow-[0_20px_60px_rgba(0,0,0,0.5)] w-full max-w-sm p-6 md:p-8 fade-in border border-white/20 relative z-10 overflow-hidden">
                 <div class="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-theme-500/10 to-transparent pointer-events-none"></div>
                 
-                <div class="flex justify-between items-center mb-8 relative z-10">
-                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">${t('jumpToAyah')}</h3>
-                    <button id="close-jump-modal" class="w-10 h-10 flex items-center justify-center rounded-full glass border border-white/10 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-all active:scale-90">
-                        ${CloseIcon({className: "w-5 h-5"})}
+                <div class="flex justify-between items-center mb-6 relative z-10">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white tracking-tight">${t('jumpTo')}</h3>
+                    <button id="close-jump-modal" class="w-8 h-8 flex items-center justify-center rounded-full glass border border-white/10 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-all active:scale-90">
+                        ${CloseIcon({className: "w-4 h-4"})}
                     </button>
                 </div>
 
-                <div class="space-y-8 relative z-10">
-                    <div class="space-y-3">
-                        <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em] ml-1">${t('selectSurah')}</label>
-                        <div class="relative">
-                            <select id="jump-surah-select" class="w-full p-5 bg-white/5 dark:bg-slate-900/50 rounded-2xl border border-white/10 outline-none text-slate-900 dark:text-white focus:ring-4 focus:ring-theme-500/20 focus:border-theme-500/50 transition-all appearance-none font-medium">
-                                ${state.surahs.map(s => `<option value="${s.number}" ${s.number === currentSurahNum ? 'selected' : ''} class="bg-slate-900">${s.number}. ${s.englishName}</option>`).join('')}
-                            </select>
-                            <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                <div class="flex p-1 bg-slate-100 dark:bg-slate-900/50 rounded-xl mb-6 relative z-10">
+                    <button data-tab="surah" class="jump-tab-btn flex-1 py-2 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all ${state.jumpTab === 'surah' ? 'bg-white dark:bg-slate-800 text-theme-600 shadow-sm' : 'text-slate-500'}">${t('surah')}</button>
+                    <button data-tab="juz" class="jump-tab-btn flex-1 py-2 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all ${state.jumpTab === 'juz' ? 'bg-white dark:bg-slate-800 text-theme-600 shadow-sm' : 'text-slate-500'}">${t('juz')}</button>
+                    <button data-tab="hizb" class="jump-tab-btn flex-1 py-2 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all ${state.jumpTab === 'hizb' ? 'bg-white dark:bg-slate-800 text-theme-600 shadow-sm' : 'text-slate-500'}">${t('hizb')}</button>
+                </div>
+
+                <div class="space-y-6 relative z-10">
+                    ${state.jumpTab === 'surah' ? `
+                        <div class="space-y-4">
+                            <div class="space-y-2">
+                                <label class="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em] ml-1">${t('selectSurah')}</label>
+                                <div class="relative">
+                                    <select id="jump-surah-select" class="w-full p-4 bg-white/5 dark:bg-slate-900/50 rounded-xl border border-white/10 outline-none text-slate-900 dark:text-white focus:ring-4 focus:ring-theme-500/20 focus:border-theme-500/50 transition-all appearance-none font-medium text-sm">
+                                        ${state.surahs.map(s => `<option value="${s.number}" ${s.number === currentSurahNum ? 'selected' : ''} class="bg-slate-900">${s.number}. ${s.englishName}</option>`).join('')}
+                                    </select>
+                                    <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-2">
+                                <label class="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em] ml-1">${t('ayahNumber')}</label>
+                                <input id="jump-ayah-input" type="number" min="1" value="${currentAyahNum}" class="w-full p-4 bg-white/5 dark:bg-slate-900/50 rounded-xl border border-white/10 outline-none text-slate-900 dark:text-white focus:ring-4 focus:ring-theme-500/20 focus:border-theme-500/50 transition-all font-medium text-sm">
                             </div>
                         </div>
-                    </div>
+                    ` : state.jumpTab === 'juz' ? `
+                        <div class="space-y-2">
+                            <label class="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em] ml-1">${t('selectJuz')}</label>
+                            <div class="relative">
+                                <select id="jump-juz-select" class="w-full p-4 bg-white/5 dark:bg-slate-900/50 rounded-xl border border-white/10 outline-none text-slate-900 dark:text-white focus:ring-4 focus:ring-theme-500/20 focus:border-theme-500/50 transition-all appearance-none font-medium text-sm">
+                                    ${Array.from({length: 30}, (_, i) => i + 1).map(j => `<option value="${j}" class="bg-slate-900">${t('juz')} ${j}</option>`).join('')}
+                                </select>
+                                <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                                </div>
+                            </div>
+                        </div>
+                    ` : `
+                        <div class="space-y-2">
+                            <label class="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em] ml-1">${t('selectHizb')}</label>
+                            <div class="relative">
+                                <select id="jump-hizb-select" class="w-full p-4 bg-white/5 dark:bg-slate-900/50 rounded-xl border border-white/10 outline-none text-slate-900 dark:text-white focus:ring-4 focus:ring-theme-500/20 focus:border-theme-500/50 transition-all appearance-none font-medium text-sm">
+                                    ${Array.from({length: 60}, (_, i) => i + 1).map(h => `<option value="${h}" class="bg-slate-900">${t('hizb')} ${h}</option>`).join('')}
+                                </select>
+                                <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                                </div>
+                            </div>
+                        </div>
+                    `}
 
-                    <div class="space-y-3">
-                        <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em] ml-1">${t('ayahNumber')}</label>
-                        <input id="jump-ayah-input" type="number" min="1" value="${currentAyahNum}" class="w-full p-5 bg-white/5 dark:bg-slate-900/50 rounded-2xl border border-white/10 outline-none text-slate-900 dark:text-white focus:ring-4 focus:ring-theme-500/20 focus:border-theme-500/50 transition-all font-medium">
-                    </div>
-
-                    <button id="jump-confirm-btn" class="w-full py-5 bg-gradient-to-r from-theme-600 to-indigo-600 text-white font-bold rounded-2xl shadow-xl shadow-theme-500/20 hover:shadow-theme-500/40 active:scale-95 transition-all uppercase tracking-[0.2em] text-xs border border-white/10">
+                    <button id="jump-confirm-btn" class="w-full py-4 bg-gradient-to-r from-theme-600 to-indigo-600 text-white font-bold rounded-xl shadow-xl shadow-theme-500/20 hover:shadow-theme-500/40 active:scale-95 transition-all uppercase tracking-[0.2em] text-[10px] border border-white/10">
                         ${t('goTo')}
                     </button>
                 </div>
             </div>`;
 
+        modal.querySelectorAll('.jump-tab-btn').forEach(btn => {
+            btn.onclick = () => {
+                setState({ jumpTab: btn.dataset.tab });
+                renderJumpToModal();
+            };
+        });
+
         const surahSelect = modal.querySelector('#jump-surah-select');
         const ayahInput = modal.querySelector('#jump-ayah-input');
-        const updateMax = () => {
-            const s = state.surahs.find(x => x.number == surahSelect.value);
-            if (s) ayahInput.max = s.numberOfAyahs;
-        };
-        surahSelect.onchange = updateMax;
-        updateMax();
+        const juzSelect = modal.querySelector('#jump-juz-select');
+        const hizbSelect = modal.querySelector('#jump-hizb-select');
+
+        if (surahSelect && ayahInput) {
+            const updateMax = () => {
+                const s = state.surahs.find(x => x.number == surahSelect.value);
+                if (s) ayahInput.max = s.numberOfAyahs;
+            };
+            surahSelect.onchange = updateMax;
+            updateMax();
+        }
 
         modal.querySelector('#close-jump-modal').onclick = () => setState({ isJumpModal: false });
         modal.querySelector('#jump-confirm-btn').onclick = () => {
-            const s = parseInt(surahSelect.value);
-            const a = parseInt(ayahInput.value);
+            let s, a;
+            if (state.jumpTab === 'surah') {
+                s = parseInt(surahSelect.value);
+                a = parseInt(ayahInput.value);
+            } else if (state.jumpTab === 'juz') {
+                const juzNum = parseInt(juzSelect.value);
+                const mapping = JUZ_MAPPING.find(m => m.juz === juzNum);
+                s = mapping.surah;
+                a = mapping.ayah;
+            } else {
+                const hizbNum = parseInt(hizbSelect.value);
+                const mapping = HIZB_MAPPING.find(m => m.hizb === hizbNum);
+                s = mapping.surah;
+                a = mapping.ayah;
+            }
             setState({ isJumpModal: false });
             fetchPage(s, a);
         };

@@ -152,7 +152,7 @@ export const renderQuranListener = (container, cache, props) => {
                     </div>
                 </div>
 
-                <div id="reciter-list-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                <div id="reciter-list-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
                 </div>
             </div>
         `;
@@ -160,18 +160,21 @@ export const renderQuranListener = (container, cache, props) => {
         const gridContainer = contentContainer.querySelector('#reciter-list-grid');
         if (filteredReciters.length > 0) {
             gridContainer.innerHTML = filteredReciters.map(r => `
-                <div data-reciter-id="${r.id}" class="reciter-card group cursor-pointer p-6 glass rounded-[2.5rem] border border-white/10 hover:border-theme-500/50 hover:shadow-[0_20px_50px_rgba(var(--theme-500-rgb),0.15)] transition-all duration-500 active:scale-[0.97] relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-theme-500/10 to-transparent rounded-bl-[4rem] -mr-12 -mt-12 transition-transform group-hover:scale-150 duration-700"></div>
-                    <div class="flex items-center gap-6 relative z-10">
-                        <div class="w-16 h-16 rounded-2xl glass border border-white/10 flex items-center justify-center text-theme-600 dark:text-theme-400 group-hover:bg-theme-600 group-hover:text-white transition-all duration-300 shadow-sm">
-                            <span class="text-2xl font-bold">${(lang === 'ar' ? r.name_ar : r.name_en).charAt(0)}</span>
+                <div data-reciter-id="${r.id}" class="reciter-card group cursor-pointer p-3.5 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 shadow-sm hover:shadow-xl hover:shadow-theme-500/10 hover:border-theme-500/30 hover:-translate-y-1 transition-all duration-500 relative overflow-hidden">
+                    <div class="absolute -right-8 -top-8 w-24 h-24 bg-theme-500/5 rounded-full blur-[30px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                    <div class="flex items-center gap-3 relative z-10">
+                        <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-all duration-500 shadow-sm font-display font-bold text-base relative">
+                            <span class="relative z-10">${(lang === 'ar' ? r.name_ar : r.name_en).charAt(0)}</span>
+                            <div class="absolute inset-0 bg-theme-500/20 rounded-xl scale-0 group-hover:scale-100 transition-transform duration-500"></div>
                         </div>
                         <div class="flex-grow min-w-0">
-                            <h3 class="font-bold text-lg text-slate-900 dark:text-slate-100 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-colors truncate">${lang === 'ar' ? r.name_ar : r.name_en}</h3>
-                            <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] font-bold mt-1 truncate">${lang === 'ar' ? r.rewaya_ar : r.rewaya_en}</p>
+                            <h3 class="font-bold text-sm md:text-base text-slate-800 dark:text-slate-200 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-colors truncate tracking-tight">${lang === 'ar' ? r.name_ar : r.name_en}</h3>
+                            <div class="flex items-center gap-2 mt-0.5">
+                                <span class="text-[9px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 truncate">${lang === 'ar' ? r.rewaya_ar : r.rewaya_en}</span>
+                            </div>
                         </div>
-                        <div class="w-10 h-10 rounded-full glass border border-white/10 flex items-center justify-center text-slate-400 group-hover:bg-theme-500 group-hover:text-white transition-all duration-300 flex-shrink-0">
-                            ${ChevronRightIcon({className: "w-5 h-5"})}
+                        <div class="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-all duration-500 flex-shrink-0">
+                            ${ChevronRightIcon({className: `w-3 h-3 ${isRtl ? 'rotate-180' : ''}`})}
                         </div>
                     </div>
                 </div>
@@ -258,34 +261,36 @@ export const renderQuranListener = (container, cache, props) => {
 
                 let buttonHtml = '';
                 if (isDownloading) {
-                    buttonHtml = `<div class="w-5 h-5 border-2 border-slate-300 border-t-theme-500 rounded-full animate-spin"></div>`;
+                    buttonHtml = `<div class="w-4 h-4 border-2 border-slate-300 border-t-theme-500 rounded-full animate-spin"></div>`;
                 } else {
                     buttonHtml = `
-                        <button data-action="save-device" title="${t('download') || 'Download'}" class="download-btn w-10 h-10 flex items-center justify-center rounded-xl glass border border-white/10 text-slate-400 hover:text-theme-600 hover:bg-theme-50 dark:hover:bg-theme-950/20 transition-all active:scale-90">${DownloadIcon({className: "w-5 h-5"})}</button>
+                        <button data-action="save-device" title="${t('download') || 'Download'}" class="download-btn w-9 h-9 flex items-center justify-center rounded-xl glass border border-white/10 text-slate-400 hover:text-theme-600 hover:bg-theme-50 dark:hover:bg-theme-950/20 transition-all active:scale-90">${DownloadIcon({className: "w-4 h-4"})}</button>
                     `;
                 }
 
                 return `
-                    <div data-surah-id="${s.number}" class="surah-row group flex items-center justify-between p-4 md:p-5 glass rounded-[2rem] border border-white/10 hover:border-theme-500/30 hover:shadow-[0_10px_30px_rgba(0,0,0,0.1)] transition-all duration-300">
-                         <div class="flex items-center gap-4 md:gap-6 flex-grow cursor-pointer play-area min-w-0">
-                            <div class="w-12 h-12 md:w-14 md:h-14 flex-shrink-0 flex items-center justify-center glass rounded-2xl font-bold text-sm md:text-lg text-slate-500 group-hover:bg-theme-600 group-hover:text-white transition-all duration-300 border border-white/10">
-                                ${s.number}
+                    <div data-surah-id="${s.number}" class="surah-row group flex items-center justify-between p-2.5 md:p-3 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 shadow-sm hover:shadow-xl hover:shadow-theme-500/10 hover:border-theme-500/30 hover:-translate-y-1 transition-all duration-500 relative overflow-hidden">
+                         <div class="absolute -right-8 -top-8 w-24 h-24 bg-theme-500/5 rounded-full blur-[30px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                         <div class="flex items-center gap-3 md:gap-3.5 flex-grow cursor-pointer play-area min-w-0 relative z-10">
+                            <div class="w-9 h-9 md:w-10 md:h-10 flex-shrink-0 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-xl font-bold text-sm text-slate-500 dark:text-slate-400 group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-all duration-500 shadow-sm font-display relative">
+                                <span class="relative z-10">${s.number}</span>
+                                <div class="absolute inset-0 bg-theme-500/20 rounded-xl scale-0 group-hover:scale-100 transition-transform duration-500"></div>
                             </div>
                             <div class="flex-grow min-w-0">
-                                <h4 class="font-bold text-slate-900 dark:text-slate-100 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-colors truncate text-base md:text-lg tracking-tight">${s.englishName}</h4>
-                                <div class="flex items-center gap-2 mt-1.5 overflow-hidden">
-                                    <span class="px-2 py-0.5 rounded-lg glass border border-white/10 text-[8px] md:text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-[0.2em] font-bold whitespace-nowrap">${s.revelationType}</span>
-                                    <span class="px-2 py-0.5 rounded-lg bg-theme-500/10 text-[8px] md:text-[10px] text-theme-600 dark:text-theme-400 uppercase tracking-[0.2em] font-bold whitespace-nowrap border border-theme-500/20">${s.numberOfAyahs} ${t('ayahs')}</span>
+                                <h4 class="font-bold text-slate-800 dark:text-slate-200 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-colors truncate text-sm md:text-base tracking-tight">${s.englishName}</h4>
+                                <div class="flex items-center gap-2 mt-0.5 overflow-hidden">
+                                    <span class="px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-[9px] text-slate-500 dark:text-slate-400 font-bold whitespace-nowrap uppercase tracking-wider">${s.revelationType}</span>
+                                    <span class="px-2 py-0.5 rounded-lg bg-theme-50 dark:bg-theme-900/30 text-[9px] text-theme-600 dark:text-theme-400 font-bold whitespace-nowrap border border-theme-200 dark:border-theme-800">${s.numberOfAyahs} ${t('ayahs')}</span>
                                 </div>
                             </div>
-                            <div class="text-right mr-4 md:mr-6 rtl:mr-0 rtl:ml-4 md:rtl:ml-6 flex-shrink-0">
-                                <p class="font-amiri text-2xl md:text-3xl text-slate-800 dark:text-slate-200 leading-none">${s.name}</p>
+                            <div class="text-right mr-3 md:mr-4 rtl:mr-0 rtl:ml-3 md:rtl:ml-4 flex-shrink-0">
+                                <p class="font-amiri text-lg md:text-xl text-slate-800 dark:text-slate-200 leading-none group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-colors">${s.name}</p>
                             </div>
                          </div>
-                         <div class="download-action-area flex items-center gap-2 md:gap-3 flex-shrink-0">
+                         <div class="download-action-area flex items-center gap-2 md:gap-2.5 flex-shrink-0 relative z-10">
                             ${buttonHtml}
-                            <div class="w-10 h-10 md:w-12 md:h-12 rounded-full glass border border-white/10 flex items-center justify-center text-slate-400 group-hover:bg-theme-500 group-hover:text-white transition-all duration-300 ml-2 md:ml-3 rtl:ml-0 rtl:mr-2 md:rtl:mr-3">
-                                ${ChevronRightIcon({className: "w-5 h-5"})}
+                            <div class="w-7 h-7 md:w-8 md:h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-all duration-500 ml-1 md:ml-1.5 rtl:ml-0 rtl:mr-1 md:rtl:mr-1.5">
+                                ${ChevronRightIcon({className: `w-3.5 h-3.5 ${isRtl ? 'rotate-180' : ''}`})}
                             </div>
                          </div>
                     </div>
@@ -367,31 +372,31 @@ export const renderQuranListener = (container, cache, props) => {
                     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03] pointer-events-none"></div>
                 </div>
 
-                <div class="w-full max-w-xl z-10 space-y-8 md:space-y-16">
+                <div class="w-full max-w-xl z-10 space-y-6 md:space-y-12">
                     <!-- Header Controls -->
                     <div class="flex items-center justify-between px-2">
-                         <button id="back-to-surah-list" class="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center rounded-2xl glass border border-white/10 text-white transition-all active:scale-90 group" title="${t('backToSurahList')}">
-                            ${BackIcon({className: "w-5 h-5 md:w-6 md:h-6 group-hover:-translate-x-1 rtl:group-hover:translate-x-1 transition-transform"})}
+                         <button id="back-to-surah-list" class="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-xl glass border border-white/10 text-white transition-all active:scale-90 group" title="${t('backToSurahList')}">
+                            ${BackIcon({className: "w-4 h-4 md:w-5 md:h-5 group-hover:-translate-x-1 rtl:group-hover:translate-x-1 transition-transform"})}
                         </button>
-                        <div class="text-center flex-grow px-6">
-                            <span class="text-[9px] md:text-[11px] font-bold text-theme-400 uppercase tracking-[0.3em] block mb-1 animate-pulse">${t('nowPlaying') || 'NOW PLAYING'}</span>
-                            <h3 class="text-white font-bold text-sm md:text-lg tracking-tight truncate max-w-[200px] md:max-w-xs mx-auto">${lang === 'ar' ? selectedReciter.name_ar : selectedReciter.name_en}</h3>
+                        <div class="text-center flex-grow px-4">
+                            <span class="text-[8px] md:text-[9px] font-bold text-theme-400 uppercase tracking-[0.3em] block mb-0.5 animate-pulse">${t('nowPlaying') || 'NOW PLAYING'}</span>
+                            <h3 class="text-white font-bold text-xs md:text-sm tracking-tight truncate max-w-[150px] md:max-w-xs mx-auto">${lang === 'ar' ? selectedReciter.name_ar : selectedReciter.name_en}</h3>
                         </div>
-                        <button id="mem-mode-toggle" class="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center rounded-2xl transition-all ${state.isMemorizationMode ? 'bg-theme-600 text-white shadow-xl shadow-theme-500/40 border-theme-500' : 'glass text-white/40 hover:bg-white/10 border border-white/10'}" title="${t('memorizationMode')}">
-                            <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+                        <button id="mem-mode-toggle" class="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-xl transition-all ${state.isMemorizationMode ? 'bg-theme-600 text-white shadow-xl shadow-theme-500/40 border-theme-500' : 'glass text-white/40 hover:bg-white/10 border border-white/10'}" title="${t('memorizationMode')}">
+                            <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
                         </button>
                     </div>
 
                     <!-- Visualizer/Art Area -->
-                    <div class="text-center space-y-6 md:space-y-10">
+                    <div class="text-center space-y-4 md:space-y-6">
                         <div class="relative inline-block">
-                            <div class="w-40 h-40 md:w-72 md:h-72 rounded-[3rem] md:rounded-[4rem] bg-gradient-to-br from-theme-600 to-indigo-700 flex items-center justify-center shadow-[0_30px_100px_rgba(var(--theme-500-rgb),0.3)] relative z-10 overflow-hidden group">
+                            <div class="w-36 h-36 md:w-60 md:h-60 rounded-[3rem] md:rounded-[4rem] bg-gradient-to-br from-theme-600 to-indigo-700 flex items-center justify-center shadow-[0_20px_60px_rgba(var(--theme-500-rgb),0.3)] relative z-10 overflow-hidden group">
                                 <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-700"></div>
-                                <span class="text-6xl md:text-[10rem] font-bold text-white/10 select-none tracking-tighter">${currentSurah.number}</span>
+                                <span class="text-6xl md:text-[8rem] font-bold text-white/10 select-none tracking-tighter">${currentSurah.number}</span>
                                 <div class="absolute inset-0 flex items-center justify-center">
-                                    <div class="w-20 h-20 md:w-40 md:h-40 rounded-full border-2 border-white/5 flex items-center justify-center">
+                                    <div class="w-20 h-20 md:w-36 md:h-36 rounded-full border-2 border-white/5 flex items-center justify-center">
                                         <div class="w-12 h-12 md:w-24 md:h-24 rounded-full border border-white/10 flex items-center justify-center animate-spin-slow">
-                                            <div class="w-2 h-2 md:w-3 md:h-3 bg-white rounded-full shadow-[0_0_15px_white]"></div>
+                                            <div class="w-1.5 h-1.5 md:w-2.5 md:h-2.5 bg-white rounded-full shadow-[0_0_15px_white]"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -403,32 +408,32 @@ export const renderQuranListener = (container, cache, props) => {
                             <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[130%] md:w-[150%] h-[130%] md:h-[150%] border border-white/5 rounded-full pointer-events-none animate-spin-slow opacity-50"></div>
                         </div>
 
-                        <div class="space-y-2 md:space-y-4 px-6">
-                            <h2 class="text-3xl md:text-7xl font-bold text-white font-display tracking-tight transition-all duration-700 ${state.hideArabic ? 'blur-2xl opacity-10 scale-90' : 'opacity-100'}">${currentSurah.englishName}</h2>
-                            <p class="font-amiri text-2xl md:text-5xl text-theme-400 leading-relaxed transition-all duration-700 ${state.hideArabic ? 'blur-2xl opacity-10 scale-90' : 'opacity-100'}">${currentSurah.name}</p>
+                        <div class="space-y-1 md:space-y-2 px-6">
+                            <h2 class="text-3xl md:text-5xl font-bold text-white font-display tracking-tight transition-all duration-700 ${state.hideArabic ? 'blur-2xl opacity-10 scale-90' : 'opacity-100'}">${currentSurah.englishName}</h2>
+                            <p class="font-amiri text-2xl md:text-3xl text-theme-400 leading-relaxed transition-all duration-700 ${state.hideArabic ? 'blur-2xl opacity-10 scale-90' : 'opacity-100'}">${currentSurah.name}</p>
                         </div>
                     </div>
 
                     <!-- Memorization Controls -->
                     ${state.isMemorizationMode ? `
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 p-6 glass rounded-[2.5rem] border border-white/10 shadow-xl fade-in mx-2">
-                        <div class="space-y-2 text-left">
-                            <label class="text-[9px] font-bold text-white/40 uppercase tracking-[0.2em] ml-1">${t('autoRepeat')}</label>
-                            <select id="repeat-select" class="w-full bg-white/5 text-white rounded-xl px-4 py-3 text-xs border border-white/10 focus:ring-2 focus:ring-theme-500 outline-none appearance-none cursor-pointer">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 p-5 glass rounded-[2rem] border border-white/10 shadow-xl fade-in mx-2">
+                        <div class="space-y-1.5 text-left">
+                            <label class="text-[8px] font-bold text-white/40 uppercase tracking-[0.2em] ml-1">${t('autoRepeat')}</label>
+                            <select id="repeat-select" class="w-full bg-white/5 text-white rounded-xl px-3 py-2 text-[11px] border border-white/10 focus:ring-2 focus:ring-theme-500 outline-none appearance-none cursor-pointer">
                                 ${[1, 2, 3, 5, 10].map(n => `<option value="${n}" ${state.repeatCount == n ? 'selected' : ''} class="bg-slate-900">${n}x</option>`).join('')}
                             </select>
                         </div>
-                        <div class="space-y-2 text-left">
-                            <label class="text-[9px] font-bold text-white/40 uppercase tracking-[0.2em] ml-1">${t('verseDelay')}</label>
-                            <select id="delay-select" class="w-full bg-white/5 text-white rounded-xl px-4 py-3 text-xs border border-white/10 focus:ring-2 focus:ring-theme-500 outline-none appearance-none cursor-pointer">
+                        <div class="space-y-1.5 text-left">
+                            <label class="text-[8px] font-bold text-white/40 uppercase tracking-[0.2em] ml-1">${t('verseDelay')}</label>
+                            <select id="delay-select" class="w-full bg-white/5 text-white rounded-xl px-3 py-2 text-[11px] border border-white/10 focus:ring-2 focus:ring-theme-500 outline-none appearance-none cursor-pointer">
                                 ${[0, 1, 2, 3, 5].map(n => `<option value="${n}" ${state.verseDelay == n ? 'selected' : ''} class="bg-slate-900">${n}s</option>`).join('')}
                             </select>
                         </div>
-                        <button id="hide-arabic-btn" class="flex flex-col items-center justify-center gap-2 p-3 rounded-2xl transition-all active:scale-95 ${state.hideArabic ? 'bg-theme-600 text-white shadow-lg shadow-theme-500/30' : 'bg-white/5 text-white/40 hover:bg-white/10 border border-white/10'}">
-                            <span class="text-[9px] font-bold uppercase tracking-widest">${t('hideArabic')}</span>
+                        <button id="hide-arabic-btn" class="flex flex-col items-center justify-center gap-1 p-2 rounded-xl transition-all active:scale-95 ${state.hideArabic ? 'bg-theme-600 text-white shadow-lg shadow-theme-500/30' : 'bg-white/5 text-white/40 hover:bg-white/10 border border-white/10'}">
+                            <span class="text-[8px] font-bold uppercase tracking-widest">${t('hideArabic')}</span>
                         </button>
-                        <button id="hide-trans-btn" class="flex flex-col items-center justify-center gap-2 p-3 rounded-2xl transition-all active:scale-95 ${state.hideTranslation ? 'bg-theme-600 text-white shadow-lg shadow-theme-500/30' : 'bg-white/5 text-white/40 hover:bg-white/10 border border-white/10'}">
-                            <span class="text-[9px] font-bold uppercase tracking-widest">${t('hideTranslation')}</span>
+                        <button id="hide-trans-btn" class="flex flex-col items-center justify-center gap-1 p-2 rounded-xl transition-all active:scale-95 ${state.hideTranslation ? 'bg-theme-600 text-white shadow-lg shadow-theme-500/30' : 'bg-white/5 text-white/40 hover:bg-white/10 border border-white/10'}">
+                            <span class="text-[8px] font-bold uppercase tracking-widest">${t('hideTranslation')}</span>
                         </button>
                     </div>
                     ` : ''}
@@ -520,12 +525,14 @@ export const renderQuranListener = (container, cache, props) => {
 
         const skipBackBtn = contentContainer.querySelector('#player-skip-back-btn');
         if (skipBackBtn) skipBackBtn.addEventListener('click', () => {
+            console.log('Skip back clicked');
             audio.currentTime = Math.max(0, audio.currentTime - 10);
             updateProgressUI();
         });
 
         const skipForwardBtn = contentContainer.querySelector('#player-skip-forward-btn');
         if (skipForwardBtn) skipForwardBtn.addEventListener('click', () => {
+            console.log('Skip forward clicked');
             audio.currentTime = Math.min(audio.duration, audio.currentTime + 10);
             updateProgressUI();
         });
@@ -568,7 +575,10 @@ export const renderQuranListener = (container, cache, props) => {
         }
 
         const muteBtn = contentContainer.querySelector('#player-mute-btn');
-        if (muteBtn) muteBtn.addEventListener('click', handleMuteToggle);
+        if (muteBtn) muteBtn.addEventListener('click', () => {
+            console.log('Mute clicked');
+            handleMuteToggle();
+        });
 
         const volumeSlider = contentContainer.querySelector('#volume-slider');
         if (volumeSlider) {

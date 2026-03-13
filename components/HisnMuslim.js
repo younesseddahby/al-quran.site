@@ -393,23 +393,29 @@ export const renderHisnMuslim = (container) => {
     const renderCategories = () => {
         container.innerHTML = `
             <div class="space-y-6 fade-in">
-                <div class="flex items-center gap-3">
-                    <h2 class="text-3xl font-bold text-theme-700 dark:text-theme-400 font-amiri">${t('hisnMuslim')}</h2>
+                <div class="flex flex-col gap-1">
+                    <h2 class="text-xl md:text-2xl font-bold text-slate-900 dark:text-white font-display tracking-tight">${t('hisnMuslim')}</h2>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">${t('hisnMuslimDesc')}</p>
                 </div>
-                <p class="text-slate-600 dark:text-slate-400">${t('hisnMuslimDesc')}</p>
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     ${HISN_DATA.map(category => `
-                        <div data-category-id="${category.id}" class="category-card p-6 glass-card rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 cursor-pointer hover:shadow-md hover:border-theme-500 transition-all duration-200 group">
-                            <div class="flex justify-between items-center mb-3">
-                                <div class="w-10 h-10 rounded-full glass flex items-center justify-center text-theme-600 dark:text-theme-400">
-                                    ${ShieldIcon()}
+                        <div data-category-id="${category.id}" class="category-card p-4 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 cursor-pointer hover:-translate-y-1 hover:shadow-xl hover:shadow-theme-500/10 hover:border-theme-500/30 transition-all duration-500 group relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-24 h-24 bg-theme-500/5 rounded-full blur-[30px] -mr-8 -mt-8 transition-transform group-hover:scale-150 duration-700"></div>
+                            <div class="flex justify-between items-start mb-2 relative z-10">
+                                <div class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-all duration-500 shadow-sm">
+                                    ${ShieldIcon({className: 'w-4.5 h-4.5'})}
                                 </div>
-                                <span class="text-slate-400 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-colors transform group-hover:translate-x-1 rtl:group-hover:-translate-x-1">
-                                    ${lang === 'ar' ? ArrowLeftIcon() : ChevronRightIcon()}
-                                </span>
+                                <span class="text-[9px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 bg-slate-100/50 dark:bg-slate-800/50 px-2 py-0.5 rounded-md group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-colors">${category.duas.length} ${t('duas') || 'Duas'}</span>
                             </div>
-                            <h3 class="text-xl font-bold text-slate-800 dark:text-slate-200 font-amiri">${category.title_ar}</h3>
-                            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">${category.title_en}</p>
+                            <div class="relative z-10">
+                                <h3 class="text-base font-bold text-slate-900 dark:text-white font-amiri group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-colors leading-tight">${category.title_ar}</h3>
+                                <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 font-bold uppercase tracking-wider opacity-80">${category.title_en}</p>
+                            </div>
+                            <div class="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-x-4 group-hover:translate-x-0">
+                                <div class="w-6 h-6 rounded-full bg-theme-500/10 flex items-center justify-center text-theme-600 dark:text-theme-400">
+                                    ${ChevronRightIcon({className: "w-3 h-3"})}
+                                </div>
+                            </div>
                         </div>
                     `).join('')}
                 </div>
@@ -433,33 +439,41 @@ export const renderHisnMuslim = (container) => {
 
         container.innerHTML = `
             <div class="space-y-6 fade-in">
-                <div class="flex items-center gap-4 mb-6">
-                    <button id="hisn-back-btn" class="p-2 -ml-2 rounded-full glass hover:bg-theme-100 dark:hover:bg-theme-900/30 text-slate-900 dark:text-white transition-all active:scale-90 flex items-center gap-1 border border-slate-200 dark:border-slate-800">
-                        ${BackIcon()}
-                        <span class="hidden sm:inline text-xs font-bold uppercase tracking-wider">${t('back')}</span>
+                <div class="flex items-center gap-3 mb-6 sticky top-16 md:top-20 z-30 glass py-2 -mx-4 px-4 sm:mx-0 sm:px-0 border-b border-slate-200/50 dark:border-slate-800/50">
+                    <button id="hisn-back-btn" class="p-1.5 rounded-xl glass hover:bg-theme-100 dark:hover:bg-theme-900/30 text-slate-900 dark:text-white transition-all active:scale-90 flex items-center gap-1 border border-slate-200 dark:border-slate-800 shadow-sm">
+                        ${BackIcon({className: 'w-4 h-4'})}
+                        <span class="text-[9px] font-bold uppercase tracking-wider pr-1">${t('back')}</span>
                     </button>
-                    <div>
-                        <h2 class="text-2xl font-bold text-slate-800 dark:text-slate-200 font-amiri">${cat.title_ar}</h2>
-                        <p class="text-sm text-slate-500 dark:text-slate-400">${cat.title_en}</p>
+                    <div class="min-w-0">
+                        <h2 class="text-lg font-bold text-slate-900 dark:text-white font-amiri leading-tight truncate">${cat.title_ar}</h2>
+                        <p class="text-[9px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider truncate">${cat.title_en}</p>
                     </div>
                 </div>
 
-                <div class="space-y-6">
+                <div class="space-y-4">
                     ${cat.duas.map((dua, index) => `
-                        <div class="glass-card rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
-                            <div class="p-6 space-y-4">
-                                <p class="text-right font-amiri text-2xl md:text-3xl leading-[2.2] text-slate-800 dark:text-slate-200">${dua.arabic}</p>
+                        <div class="glass-card rounded-2xl shadow-sm border border-slate-200/50 dark:border-slate-800/50 overflow-hidden group hover:border-theme-500/30 transition-all duration-300">
+                            <div class="p-4 md:p-5 space-y-4">
+                                <div class="flex justify-between items-center">
+                                    <div class="w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-[9px] font-bold text-slate-400 dark:text-slate-500 group-hover:bg-theme-500/10 group-hover:text-theme-600 transition-colors">
+                                        ${index + 1}
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button class="copy-btn p-1.5 rounded-lg glass border border-slate-200 dark:border-slate-800 hover:bg-theme-500 hover:text-white text-slate-400 transition-all active:scale-90" data-text="${dua.arabic}" title="${t('copy')}">
+                                            ${CopyIcon({className: 'w-3.5 h-3.5'})}
+                                        </button>
+                                    </div>
+                                </div>
+                                <p class="text-right font-amiri text-xl md:text-2xl leading-[1.8] text-slate-800 dark:text-slate-200">${dua.arabic}</p>
                                 ${lang !== 'ar' ? `
-                                    <hr class="border-slate-100 dark:border-slate-800" />
-                                    <p class="text-sm text-slate-500 dark:text-slate-400 italic">${dua.transliteration}</p>
-                                    <p class="text-base text-slate-700 dark:text-slate-300 leading-relaxed">${dua[lang === 'id' ? 'ind' : lang] || dua.translation}</p>
+                                    <div class="space-y-2 pt-1">
+                                        <p class="text-[13px] text-slate-500 dark:text-slate-400 italic leading-relaxed">${dua.transliteration}</p>
+                                        <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-medium">${dua[lang === 'id' ? 'ind' : lang] || dua.translation}</p>
+                                    </div>
                                 ` : ''}
                             </div>
-                            <div class="glass px-6 py-3 flex justify-between items-center border-t border-slate-200 dark:border-slate-800">
-                                <span class="text-xs font-bold text-theme-600 dark:text-theme-400 glass px-2 py-1 rounded">${dua.reference}</span>
-                                <button class="copy-btn p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-slate-500 dark:text-slate-400" data-text="${dua.arabic}" title="${t('copy')}">
-                                    ${CopyIcon()}
-                                </button>
+                            <div class="bg-slate-50/50 dark:bg-slate-900/50 px-4 py-2 flex justify-between items-center border-t border-slate-200/50 dark:border-slate-800/50">
+                                <span class="text-[9px] font-bold text-theme-600 dark:text-theme-400 bg-theme-500/10 px-2 py-0.5 rounded-md uppercase tracking-wider">${dua.reference}</span>
                             </div>
                         </div>
                     `).join('')}

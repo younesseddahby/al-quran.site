@@ -21,26 +21,26 @@ export const renderBookmarks = (container, props) => {
         const totalCount = quranCount + hadithCount;
 
         wrapper.innerHTML = `
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-16">
-                <div class="flex items-center gap-5">
-                    <button id="bookmarks-back-btn" class="p-3 -ml-2 rounded-2xl glass hover:bg-theme-500 hover:text-white transition-all active:scale-90 flex items-center gap-2 border border-white/10 shadow-lg">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+                <div class="flex items-center gap-4">
+                    <button id="bookmarks-back-btn" class="p-2 -ml-1 rounded-xl glass hover:bg-theme-100 dark:hover:bg-theme-900/30 transition-all active:scale-90 flex items-center gap-1 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800">
                         ${BackIcon({className: "w-5 h-5"})}
-                        <span class="hidden sm:inline text-xs font-bold uppercase tracking-widest">${t('back')}</span>
+                        <span class="hidden sm:inline text-[10px] font-bold uppercase tracking-wider">${t('back')}</span>
                     </button>
                     <div>
-                        <h1 class="text-4xl md:text-6xl font-bold font-display text-slate-900 dark:text-white tracking-tight">${t('bookmarks') || 'Bookmarks'}</h1>
-                        <p class="text-slate-500 dark:text-slate-400 text-sm md:text-base mt-2 leading-relaxed">${t('bookmarksDescription') || 'Your saved verses and hadiths'}</p>
+                        <h1 class="text-2xl md:text-3xl font-bold font-display text-slate-900 dark:text-white tracking-tight">${t('bookmarks') || 'Bookmarks'}</h1>
+                        <p class="text-slate-500 dark:text-slate-400 text-[10px] md:text-xs font-bold uppercase tracking-wider mt-0.5">${t('bookmarksDescription') || 'Your saved verses and hadiths'}</p>
                     </div>
                 </div>
                 
-                <div class="flex glass p-1.5 rounded-[2rem] border border-white/10 shadow-2xl">
-                    <button data-filter="all" class="filter-btn px-6 py-3 rounded-[1.5rem] text-xs font-bold transition-all ${state.activeFilter === 'all' ? 'bg-gradient-to-br from-theme-600 to-indigo-600 text-white shadow-lg shadow-theme-500/30' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}">${t('all') || 'All'} (${totalCount})</button>
-                    <button data-filter="quran" class="filter-btn px-6 py-3 rounded-[1.5rem] text-xs font-bold transition-all ${state.activeFilter === 'quran' ? 'bg-gradient-to-br from-theme-600 to-indigo-600 text-white shadow-lg shadow-theme-500/30' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}">${t('quran')} (${quranCount})</button>
-                    <button data-filter="hadith" class="filter-btn px-6 py-3 rounded-[1.5rem] text-xs font-bold transition-all ${state.activeFilter === 'hadith' ? 'bg-gradient-to-br from-theme-600 to-indigo-600 text-white shadow-lg shadow-theme-500/30' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}">${t('hadith')} (${hadithCount})</button>
+                <div class="flex glass p-1 rounded-2xl border border-white/10 shadow-sm">
+                    <button data-filter="all" class="filter-btn px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all ${state.activeFilter === 'all' ? 'bg-theme-500 text-white shadow-md' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}">${t('all') || 'All'} (${totalCount})</button>
+                    <button data-filter="quran" class="filter-btn px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all ${state.activeFilter === 'quran' ? 'bg-theme-500 text-white shadow-md' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}">${t('quran')} (${quranCount})</button>
+                    <button data-filter="hadith" class="filter-btn px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all ${state.activeFilter === 'hadith' ? 'bg-theme-500 text-white shadow-md' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}">${t('hadith')} (${hadithCount})</button>
                 </div>
             </div>
 
-            <div id="bookmarks-list" class="space-y-6">
+            <div id="bookmarks-list" class="grid grid-cols-1 gap-4">
                 ${renderList()}
             </div>
         `;
@@ -85,29 +85,29 @@ export const renderBookmarks = (container, props) => {
         }
 
         return items.map(item => `
-            <div class="group p-8 glass rounded-[2.5rem] border border-white/10 hover:shadow-2xl hover:scale-[1.01] transition-all duration-500 relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-32 h-32 bg-theme-500/5 rounded-bl-[3rem] blur-3xl -z-10 transition-transform group-hover:scale-150 duration-700"></div>
-                <div class="flex justify-between items-start mb-6">
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-2xl ${item.type === 'quran' ? 'glass text-emerald-600 dark:text-emerald-400' : 'glass text-amber-600 dark:text-amber-400'} flex items-center justify-center border border-white/10 shadow-sm group-hover:scale-110 transition-transform">
-                            ${item.type === 'quran' ? QuranIcon({className: "w-6 h-6"}) : HadithIcon({className: "w-6 h-6"})}
+            <div class="group p-5 md:p-6 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 hover:shadow-xl hover:shadow-theme-500/10 hover:border-theme-500/30 hover:-translate-y-1 transition-all duration-500 relative overflow-hidden">
+                <div class="absolute -right-8 -top-8 w-32 h-32 bg-theme-500/5 rounded-full blur-[40px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                <div class="flex justify-between items-start mb-4 relative z-10">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-all duration-500 shadow-sm">
+                            ${item.type === 'quran' ? QuranIcon({className: "w-5 h-5"}) : HadithIcon({className: "w-5 h-5"})}
                         </div>
                         <div>
-                            <h4 class="font-bold text-slate-900 dark:text-white text-base tracking-tight">${item.title}</h4>
-                            <p class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] mt-1">${item.subtitle}</p>
+                            <h4 class="font-bold text-base text-slate-800 dark:text-slate-200 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-colors">${item.title}</h4>
+                            <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 font-bold uppercase tracking-wider">${item.subtitle}</p>
                         </div>
                     </div>
-                    <button data-id="${item.id}" data-type="${item.type}" class="remove-bookmark-btn p-3 rounded-2xl glass border border-white/10 hover:bg-rose-500 hover:text-white text-slate-400 transition-all active:scale-90">
-                        ${TrashIcon({className: "w-5 h-5"})}
+                    <button data-id="${item.id}" data-type="${item.type}" class="remove-bookmark-btn p-2 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-500/10 text-slate-400 hover:text-rose-500 transition-colors" title="${t('removeBookmark') || 'Remove Bookmark'}">
+                        ${TrashIcon({className: "w-4 h-4"})}
                     </button>
                 </div>
-                <div class="relative cursor-pointer bookmark-content" data-id="${item.id}" data-type="${item.type}" data-surah="${item.surahNum}" data-ayah="${item.ayahNum}">
-                    <p class="text-xl leading-relaxed text-slate-800 dark:text-slate-200 font-serif ${item.lang === 'ar' ? 'text-right font-amiri' : 'text-left'}" dir="${item.lang === 'ar' ? 'rtl' : 'ltr'}">
-                        ${item.text.length > 250 ? item.text.substring(0, 250) + '...' : item.text}
+                <div class="relative cursor-pointer bookmark-content z-10" data-id="${item.id}" data-type="${item.type}" data-surah="${item.surahNum}" data-ayah="${item.ayahNum}">
+                    <p class="text-base md:text-lg leading-relaxed text-slate-700 dark:text-slate-300 ${item.lang === 'ar' ? 'font-amiri text-right text-xl md:text-2xl' : 'text-left'} line-clamp-3" dir="${item.lang === 'ar' ? 'rtl' : 'ltr'}">
+                        ${item.text}
                     </p>
-                    <div class="mt-6 flex items-center justify-end text-theme-600 dark:text-theme-400 text-xs font-bold gap-2 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
-                        <span class="uppercase tracking-widest">${t('viewDetails') || 'View Details'}</span>
-                        ${ChevronRightIcon({className: "w-4 h-4"})}
+                    <div class="mt-3 flex items-center justify-end text-theme-600 dark:text-theme-400 text-[10px] font-bold uppercase tracking-widest gap-1 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
+                        <span>${t('viewDetails') || 'View Details'}</span>
+                        ${ChevronRightIcon({className: `w-3 h-3 ${isRtl ? 'rotate-180' : ''}`})}
                     </div>
                 </div>
             </div>
