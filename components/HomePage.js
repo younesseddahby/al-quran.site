@@ -1,7 +1,7 @@
 
 import { t, getCurrentLanguage } from '../i18n.js';
 import { createSpinner } from './Spinner.js';
-import { BookOpenIcon, ListenIcon, HadithIcon, ClockIcon, CalendarIcon, ShieldIcon, BeadsIcon, ChevronRightIcon, QuizIcon, BookmarkIcon, EmailIcon, CheckCircleIcon, QuranIcon, QiblaIcon } from './Icons.js';
+import { BookOpenIcon, ListenIcon, HadithIcon, ClockIcon, CalendarIcon, ShieldIcon, BeadsIcon, ChevronRightIcon, QuizIcon, BookmarkIcon, EmailIcon, CheckCircleIcon, QuranIcon, QiblaIcon, SparklesIcon } from './Icons.js';
 import { fetchWithRetry } from '../utils/fetchUtils.js';
 
 // --- HELPER FUNCTIONS ---
@@ -316,6 +316,7 @@ const renderQuickLinks = (container) => {
     const linksContainer = document.createElement('div');
     linksContainer.className = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8";
     const linkItems = [
+        { nav: "ai", icon: SparklesIcon({className: 'w-6 h-6'}), title: t('aiAssistant') || 'AI Assistant', desc: t('aiAssistantDesc') || 'Ask questions about Islam.', meta: 'AI', color: 'theme' },
         { nav: "bookmarks", icon: BookmarkIcon({className: 'w-6 h-6'}), title: t('bookmarks') || 'Bookmarks', desc: t('bookmarksTab') || 'View your saved verses.', meta: 'Saved', color: 'pink' },
         { nav: "quiz", icon: QuizIcon({className: 'w-6 h-6'}), title: t('islamicQuiz'), desc: t('testYourKnowledge') || 'Test your Islamic knowledge.', meta: 'Learn', color: 'orange' },
         { nav: "stories", icon: BookOpenIcon({className: 'w-6 h-6'}), title: t('prophetStories'), desc: t('prophetStoriesDesc'), meta: 'Stories', color: 'teal' },

@@ -11,9 +11,10 @@ import { renderQuiz } from './components/Quiz.js';
 import { renderProphetStories } from './components/ProphetStories.js';
 import { renderAsmaUlHusna } from './components/AsmaUlHusna.js';
 import { renderQiblaFinder } from './components/QiblaFinder.js';
+import { renderAIAssistant } from './components/AIAssistant.js';
 import { 
     HomeIcon, QuranIcon, HadithIcon, PrayerIcon, SettingsIcon, ShieldIcon, BeadsIcon, 
-    ArrowLeftIcon, ArrowRightIcon, BookOpenIcon, BookmarkIcon, QuizIcon
+    ArrowLeftIcon, ArrowRightIcon, BookOpenIcon, BookmarkIcon, QuizIcon, SparklesIcon
 } from './components/Icons.js';
 import { THEME_COLORS } from './theme.js';
 import { initI18n, t, setLanguage as setI18nLanguage } from './i18n.js';
@@ -228,6 +229,7 @@ const App = (rootElement) => {
                 CACHE.selectedSurah = { number: surahNumber };
                 CACHE.activeAyahForNav = ayahNumber;
                 CACHE.readerView = 'reader';
+                state.isAIModalOpen = false;
                 render();
             },
             toggleBookmark: (type, item) => {
@@ -266,8 +268,78 @@ const App = (rootElement) => {
         lastRenderedTab = state.activeTab;
     };
 
+    const renderAIModal = () => {
+        const existing = document.getElementById('ai-modal-overlay');
+        if (!state.isAIModalOpen) {
+            if (existing) existing.remove();
+            return;
+        }
+
+        if (existing) return;
+
+        const overlay = document.createElement('div');
+        overlay.id = 'ai-modal-overlay';
+        overlay.className = "fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 animate-fade";
+        overlay.innerHTML = `
+            <div class="absolute inset-0 bg-slate-950/60 backdrop-blur-sm" id="ai-modal-backdrop"></div>
+            <div class="relative w-full max-w-2xl glass rounded-[2.5rem] shadow-2xl border border-white/20 overflow-hidden flex flex-col h-[85vh] animate-scale-in">
+                <div id="ai-modal-content" class="flex-1 overflow-hidden"></div>
+            </div>
+        `;
+
+        document.body.appendChild(overlay);
+
+        const content = overlay.querySelector('#ai-modal-content');
+        renderAIAssistant(content, {
+            ...state,
+            onBack: () => {
+                state.isAIModalOpen = false;
+                render();
+            },
+            navigateTo: (nav) => {
+                state.activeTab = 'quran';
+                state.quranMode = 'read';
+                CACHE.selectedSurah = { number: nav.surahNumber };
+                CACHE.activeAyahForNav = nav.ayahNumber;
+                CACHE.readerView = 'reader';
+                state.isAIModalOpen = false;
+                render();
+            }
+        });
+
+        overlay.querySelector('#ai-modal-backdrop').onclick = () => {
+            state.isAIModalOpen = false;
+            render();
+        };
+    };
+
+    const renderFloatingAI = () => {
+        const existing = document.getElementById('floating-ai-btn');
+        if (existing) existing.remove();
+
+        // Hide if in reader mode
+        if (state.isReaderMode && state.activeTab === 'quran') return;
+
+        const btn = document.createElement('button');
+        btn.id = 'floating-ai-btn';
+        btn.className = "fixed bottom-20 right-4 lg:bottom-8 lg:right-8 w-14 h-14 rounded-2xl bg-theme-500 text-white shadow-2xl shadow-theme-500/40 flex items-center justify-center z-50 transition-all duration-300 hover:scale-110 active:scale-95 animate-bounce-subtle group";
+        btn.innerHTML = `
+            <div class="absolute -top-12 right-0 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                ${t('aiAssistant') || 'AI Assistant'}
+            </div>
+            ${SparklesIcon({className: "w-7 h-7"})}
+        `;
+
+        btn.addEventListener('click', () => {
+            state.isAIModalOpen = true;
+            render();
+        });
+
+        document.body.appendChild(btn);
+    };
+
     const render = () => {
-        renderHeader(); renderMobileNav(); renderContent();
+        renderHeader(); renderMobileNav(); renderContent(); renderFloatingAI(); renderAIModal();
     };
 
     initI18n(state.language);
@@ -275,6 +347,15 @@ const App = (rootElement) => {
     appContainer.className = 'min-h-screen bg-parchment dark:bg-night text-ink transition-colors duration-300';
     [header, mainContent, mobileNavPlaceholder, mobileNav].forEach(el => appContainer.appendChild(el));
     rootElement.innerHTML = ''; rootElement.appendChild(appContainer);
+
+    // Global Event Listeners
+    window.addEventListener('ask-ai-tafsir', (e) => {
+        const { surahName, ayahNum, text } = e.detail;
+        window.aiAssistantInitialPrompt = `Please explain this verse: Surah ${surahName} (${ayahNum}). The text is: "${text}"`;
+        state.isAIModalOpen = true;
+        render();
+    });
+
     render();
 };
 

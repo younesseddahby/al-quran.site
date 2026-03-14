@@ -1,6 +1,6 @@
 import { createSpinner } from './Spinner.js';
 import { renderErrorState, renderSkeletonGrid } from './UI.js';
-import { CloseIcon, SkipBackwardIcon, SkipForwardIcon, SlidersHorizontalIcon, ArrowLeftIcon, ArrowRightIcon, ChevronRightIcon, MinusIcon, PlusIcon, BookmarkIcon, BookmarkSolidIcon, ArrowUpIcon } from './Icons.js';
+import { CloseIcon, SkipBackwardIcon, SkipForwardIcon, SlidersHorizontalIcon, ArrowLeftIcon, ArrowRightIcon, ChevronRightIcon, MinusIcon, PlusIcon, BookmarkIcon, BookmarkSolidIcon, ArrowUpIcon, SparklesIcon } from './Icons.js';
 import { t, getCurrentLanguage } from '../i18n.js';
 import { fetchWithRetry } from '../utils/fetchUtils.js';
 
@@ -722,7 +722,7 @@ export const renderQuranReader = (container, cache, props) => {
         if (!modal) {
             modal = document.createElement('div');
             modal.id = 'tafsir-panel';
-            modal.className = 'fixed inset-0 z-[110] flex items-end justify-center pointer-events-none';
+            modal.className = 'fixed inset-0 z-[110] flex items-end justify-center';
             document.body.appendChild(modal);
         }
         const surahName = state.selectedSurah?.englishName || '';
@@ -761,6 +761,12 @@ export const renderQuranReader = (container, cache, props) => {
                     ` : (state.tafsirData?.text || t('tafsirNotFound'))}
                 </div>
 
+                <div class="flex flex-col gap-4">
+                    <button id="tafsir-ai-btn" class="w-full py-4 rounded-2xl bg-theme-500 text-white font-bold flex items-center justify-center gap-3 hover:bg-theme-600 transition-all active:scale-[0.98] shadow-lg shadow-theme-500/20">
+                        ${SparklesIcon({className: "w-5 h-5"})}
+                        ${t('askAiAboutVerse') || 'Ask AI about this verse'}
+                    </button>
+                </div>
             </div>`;
         
         modal.querySelector('#close-tafsir').onclick = () => setState({ isTafsirModal: false, loadingTafsir: false });
@@ -784,8 +790,13 @@ export const renderQuranReader = (container, cache, props) => {
         modal.querySelector('#tafsir-backdrop').onclick = () => setState({ isTafsirModal: false, loadingTafsir: false });
         modal.querySelector('#tafsir-ai-btn')?.addEventListener('click', () => {
             const currentAyah = state.pageData?.ayahs.find(a => a.numberInSurah == state.activeTafsirAyah.ayah);
-            const prompt = getCurrentLanguage() === 'ar' ? `تفسير: ${state.selectedSurah.name} آية ${state.activeTafsirAyah.ayah}` : `Tafsir: ${state.selectedSurah.englishName} Ayah ${state.activeTafsirAyah.ayah}`;
-            document.dispatchEvent(new CustomEvent('ask-ai-tafsir', { detail: { prompt: `${prompt}. Text: "${currentAyah?.text}". Simple Tafsir: "${state.tafsirData?.text}"` } }));
+            window.dispatchEvent(new CustomEvent('ask-ai-tafsir', { 
+                detail: { 
+                    surahName: state.selectedSurah?.englishName || state.pageData?.englishName || 'Unknown',
+                    ayahNum: state.activeTafsirAyah?.ayah || '?',
+                    text: currentAyah?.text || ''
+                } 
+            }));
             setState({ isTafsirModal: false });
         });
     };

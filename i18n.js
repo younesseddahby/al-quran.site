@@ -359,6 +359,17 @@ const loadTranslations = () => {
       readStory: "اقرأ القصة",
       searchStories: "ابحث في القصص...",
       noStoriesFound: "لم يتم العثور على قصص.",
+      // AI Assistant
+      aiAssistant: "المساعد الإسلامي الذكي",
+      aiAssistantDesc: "اسأل عن أي موضوع إسلامي أو آية قرآنية.",
+      askAiAboutVerse: "اسأل الذكاء الاصطناعي عن هذه الآية",
+      typing: "الذكاء الاصطناعي يفكر...",
+      aiSuggestion1: "كيفية الوضوء؟",
+      aiSuggestion2: "ما هي مبطلات الصيام؟",
+      aiSuggestion3: "ماذا يقول الإسلام عن الصبر؟",
+      aiSuggestion4: "معنى سورة الفاتحة؟",
+      aiSuggestion5: "دعاء للقلق",
+      aiSuggestion6: "كيفية صلاة التهجد؟",
     },
     en: {
       // App
@@ -713,6 +724,17 @@ const loadTranslations = () => {
       readStory: "Read Story",
       searchStories: "Search stories...",
       noStoriesFound: "No stories found.",
+      // AI Assistant
+      aiAssistant: "AI Islamic Assistant",
+      aiAssistantDesc: "Ask questions about Islam and the Quran.",
+      askAiAboutVerse: "Ask AI about this verse",
+      typing: "AI is thinking...",
+      aiSuggestion1: "How to perform wudu?",
+      aiSuggestion2: "What breaks fasting?",
+      aiSuggestion3: "What does Islam say about patience?",
+      aiSuggestion4: "Meaning of Surah Al-Fatiha?",
+      aiSuggestion5: "Dua for anxiety",
+      aiSuggestion6: "How to pray Tahajjud?",
     },
     id: {
       appName: "Al-Qur'an Al-Karim",
@@ -759,6 +781,17 @@ const loadTranslations = () => {
       prayer_Asr: "Ashar",
       prayer_Maghrib: "Maghrib",
       prayer_Isha: "Isya",
+      // AI Assistant
+      aiAssistant: "Asisten Islami AI",
+      aiAssistantDesc: "Ajukan pertanyaan tentang Islam dan Al-Qur'an.",
+      askAiAboutVerse: "Tanya AI tentang ayat ini",
+      typing: "AI sedang berpikir...",
+      aiSuggestion1: "Bagaimana cara wudhu?",
+      aiSuggestion2: "Apa yang membatalkan puasa?",
+      aiSuggestion3: "Apa kata Islam tentang kesabaran?",
+      aiSuggestion4: "Makna Surah Al-Fatihah?",
+      aiSuggestion5: "Doa untuk kecemasan",
+      aiSuggestion6: "Bagaimana cara shalat Tahajjud?",
     },
     tr: {
       appName: "Kur'an-ı Kerim",
@@ -805,6 +838,17 @@ const loadTranslations = () => {
       prayer_Asr: "İkindi",
       prayer_Maghrib: "Akşam",
       prayer_Isha: "Yatsı",
+      // AI Assistant
+      aiAssistant: "AI İslami Asistan",
+      aiAssistantDesc: "İslam ve Kur'an hakkında sorular sorun.",
+      askAiAboutVerse: "Bu ayet hakkında AI'ya sor",
+      typing: "AI düşünüyor...",
+      aiSuggestion1: "Abdest nasıl alınır?",
+      aiSuggestion2: "Orucu neler bozar?",
+      aiSuggestion3: "İslam sabır hakkında ne der?",
+      aiSuggestion4: "Fatiha Suresi'nin anlamı?",
+      aiSuggestion5: "Kaygı için dua",
+      aiSuggestion6: "Teheccüd namazı nasıl kılınır?",
     },
   };
 };

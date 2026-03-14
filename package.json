@@ -4,12 +4,19 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "tsx server.ts",
     "build": "vite build",
     "preview": "vite preview",
     "lint": "tsc --noEmit"
   },
   "dependencies": {
+    "@clerk/clerk-js": "^6.3.0",
+    "@clerk/clerk-react": "^5.61.3",
+    "@google/genai": "^1.45.0",
+    "@types/node-fetch": "^2.6.13",
+    "express": "^5.2.1",
+    "node-fetch": "^3.3.2",
+    "tsx": "^4.21.0"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
