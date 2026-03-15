@@ -1,10 +1,11 @@
-import { t } from '../i18n.js';
+import { t, getCurrentLanguage } from '../i18n.js';
 import { 
     SendIcon, SparklesIcon, UserIcon, BotIcon, 
     ArrowLeftIcon, QuranIcon, BookOpenIcon, 
     ClockIcon, TrashIcon
 } from './Icons.js';
 import { GoogleGenAI } from "@google/genai";
+import { marked } from 'marked';
 
 export const renderAIAssistant = (container, props) => {
     const { onBack, navigateTo } = props;
@@ -26,12 +27,12 @@ export const renderAIAssistant = (container, props) => {
             <div>
                 <h2 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                     ${SparklesIcon({className: "w-5 h-5 text-theme-500"})}
-                    ${t('aiAssistant') || 'AI Islamic Assistant'}
+                    ${t('aiAssistant')}
                 </h2>
-                <p class="text-[10px] text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider">Powered by Gemini & Quran.com</p>
+                <p class="text-[10px] text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider">${t('poweredBy')}</p>
             </div>
         </div>
-        <button id="clear-chat-btn" class="p-2 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 text-slate-400 hover:text-red-500 transition-all active:scale-90" title="Clear Chat">
+        <button id="clear-chat-btn" class="p-2 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 text-slate-400 hover:text-red-500 transition-all active:scale-90" title="${t('clearChat')}">
             ${TrashIcon({className: "w-5 h-5"})}
         </button>
     `;
@@ -104,7 +105,7 @@ export const renderAIAssistant = (container, props) => {
                     <div class="w-8 h-8 rounded-xl flex-shrink-0 flex items-center justify-center ${msg.role === 'user' ? 'bg-theme-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'}">
                         ${msg.role === 'user' ? UserIcon({className: "w-4 h-4"}) : BotIcon({className: "w-4 h-4"})}
                     </div>
-                    <div class="p-3 rounded-2xl text-sm leading-relaxed ${msg.role === 'user' ? 'bg-theme-500 text-white rounded-tr-none' : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-100 dark:border-slate-700 shadow-sm rounded-tl-none'}">
+                    <div class="p-3 rounded-2xl text-sm leading-relaxed markdown-content ${msg.role === 'user' ? 'bg-theme-500 text-white rounded-tr-none' : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-100 dark:border-slate-700 shadow-sm rounded-tl-none'}">
                         ${content}
                     </div>
                 </div>
@@ -134,18 +135,15 @@ export const renderAIAssistant = (container, props) => {
     };
 
     const formatAssistantResponse = (text) => {
+        // Use marked for markdown
+        let formatted = marked.parse(text);
+
         // Detect Quran verses: (Surah Name X:Y)
         const verseRegex = /\(Surah\s+([A-Za-z\s-]+)\s+(\d+):(\d+)\)/g;
         
-        let formatted = text.replace(verseRegex, (match, surahName, surahNum, ayahNum) => {
+        formatted = formatted.replace(verseRegex, (match, surahName, surahNum, ayahNum) => {
             return `<button class="verse-link text-theme-600 dark:text-theme-400 font-bold hover:underline" data-surah="${surahNum}" data-ayah="${ayahNum}">${match}</button>`;
         });
-
-        // Simple markdown-like bold
-        formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        
-        // New lines to br
-        formatted = formatted.replace(/\n/g, '<br>');
 
         return formatted;
     };
@@ -179,14 +177,33 @@ export const renderAIAssistant = (container, props) => {
             }
 
             // 2. Call Gemini API with context
+            const lang = getCurrentLanguage();
+            const langMap = {
+                'ar': 'Arabic',
+                'en': 'English',
+                'id': 'Indonesian',
+                'tr': 'Turkish'
+            };
+            const targetLang = langMap[lang] || 'English';
+
+            const refusalMessage = t('aiOffTopicRefusal');
+
             const ai = new GoogleGenAI({ apiKey });
             const response = await ai.models.generateContent({
                 model: "gemini-3-flash-preview",
                 contents: text.trim(),
                 config: {
-                    systemInstruction: `You are a powerful AI Islamic Assistant. Your goal is to provide reliable, authentic Islamic information based on the Quran.
+                    systemInstruction: `You are a powerful AI Islamic Assistant. Your goal is to provide reliable, authentic Islamic information based on the Quran and Sunnah.
                     
-                    Rules:
+                    CRITICAL SCOPE RULE:
+                    - You MUST ONLY answer questions related to Islam, the Quran, Hadith, Islamic history, and Islamic jurisprudence (Fiqh).
+                    - If a user asks about ANY other topic (e.g., general science, politics, sports, entertainment, coding, math, etc.) that is NOT directly related to an Islamic perspective or teaching, you MUST politely refuse to answer.
+                    - If the question is off-topic, respond ONLY with this message: "${refusalMessage}"
+                    
+                    CRITICAL LANGUAGE RULE:
+                    - You MUST respond in ${targetLang} language, regardless of the language of the user's question.
+                    
+                    General Rules:
                     1. Answer Islamic questions respectfully and clearly.
                     2. Base answers on the Quran whenever possible.
                     3. Include Surah name and verse number when referencing Quran (e.g., Surah Al-Baqarah 2:153).
@@ -194,6 +211,7 @@ export const renderAIAssistant = (container, props) => {
                     5. If unsure, say that scholars should be consulted.
                     6. If a topic has multiple scholarly opinions, explain that briefly.
                     7. Keep explanations simple and educational.
+                    8. Use Markdown for formatting (headers, bold, lists, etc.).
                     
                     Response Format for Quran references:
                     “Indeed, Allah is with the patient.”
@@ -245,7 +263,7 @@ export const renderAIAssistant = (container, props) => {
     backBtn.addEventListener('click', onBack);
 
     clearBtn.addEventListener('click', () => {
-        if (confirm('Clear chat history?')) {
+        if (confirm(t('confirmClearChat'))) {
             messages = [];
             localStorage.removeItem('ai_chat_history');
             renderMessages();

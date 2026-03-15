@@ -351,7 +351,7 @@ const App = (rootElement) => {
     // Global Event Listeners
     window.addEventListener('ask-ai-tafsir', (e) => {
         const { surahName, ayahNum, text } = e.detail;
-        window.aiAssistantInitialPrompt = `Please explain this verse: Surah ${surahName} (${ayahNum}). The text is: "${text}"`;
+        window.aiAssistantInitialPrompt = t('aiExplainVersePrompt', { surahName, ayahNum, text });
         state.isAIModalOpen = true;
         render();
     });

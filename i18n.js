@@ -370,6 +370,11 @@ const loadTranslations = () => {
       aiSuggestion4: "معنى سورة الفاتحة؟",
       aiSuggestion5: "دعاء للقلق",
       aiSuggestion6: "كيفية صلاة التهجد؟",
+      aiExplainVersePrompt: "يرجى شرح هذه الآية: سورة {{surahName}} ({{ayahNum}}). النص هو: \"{{text}}\"",
+      poweredBy: "مدعوم بواسطة Gemini و Quran.com",
+      clearChat: "مسح المحادثة",
+      confirmClearChat: "هل أنت متأكد من مسح سجل المحادثة؟",
+      aiOffTopicRefusal: "عذراً، أنا مبرمج للإجابة على الأسئلة المتعلقة بالإسلام والقرآن الكريم فقط. يرجى طرح سؤال متعلق بالمواضيع الإسلامية.",
     },
     en: {
       // App
@@ -735,6 +740,11 @@ const loadTranslations = () => {
       aiSuggestion4: "Meaning of Surah Al-Fatiha?",
       aiSuggestion5: "Dua for anxiety",
       aiSuggestion6: "How to pray Tahajjud?",
+      aiExplainVersePrompt: "Please explain this verse: Surah {{surahName}} ({{ayahNum}}). The text is: \"{{text}}\"",
+      poweredBy: "Powered by Gemini & Quran.com",
+      clearChat: "Clear Chat",
+      confirmClearChat: "Are you sure you want to clear the chat history?",
+      aiOffTopicRefusal: "I'm sorry, but I am programmed to answer only questions related to Islam and the Holy Quran. Please ask a question related to Islamic topics.",
     },
     id: {
       appName: "Al-Qur'an Al-Karim",
@@ -792,6 +802,11 @@ const loadTranslations = () => {
       aiSuggestion4: "Makna Surah Al-Fatihah?",
       aiSuggestion5: "Doa untuk kecemasan",
       aiSuggestion6: "Bagaimana cara shalat Tahajjud?",
+      aiExplainVersePrompt: "Tolong jelaskan ayat ini: Surah {{surahName}} ({{ayahNum}}). Teksnya adalah: \"{{text}}\"",
+      poweredBy: "Didukung oleh Gemini & Quran.com",
+      clearChat: "Hapus Obrolan",
+      confirmClearChat: "Apakah Anda yakin ingin menghapus riwayat obrolan?",
+      aiOffTopicRefusal: "Maaf, saya diprogram للhanya menjawab pertanyaan yang berkaitan dengan Islam dan Al-Qur'an Al-Karim. Silakan ajukan pertanyaan yang berkaitan dengan topik Islami.",
     },
     tr: {
       appName: "Kur'an-ı Kerim",
@@ -849,6 +864,11 @@ const loadTranslations = () => {
       aiSuggestion4: "Fatiha Suresi'nin anlamı?",
       aiSuggestion5: "Kaygı için dua",
       aiSuggestion6: "Teheccüd namazı nasıl kılınır?",
+      aiExplainVersePrompt: "Lütfen bu ayeti açıklayın: {{surahName}} Suresi ({{ayahNum}}). Metin: \"{{text}}\"",
+      poweredBy: "Gemini ve Quran.com tarafından desteklenmektedir",
+      clearChat: "Sohbeti Temizle",
+      confirmClearChat: "Sohbet geçmişini temizlemek istediğinizden emin misiniz?",
+      aiOffTopicRefusal: "Üzgünüm, ancak sadece İslam ve Kur'an-ı Kerim ile ilgili soruları yanıtlamak üzere programlandım. Lütfen İslami konularla ilgili bir soru sorun.",
     },
   };
 };
