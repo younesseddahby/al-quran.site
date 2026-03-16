@@ -2,11 +2,84 @@
 <html lang="en" dir="ltr" class="">
   <head>
     <meta charset="UTF-8" />
-    <link rel="manifest" href="/site.webmanifest">
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>The Holy Quran</title>
+    
+
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+
+
+    <!-- Primary Meta Tags -->
+    <title>Read Quran Online | Listen Quran Audio | Quran with Translation</title>
+    <meta name="title" content="Read Quran Online | Listen Quran Audio | Quran with Translation" />
+    <meta name="description" content="Read and listen to the Holy Quran online with multi-language translations, audio recitations by famous reciters, and AI-powered Islamic guidance. Free Quran reader." />
+    <meta name="keywords" content="read quran online, listen quran online, quran audio recitation, holy quran online, free quran reader, quran with translation, islamic app, quran hub, surah yasin, surah al-baqarah" />
+    <meta name="robots" content="index, follow" />
+    <meta name="language" content="English" />
+    <meta name="revisit-after" content="7 days" />
+    <meta name="author" content="The Holy Quran App" />
+    <link rel="canonical" href="https://ais-pre-nw5mcqvjdsw3xemowee26w-95394659135.europe-west1.run.app/" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://ais-pre-nw5mcqvjdsw3xemowee26w-95394659135.europe-west1.run.app/" />
+    <meta property="og:title" content="Read Quran Online | Listen Quran Audio | Quran with Translation" />
+    <meta property="og:description" content="Read and listen to the Holy Quran online with multi-language translations, audio recitations by famous reciters, and AI-powered Islamic guidance." />
+    <meta property="og:image" content="https://ais-pre-nw5mcqvjdsw3xemowee26w-95394659135.europe-west1.run.app/og-image.jpg" />
+    <meta property="og:site_name" content="The Holy Quran App" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://ais-pre-nw5mcqvjdsw3xemowee26w-95394659135.europe-west1.run.app/" />
+    <meta property="twitter:title" content="Read Quran Online | Listen Quran Audio | Quran with Translation" />
+    <meta property="twitter:description" content="Read and listen to the Holy Quran online with multi-language translations, audio recitations by famous reciters, and AI-powered Islamic guidance." />
+    <meta property="twitter:image" content="https://ais-pre-nw5mcqvjdsw3xemowee26w-95394659135.europe-west1.run.app/og-image.jpg" />
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "The Holy Quran App",
+      "url": "https://ais-pre-nw5mcqvjdsw3xemowee26w-95394659135.europe-west1.run.app/",
+      "description": "Read and listen to the Holy Quran online with multi-language translations, audio recitations by famous reciters, and AI-powered Islamic guidance.",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://ais-pre-nw5mcqvjdsw3xemowee26w-95394659135.europe-west1.run.app/?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              theme: {
+                50: 'rgb(var(--theme-color-50-rgb))',
+                100: 'rgb(var(--theme-color-100-rgb))',
+                200: 'rgb(var(--theme-color-200-rgb))',
+                300: 'rgb(var(--theme-color-300-rgb))',
+                400: 'rgb(var(--theme-color-400-rgb))',
+                500: 'rgb(var(--theme-color-500-rgb))',
+                600: 'rgb(var(--theme-color-600-rgb))',
+                700: 'rgb(var(--theme-color-700-rgb))',
+                800: 'rgb(var(--theme-color-800-rgb))',
+                900: 'rgb(var(--theme-color-900-rgb))',
+                950: 'rgb(var(--theme-color-950-rgb))',
+              }
+            }
+          }
+        }
+      }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
@@ -28,37 +101,37 @@
 
     <style>
       :root {
-        --bg-light: 252 250 242; /* Soft Parchment */
+        --bg-light: 248 250 252; /* Slate 50 */
         --bg-dark: 15 23 42;    /* Slate 900 */
-        --text-light: 30 41 59;   /* Slate 800 */
-        --text-dark: 241 245 249; /* Slate 100 */
+        --text-light: 15 23 42;   /* Slate 900 */
+        --text-dark: 248 250 252; /* Slate 50 */
         --theme-primary: 181 137 0;
       }
 
       /* Base Themes */
       .theme-classic {
-        --bg-light: 252 250 242;
+        --bg-light: 248 250 252;
         --bg-dark: 15 23 42;
-        --text-light: 30 41 59;
-        --text-dark: 241 245 249;
+        --text-light: 15 23 42;
+        --text-dark: 248 250 252;
       }
       .theme-emerald {
-        --bg-light: 236 253 245;
-        --bg-dark: 6 78 59;
-        --text-light: 6 78 59;
-        --text-dark: 236 253 245;
+        --bg-light: 244 244 245; /* Zinc 100 */
+        --bg-dark: 24 24 27; /* Zinc 900 */
+        --text-light: 24 24 27;
+        --text-dark: 244 244 245;
       }
       .theme-midnight {
-        --bg-light: 240 249 255;
-        --bg-dark: 23 37 84;
-        --text-light: 23 37 84;
-        --text-dark: 240 249 255;
+        --bg-light: 250 250 249; /* Stone 50 */
+        --bg-dark: 28 25 23; /* Stone 900 */
+        --text-light: 28 25 23;
+        --text-dark: 250 250 249;
       }
       .theme-sepia {
-        --bg-light: 254 252 232;
-        --bg-dark: 66 32 6;
-        --text-light: 66 32 6;
-        --text-dark: 254 252 232;
+        --bg-light: 245 245 244; /* Stone 100 */
+        --bg-dark: 41 37 36; /* Stone 800 */
+        --text-light: 41 37 36;
+        --text-dark: 245 245 244;
       }
 
       /* Glassmorphism */
@@ -66,26 +139,28 @@
         background: rgba(255, 255, 255, 0.7);
         backdrop-filter: blur(12px) saturate(180%);
         -webkit-backdrop-filter: blur(12px) saturate(180%);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
       }
       html.dark .glass {
         background: rgba(15, 23, 42, 0.7);
         backdrop-filter: blur(12px) saturate(180%);
         -webkit-backdrop-filter: blur(12px) saturate(180%);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
       }
 
       .glass-card {
-        background: rgba(255, 255, 255, 0.4);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+        background: rgba(255, 255, 255, 0.5);
+        backdrop-filter: blur(10px) saturate(150%);
+        -webkit-backdrop-filter: blur(10px) saturate(150%);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
       }
       html.dark .glass-card {
-        background: rgba(30, 41, 59, 0.4);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        background: rgba(30, 41, 59, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.4);
       }
 
       body {
@@ -150,11 +225,23 @@
         from { opacity: 0; transform: translateY(30px) scale(0.98); } 
         to { opacity: 1; transform: translateY(0) scale(1); } 
       }
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      @keyframes scaleIn {
+        from { opacity: 0; transform: scale(0.95); }
+        to { opacity: 1; transform: scale(1); }
+      }
       .fade-in { animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+      .animate-fade { animation: fadeIn 0.6s ease-out forwards; }
+      .animate-scale { animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
       
       .stagger-1 { animation-delay: 0.1s; }
       .stagger-2 { animation-delay: 0.2s; }
       .stagger-3 { animation-delay: 0.3s; }
+      .stagger-4 { animation-delay: 0.4s; }
+      .stagger-5 { animation-delay: 0.5s; }
       
       /* Ayah Highlight Styles */
       .active-ayah-span {
