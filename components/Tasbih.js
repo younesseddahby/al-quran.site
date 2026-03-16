@@ -73,14 +73,14 @@ export const renderTasbih = (container, props = {}) => {
                 <div class="flex-grow flex flex-col items-center justify-center p-4 md:p-8 relative">
                     <!-- Phrase Selection -->
                     <div class="w-full max-w-sm mb-6 relative z-10">
-                        <button id="phrase-select-btn" class="w-full p-3.5 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 flex items-center justify-between group hover:border-theme-500/30 transition-all duration-300">
-                            <div class="text-left min-w-0 flex-grow">
-                                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">${t('currentPhrase')}</p>
-                                <h3 class="font-amiri text-lg text-slate-800 dark:text-white truncate leading-tight">${phrase.ar}</h3>
-                                <p class="text-[11px] text-slate-500 dark:text-slate-400 truncate">${phrase.en || phrase.translation || ''}</p>
+                        <button id="phrase-select-btn" class="w-full p-4 md:p-5 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 flex items-center justify-between group hover:border-theme-500/30 transition-all duration-300">
+                            <div class="text-left min-w-0 flex-grow pr-2">
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">${t('currentPhrase')}</p>
+                                <h3 class="font-amiri text-2xl md:text-3xl text-slate-800 dark:text-white truncate leading-[1.6]">${phrase.ar}</h3>
+                                <p class="text-[13px] text-slate-500 dark:text-slate-400 truncate mt-1">${phrase.en || phrase.translation || ''}</p>
                             </div>
-                            <div class="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover:text-theme-600 transition-colors ml-3 flex-shrink-0">
-                                ${ArrowRightIcon({className: `w-3.5 h-3.5 transition-transform duration-300 ${state.showPhraseDropdown ? 'rotate-90' : 'rotate-0'}`})}
+                            <div class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover:text-theme-600 transition-colors ml-3 flex-shrink-0">
+                                ${ArrowRightIcon({className: `w-4 h-4 transition-transform duration-300 ${state.showPhraseDropdown ? 'rotate-90' : 'rotate-0'}`})}
                             </div>
                         </button>
 
@@ -106,9 +106,9 @@ export const renderTasbih = (container, props = {}) => {
                     <!-- Counter Circle -->
                     <div id="tasbih-tap-area" class="relative w-60 h-60 md:w-64 md:h-64 flex items-center justify-center cursor-pointer group active:scale-[0.98] transition-transform duration-150">
                         <!-- Progress Ring -->
-                        <svg class="absolute inset-0 w-full h-full -rotate-90">
-                            <circle cx="50%" cy="50%" r="46%" class="stroke-slate-100 dark:stroke-slate-800/50 fill-none" stroke-width="6"></circle>
-                            <circle id="tasbih-progress-ring" cx="50%" cy="50%" r="46%" class="stroke-theme-500 fill-none transition-all duration-300" stroke-width="6" stroke-dasharray="289" stroke-dashoffset="${289 - (progress * 289)}" stroke-linecap="round"></circle>
+                        <svg viewBox="0 0 100 100" class="absolute inset-0 w-full h-full -rotate-90">
+                            <circle cx="50" cy="50" r="45" class="stroke-slate-100 dark:stroke-slate-800/50 fill-none" stroke-width="6"></circle>
+                            <circle id="tasbih-progress-ring" cx="50" cy="50" r="45" class="stroke-theme-500 fill-none transition-all duration-500" stroke-width="6" stroke-dasharray="282.7" stroke-dashoffset="${282.7 * (1 - progress)}" stroke-linecap="round" style="opacity: ${state.count === 0 ? 0 : 1}"></circle>
                         </svg>
 
                         <!-- Inner Circle -->

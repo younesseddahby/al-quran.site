@@ -9,6 +9,13 @@ const colors = [
     { name: 'ruby', bgClass: 'bg-rose-500', ringClass: 'ring-rose-500' },
     { name: 'sapphire', bgClass: 'bg-blue-500', ringClass: 'ring-blue-500' },
     { name: 'jade', bgClass: 'bg-emerald-500', ringClass: 'ring-emerald-500' },
+    { name: 'violet', bgClass: 'bg-violet-500', ringClass: 'ring-violet-500' },
+    { name: 'orange', bgClass: 'bg-orange-500', ringClass: 'ring-orange-500' },
+    { name: 'emerald', bgClass: 'bg-emerald-600', ringClass: 'ring-emerald-600' },
+    { name: 'cyan', bgClass: 'bg-cyan-500', ringClass: 'ring-cyan-500' },
+    { name: 'fuchsia', bgClass: 'bg-fuchsia-500', ringClass: 'ring-fuchsia-500' },
+    { name: 'indigo', bgClass: 'bg-indigo-500', ringClass: 'ring-indigo-500' },
+    { name: 'gold', bgClass: 'bg-yellow-500', ringClass: 'ring-yellow-500' },
 ];
 
 const socialLinks = [
@@ -219,20 +226,10 @@ export const renderSettingsPage = (container, props) => {
     `;
     
     const renderAccentColorSelector = () => {
-        const availableColors = [
-            { name: 'amber', bg: 'bg-amber-500' },
-            { name: 'ruby', bg: 'bg-rose-500' },
-            { name: 'sapphire', bg: 'bg-blue-500' },
-            { name: 'jade', bg: 'bg-emerald-500' },
-            { name: 'violet', bg: 'bg-violet-500' },
-            { name: 'rose', bg: 'bg-rose-500' },
-            { name: 'orange', bg: 'bg-orange-500' },
-            { name: 'slate', bg: 'bg-slate-500' }
-        ];
         return `
             <div class="flex flex-wrap items-center justify-end gap-3 max-w-[240px]">
-                ${availableColors.map(c => `
-                    <button data-color="${c.name}" class="color-btn w-10 h-10 rounded-full ${c.bg} ring-offset-4 dark:ring-offset-slate-900 ${themeColor === c.name ? 'ring-2 ring-theme-500 scale-110 shadow-lg shadow-theme-500/30' : 'hover:scale-110 hover:shadow-lg'} transition-all active:scale-90 border-2 border-white/20"></button>
+                ${colors.map(c => `
+                    <button data-color="${c.name}" class="color-btn w-10 h-10 rounded-full ${c.bgClass} ring-offset-4 dark:ring-offset-slate-900 ${themeColor === c.name ? 'ring-2 ring-theme-500 scale-110 shadow-lg shadow-theme-500/30' : 'hover:scale-110 hover:shadow-lg'} transition-all active:scale-90 border-2 border-white/20"></button>
                 `).join('')}
             </div>
         `;

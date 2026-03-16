@@ -1,6 +1,6 @@
 import { createSpinner } from './Spinner.js';
 import { renderErrorState, renderSkeletonGrid } from './UI.js';
-import { CloseIcon, SkipBackwardIcon, SkipForwardIcon, SlidersHorizontalIcon, ArrowLeftIcon, ArrowRightIcon, ChevronRightIcon, MinusIcon, PlusIcon, BookmarkIcon, BookmarkSolidIcon, ArrowUpIcon, SparklesIcon } from './Icons.js';
+import { CloseIcon, SkipBackwardIcon, SkipForwardIcon, SettingsIcon, ArrowLeftIcon, ArrowRightIcon, ChevronRightIcon, MinusIcon, PlusIcon, BookmarkIcon, BookmarkSolidIcon, ArrowUpIcon, SparklesIcon, ShareIcon, SearchIcon } from './Icons.js';
 import { t, getCurrentLanguage } from '../i18n.js';
 import { fetchWithRetry } from '../utils/fetchUtils.js';
 
@@ -26,6 +26,9 @@ export const renderQuranReader = (container, cache, props) => {
         loadingTafsir: false,
         tafsirData: null,
         activeTafsirAyah: null,
+        verseSearchQuery: '',
+        verseSearchResults: [],
+        searchingVerses: false,
         error: null
     };
 
@@ -101,6 +104,80 @@ export const renderQuranReader = (container, cache, props) => {
             console.error(e);
             setState({ loading: false, error: t('fetchSurahListError') });
         }
+    };
+
+    const searchVerses = async (query) => {
+        if (!query || query.length < 3) {
+            setState({ verseSearchResults: [], searchingVerses: false });
+            return;
+        }
+        
+        setState({ searchingVerses: true });
+        const lang = getCurrentLanguage();
+        const editionMap = {
+            'en': 'en.sahih',
+            'id': 'id.indonesian',
+            'tr': 'tr.ates'
+        };
+        const edition = editionMap[lang] || 'en.sahih';
+        
+        try {
+            const res = await fetchWithRetry(`https://api.alquran.cloud/v1/search/${encodeURIComponent(query)}/all/${edition}`);
+            const data = await res.json();
+            
+            if (data.status === 'OK') {
+                // Also fetch Arabic for matches
+                const results = data.data.matches.slice(0, 20); // Limit to 20 results
+                const resultsWithArabic = await Promise.all(results.map(async (res) => {
+                    const arRes = await fetchWithRetry(`https://api.alquran.cloud/v1/ayah/${res.surah.number}:${res.numberInSurah}`);
+                    const arData = await arRes.json();
+                    return {
+                        ...res,
+                        text: arData.data.text,
+                        translation: res.text
+                    };
+                }));
+                
+                setState({ verseSearchResults: resultsWithArabic, searchingVerses: false });
+            } else {
+                setState({ verseSearchResults: [], searchingVerses: false });
+            }
+        } catch (e) {
+            console.error(e);
+            setState({ verseSearchResults: [], searchingVerses: false });
+        }
+    };
+
+    const shareAyah = async (surahNum, ayahNum) => {
+        const surah = state.surahs.find(s => s.number === surahNum) || state.pageData;
+        const ayah = state.pageData?.ayahs.find(a => a.numberInSurah === ayahNum);
+        
+        if (!ayah) return;
+        
+        const shareText = `"${ayah.text}"\n\n${ayah.translation || ''}\n\n— Quran ${surah.englishName} (${surahNum}:${ayahNum})\n\nRead more at: ${window.location.origin}/surah/${surahNum}`;
+        
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: `${t('surah')} ${surah.englishName} ${surahNum}:${ayahNum}`,
+                    text: shareText,
+                    url: `${window.location.origin}/surah/${surahNum}`
+                });
+            } catch (e) {
+                console.error('Error sharing:', e);
+                copyToClipboard(shareText);
+            }
+        } else {
+            copyToClipboard(shareText);
+        }
+    };
+
+    const copyToClipboard = (text) => {
+        navigator.clipboard.writeText(text).then(() => {
+            if (window.showToast) window.showToast(t('ayahCopied'), 'success');
+        }).catch(err => {
+            console.error('Could not copy text: ', err);
+        });
     };
 
     const fetchPage = async (num, ayah = 1) => {
@@ -247,6 +324,9 @@ export const renderQuranReader = (container, cache, props) => {
                                 <button class="bookmark-ayah-btn p-0.5 md:p-1 rounded-md hover:bg-theme-100 dark:hover:bg-theme-800 text-slate-400 hover:text-theme-600 transition-all" data-surah="${state.pageData.number}" data-ayah="${a.numberInSurah}">
                                     ${isBookmarked ? BookmarkSolidIcon({className: "w-3 h-3 md:w-3.5 h-3.5 text-theme-600"}) : BookmarkIcon({className: "w-3 h-3 md:w-3.5 h-3.5"})}
                                 </button>
+                                <button class="share-ayah-btn p-0.5 md:p-1 rounded-md hover:bg-theme-100 dark:hover:bg-theme-800 text-slate-400 hover:text-theme-600 transition-all" data-surah="${state.pageData.number}" data-ayah="${a.numberInSurah}">
+                                    ${ShareIcon({className: "w-3 h-3 md:w-3.5 h-3.5"})}
+                                </button>
                             </div>
                             ${displayMode !== 'translation' ? `
                                 <p class="quran-arabic-text text-right text-xl md:text-3xl leading-loose text-slate-800 dark:text-slate-100">${a.text}</p>
@@ -274,6 +354,16 @@ export const renderQuranReader = (container, cache, props) => {
             } else {
                 setState({ processing: false });
                 if (jumpTo) scrollToAyah(jumpTo);
+                
+                // Attach share listeners
+                container.querySelectorAll('.share-ayah-btn').forEach(btn => {
+                    btn.onclick = (e) => {
+                        e.stopPropagation();
+                        const surahNum = parseInt(btn.dataset.surah);
+                        const ayahNum = parseInt(btn.dataset.ayah);
+                        shareAyah(surahNum, ayahNum);
+                    };
+                });
             }
         };
 
@@ -360,6 +450,8 @@ export const renderQuranReader = (container, cache, props) => {
             s.name.includes(state.searchQuery) ||
             s.number.toString().includes(state.searchQuery)
         );
+        
+        const searchPlaceholder = state.listTab === 'verses' ? t('searchVersesPlaceholder') : t('searchSurahPlaceholder');
 
         contentArea.innerHTML = `
             <div class="max-w-7xl mx-auto px-4 py-6 md:py-10 fade-in">
@@ -376,15 +468,21 @@ export const renderQuranReader = (container, cache, props) => {
                     </div>
                     <div class="relative w-full max-w-md group">
                         <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-theme-500 transition-colors">
-                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                            ${SearchIcon({className: "w-5 h-5"})}
                         </div>
-                        <input id="surah-search" type="text" value="${state.searchQuery}" placeholder="${t('searchSurahPlaceholder')}" class="w-full pl-12 pr-5 py-4 glass rounded-2xl border border-white/20 outline-none focus:ring-4 focus:ring-theme-500/20 focus:border-theme-500/50 transition-all dark:text-white shadow-xl placeholder:text-slate-400 font-medium">
+                        <input id="surah-search" type="text" value="${state.listTab === 'verses' ? state.verseSearchQuery : state.searchQuery}" placeholder="${searchPlaceholder}" class="w-full pl-12 pr-5 py-4 glass rounded-2xl border border-white/20 outline-none focus:ring-4 focus:ring-theme-500/20 focus:border-theme-500/50 transition-all dark:text-white shadow-xl placeholder:text-slate-400 font-medium">
+                        ${state.searchingVerses ? `
+                            <div class="absolute right-4 top-1/2 -translate-y-1/2">
+                                <div class="w-5 h-5 border-2 border-theme-500 border-t-transparent rounded-full animate-spin"></div>
+                            </div>
+                        ` : ''}
                     </div>
                 </div>
 
                 <div class="flex p-1 bg-slate-100 dark:bg-slate-900/50 rounded-xl mb-8 w-fit">
                     <button data-tab="surah" class="list-tab-btn px-6 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-all ${state.listTab === 'surah' ? 'bg-white dark:bg-slate-800 text-theme-600 shadow-sm' : 'text-slate-500'}">${t('surah')}</button>
                     <button data-tab="juz" class="list-tab-btn px-6 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-all ${state.listTab === 'juz' ? 'bg-white dark:bg-slate-800 text-theme-600 shadow-sm' : 'text-slate-500'}">${t('juz')}</button>
+                    <button data-tab="verses" class="list-tab-btn px-6 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-all ${state.listTab === 'verses' ? 'bg-white dark:bg-slate-800 text-theme-600 shadow-sm' : 'text-slate-500'}">${t('verses')}</button>
                 </div>
 
                 <div id="surah-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
@@ -414,7 +512,7 @@ export const renderQuranReader = (container, cache, props) => {
                                     ${ChevronRightIcon({className: `w-3 h-3 ${isRtl ? 'rotate-180' : ''}`})}
                                 </div>
                             </div>
-                        </div>`).join('') : Array.from({length: 30}, (_, i) => i + 1).map(j => {
+                        </div>`).join('') : state.listTab === 'juz' ? Array.from({length: 30}, (_, i) => i + 1).map(j => {
                             const mapping = JUZ_MAPPING.find(m => m.juz === j);
                             const surah = state.surahs.find(s => s.number === mapping.surah);
                             return `
@@ -430,7 +528,24 @@ export const renderQuranReader = (container, cache, props) => {
                                     </div>
                                 </div>
                             </div>`;
-                        }).join('')}
+                        }).join('') : `
+                            <div class="col-span-full space-y-4">
+                                ${state.verseSearchResults.length > 0 ? state.verseSearchResults.map(res => `
+                                    <div data-surah="${res.surah.number}" data-ayah="${res.numberInSurah}" class="verse-search-result p-4 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 hover:border-theme-500/30 transition-all cursor-pointer group">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <span class="px-2 py-1 bg-theme-500/10 text-theme-600 dark:text-theme-400 rounded-lg text-[10px] font-bold uppercase tracking-wider">${res.surah.englishName} ${res.surah.number}:${res.numberInSurah}</span>
+                                            <p class="font-amiri text-lg text-right text-slate-800 dark:text-slate-200 group-hover:text-theme-600 transition-colors">${res.text}</p>
+                                        </div>
+                                        <p class="text-sm text-slate-500 dark:text-slate-400 line-clamp-2 italic">${res.translation || ''}</p>
+                                    </div>
+                                `).join('') : `
+                                    <div class="flex flex-col items-center justify-center py-20 text-slate-400">
+                                        ${SearchIcon({className: "w-12 h-12 mb-4 opacity-20"})}
+                                        <p class="font-medium">${state.verseSearchQuery ? t('noVersesFound') : t('searchVersesPlaceholder')}</p>
+                                    </div>
+                                `}
+                            </div>
+                        `}
                 </div>
             </div>`;
         
@@ -446,21 +561,31 @@ export const renderQuranReader = (container, cache, props) => {
         });
 
         contentArea.querySelector('#surah-search')?.addEventListener('input', (e) => {
-            state.searchQuery = e.target.value;
             const searchVal = e.target.value.toLowerCase();
             if (state.listTab === 'surah') {
+                state.searchQuery = e.target.value;
                 contentArea.querySelectorAll('.surah-card').forEach(card => {
                     const s = state.surahs.find(x => x.number == card.dataset.num);
                     const matches = s.englishName.toLowerCase().includes(searchVal) || s.name.includes(searchVal) || card.dataset.num.includes(searchVal);
                     card.style.display = matches ? 'block' : 'none';
                 });
-            } else {
+            } else if (state.listTab === 'juz') {
+                state.searchQuery = e.target.value;
                 contentArea.querySelectorAll('.juz-card').forEach(card => {
                     const matches = card.innerText.toLowerCase().includes(searchVal);
                     card.style.display = matches ? 'block' : 'none';
                 });
+            } else {
+                state.verseSearchQuery = e.target.value;
+                // Debounce verse search
+                clearTimeout(this.searchTimeout);
+                this.searchTimeout = setTimeout(() => searchVerses(state.verseSearchQuery), 600);
             }
         });
+
+        contentArea.querySelectorAll('.verse-search-result').forEach(c => c.addEventListener('click', () => {
+            fetchPage(parseInt(c.dataset.surah), parseInt(c.dataset.ayah));
+        }));
 
         contentArea.querySelectorAll('.surah-card').forEach(c => c.addEventListener('click', () => fetchPage(parseInt(c.dataset.num))));
         contentArea.querySelectorAll('.juz-card').forEach(c => c.addEventListener('click', () => {
@@ -534,7 +659,7 @@ export const renderQuranReader = (container, cache, props) => {
                 </div>
 
                 <button id="settings-trigger" class="p-2 rounded-xl glass hover:bg-theme-100 dark:hover:bg-theme-900/30 text-slate-600 dark:text-slate-200 transition-all active:scale-90 border border-white/10 shadow-sm group">
-                    ${SlidersHorizontalIcon({className: "w-4 h-4 md:w-5 md:h-5 group-hover:rotate-90 transition-transform duration-500"})}
+                    ${SettingsIcon({className: "w-4 h-4 md:w-5 md:h-5 group-hover:rotate-90 transition-transform duration-500"})}
                 </button>
             </div>
             
