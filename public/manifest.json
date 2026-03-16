@@ -1,0 +1,22 @@
+
+{
+  "short_name": "Al Quran",
+  "name": "The Holy Quran App",
+  "description": "Read Quran Online and Listen to Quran Audio with multi-language translations. The Holy Quran App offers a serene spiritual experience with famous reciters and AI guidance.",
+  "icons": [
+    {
+      "src": "android-chrome-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "android-chrome-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#0d9488",
+  "background_color": "#f9fafb"
+}

@@ -18,6 +18,7 @@ import {
 } from './components/Icons.js';
 import { THEME_COLORS } from './theme.js';
 import { initI18n, t, setLanguage as setI18nLanguage } from './i18n.js';
+import { SURAH_SLUGS } from './components/QuranData.js';
 
 const CACHE = { surahs: null, hubMode: 'read', readerView: 'list' };
 
@@ -338,11 +339,105 @@ const App = (rootElement) => {
         document.body.appendChild(btn);
     };
 
-    const render = () => {
-        renderHeader(); renderMobileNav(); renderContent(); renderFloatingAI(); renderAIModal();
+    const updateMetadata = () => {
+        let title = 'The Holy Quran App | Read & Listen Quran Online';
+        let description = 'Read and listen to the Holy Quran online with multi-language translations and audio recitations.';
+        const baseUrl = 'https://al-quran.site';
+        let canonical = baseUrl;
+
+        if (state.activeTab === 'quran' && CACHE.selectedSurah && CACHE.readerView === 'reader') {
+            const surahNum = CACHE.selectedSurah.number;
+            const slug = Object.keys(SURAH_SLUGS).find(key => SURAH_SLUGS[key] === surahNum) || surahNum;
+            title = `Surah ${slug.toString().replace(/-/g, ' ').toUpperCase()} | Read Quran Online`;
+            canonical = `${baseUrl}/surah/${slug}`;
+        } else if (state.activeTab === 'home') {
+            title = 'The Holy Quran App | Read Quran Online | Listen Quran Audio';
+            canonical = baseUrl;
+        } else {
+            title = `${state.activeTab.charAt(0).toUpperCase() + state.activeTab.slice(1)} | The Holy Quran App`;
+            canonical = `${baseUrl}/${state.activeTab}`;
+        }
+
+        document.title = title;
+        
+        // Update canonical link
+        let link = document.querySelector("link[rel='canonical']");
+        if (!link) {
+            link = document.createElement('link');
+            link.setAttribute('rel', 'canonical');
+            document.head.appendChild(link);
+        }
+        link.setAttribute('href', canonical);
     };
 
+    const render = () => {
+        renderHeader(); renderMobileNav(); renderContent(); renderFloatingAI(); renderAIModal();
+        updateUrl();
+        updateMetadata();
+    };
+
+    const updateUrl = () => {
+        let path = state.activeTab === 'home' ? '/' : `/${state.activeTab}`;
+        
+        if (state.activeTab === 'quran' && CACHE.selectedSurah && CACHE.readerView === 'reader') {
+            const surahNum = CACHE.selectedSurah.number;
+            const slug = Object.keys(SURAH_SLUGS).find(key => SURAH_SLUGS[key] === surahNum) || surahNum;
+            path = `/surah/${slug}`;
+        }
+
+        if (window.location.pathname !== path) {
+            window.history.pushState({ tab: state.activeTab }, '', path);
+        }
+    };
+
+    const handleInitialRouting = () => {
+        const path = window.location.pathname;
+        const parts = path.split('/').filter(Boolean);
+        
+        if (parts.length === 0) {
+            state.activeTab = 'home';
+        } else if (parts[0] === 'surah' && parts[1]) {
+            let surahNum = parseInt(parts[1]);
+            if (isNaN(surahNum)) {
+                // Try slug
+                surahNum = SURAH_SLUGS[parts[1].toLowerCase()];
+            }
+            if (surahNum) {
+                state.activeTab = 'quran';
+                state.quranMode = 'read';
+                CACHE.selectedSurah = { number: surahNum };
+                CACHE.readerView = 'reader';
+            }
+        } else if (parts[0] === 'juz' && parts[1]) {
+            const juzNum = parseInt(parts[1]);
+            if (!isNaN(juzNum)) {
+                state.activeTab = 'quran';
+                state.quranMode = 'read';
+                // Note: The app might need more logic to handle Juz specifically in CACHE
+                // For now we just set the tab
+                state.activeTab = 'quran';
+            }
+        } else {
+            const validTabs = getTabs().map(t => t.id).concat(['settings', 'bookmarks', 'quiz', 'stories', 'asma', 'qibla']);
+            if (validTabs.includes(parts[0])) {
+                state.activeTab = parts[0];
+            }
+        }
+    };
+
+    window.addEventListener('popstate', (e) => {
+        if (e.state && e.state.tab) {
+            state.activeTab = e.state.tab;
+            state.isReaderMode = false;
+            render();
+        } else {
+            handleInitialRouting();
+            render();
+        }
+    });
+
     initI18n(state.language);
+    handleInitialRouting();
     applyStyles();
     appContainer.className = 'min-h-screen bg-parchment dark:bg-night text-ink transition-colors duration-300';
     [header, mainContent, mobileNavPlaceholder, mobileNav].forEach(el => appContainer.appendChild(el));
