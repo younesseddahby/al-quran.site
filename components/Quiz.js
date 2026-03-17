@@ -1,123 +1,141 @@
 
 import { t, getCurrentLanguage } from '../i18n.js';
-import { ChevronRightIcon, ArrowLeftIcon, TrophyIcon, TimerIcon, BrainIcon, CheckCircleIcon, XCircleIcon, PlayIcon, RefreshIcon } from './Icons.js';
+import { ChevronRightIcon, ArrowLeftIcon, ArrowRightIcon, TrophyIcon, TimerIcon, BrainIcon, CheckCircleIcon, XCircleIcon, PlayIcon, RefreshIcon } from './Icons.js';
 
 const QUIZ_DATA = {
     ar: {
         easy: {
             quran: [
-                { q: "كم عدد سور القرآن الكريم؟", a: ["114", "110", "120", "104"], c: 0 },
-                { q: "ما هي أطول سورة في القرآن؟", a: ["البقرة", "آل عمران", "النساء", "المائدة"], c: 0 },
-                { q: "ما هي السورة التي تسمى 'قلب القرآن'؟", a: ["يس", "الفاتحة", "الإخلاص", "الملك"], c: 0 },
-                { q: "كم عدد أجزاء القرآن الكريم؟", a: ["30", "20", "40", "25"], c: 0 },
-                { q: "ما هي السورة التي يجب قراءتها في كل صلاة؟", a: ["الفاتحة", "الإخلاص", "الفلق", "الناس"], c: 0 },
-                { q: "ما هي أول كلمة نزلت من القرآن؟", a: ["اقرأ", "باسم الله", "الحمد لله", "قل"], c: 0 },
-                { q: "من هو أول من جمع القرآن في مصحف واحد؟", a: ["أبو بكر الصديق", "عمر بن الخطاب", "عثمان بن عفان", "علي بن أبي طالب"], c: 0 }
+                { q: "كم عدد سور القرآن الكريم؟", a: ["114", "110", "120", "104"], c: 0, e: "يتكون القرآن الكريم من 114 سورة، تبدأ بالفاتحة وتنتهي بالناس." },
+                { q: "ما هي أطول سورة في القرآن؟", a: ["البقرة", "آل عمران", "النساء", "المائدة"], c: 0, e: "سورة البقرة هي أطول سورة في القرآن الكريم وعدد آياتها 286 آية." },
+                { q: "ما هي السورة التي تسمى 'قلب القرآن'؟", a: ["يس", "الفاتحة", "الإخلاص", "الملك"], c: 0, e: "اشتهرت سورة يس بلقب 'قلب القرآن' في بعض الأحاديث والآثار." },
+                { q: "كم عدد أجزاء القرآن الكريم؟", a: ["30", "20", "40", "25"], c: 0, e: "ينقسم القرآن الكريم إلى 30 جزءاً متساوياً تقريباً لتسهيل القراءة والحفظ." },
+                { q: "ما هي السورة التي يجب قراءتها في كل صلاة؟", a: ["الفاتحة", "الإخلاص", "الفلق", "الناس"], c: 0, e: "سورة الفاتحة هي ركن من أركان الصلاة ولا تصح الصلاة بدونها." },
+                { q: "ما هي أول كلمة نزلت من القرآن؟", a: ["اقرأ", "باسم الله", "الحمد لله", "قل"], c: 0, e: "أول ما نزل على النبي صلى الله عليه وسلم هو قوله تعالى 'اقرأ باسم ربك الذي خلق'." },
+                { q: "من هو أول من جمع القرآن في مصحف واحد؟", a: ["أبو بكر الصديق", "عمر بن الخطاب", "عثمان بن عفان", "علي بن أبي طالب"], c: 0, e: "تم جمع القرآن لأول مرة في عهد أبي بكر الصديق رضي الله عنه بعد معركة اليمامة." },
+                { q: "ما هي أقصر سورة في القرآن الكريم؟", a: ["الكوثر", "الإخلاص", "العصر", "الناس"], c: 0, e: "سورة الكوثر هي أقصر سورة في القرآن الكريم وتتكون من 3 آيات." },
+                { q: "ما هي السورة التي تسمى 'عروس القرآن'؟", a: ["الرحمن", "يس", "الواقعة", "الملك"], c: 0, e: "تسمى سورة الرحمن 'عروس القرآن' لجمال أسلوبها وموضوعاتها." },
+                { q: "كم عدد السجدات في القرآن الكريم؟", a: ["15", "12", "14", "10"], c: 0, e: "يوجد في القرآن الكريم 15 موضعاً للسجود (سجدات التلاوة)." }
             ],
             hadith: [
-                { q: "من هو أشهر رواة الحديث؟", a: ["أبو هريرة", "عمر بن الخطاب", "علي بن أبي طالب", "عائشة بنت أبي بكر"], c: 0 },
-                { q: "عن ماذا يتحدث أول كتاب في صحيح البخاري؟", a: ["بدء الوحي", "الصلاة", "الزكاة", "الصيام"], c: 0 },
-                { q: "كم عدد أركان الإسلام؟", a: ["5", "4", "6", "7"], c: 0 },
-                { q: "ما معنى كلمة 'حديث'؟", a: ["الكلام أو الخبر", "التاريخ", "القصة", "القانون"], c: 0 }
+                { q: "من هو أشهر رواة الحديث؟", a: ["أبو هريرة", "عمر بن الخطاب", "علي بن أبي طالب", "عائشة بنت أبي بكر"], c: 0, e: "أبو هريرة رضي الله عنه هو أكثر الصحابة رواية للحديث النبوي." },
+                { q: "عن ماذا يتحدث أول كتاب في صحيح البخاري؟", a: ["بدء الوحي", "الصلاة", "الزكاة", "الصيام"], c: 0, e: "بدأ الإمام البخاري كتابه بـ 'كتاب بدء الوحي' لبيان أصل الشريعة." },
+                { q: "كم عدد أركان الإسلام؟", a: ["5", "4", "6", "7"], c: 0, e: "أركان الإسلام خمسة: الشهادتان، الصلاة، الزكاة، الصوم، وحج البيت." },
+                { q: "ما معنى كلمة 'حديث'؟", a: ["الكلام أو الخبر", "التاريخ", "القصة", "القانون"], c: 0, e: "الحديث في اللغة هو الجديد، وفي الاصطلاح هو ما أضيف للنبي من قول أو فعل أو تقرير." },
+                { q: "ما هو الكتاب الذي يعتبر أصح كتاب بعد القرآن؟", a: ["صحيح البخاري", "صحيح مسلم", "موطأ مالك", "سنن أبي داود"], c: 0, e: "أجمع العلماء على أن صحيح البخاري هو أصح الكتب بعد كتاب الله تعالى." }
             ],
             sunnah: [
-                { q: "أي يد يجب على المسلم استخدامها للأكل؟", a: ["اليمنى", "اليسرى", "كلتاهما", "أي منهما"], c: 0 },
-                { q: "ما هي طريقة النوم المسنونة؟", a: ["على الجانب الأيمن", "على الجانب الأيسر", "على البطن", "جالساً"], c: 0 },
-                { q: "كم مرة حج النبي صلى الله عليه وسلم؟", a: ["مرة واحدة", "مرتين", "ثلاث مرات", "لم يحج"], c: 0 }
+                { q: "أي يد يجب على المسلم استخدامها للأكل؟", a: ["اليمنى", "اليسرى", "كلتاهما", "أي منهما"], c: 0, e: "من السنة الأكل باليد اليمنى، وقد نهى النبي عن الأكل بالشمال." },
+                { q: "ما هي طريقة النوم المسنونة؟", a: ["على الجانب الأيمن", "على الجانب الأيسر", "على البطن", "جالساً"], c: 0, e: "كان النبي صلى الله عليه وسلم ينام على شقه الأيمن ويضع يده تحت خده." },
+                { q: "كم مرة حج النبي صلى الله عليه وسلم؟", a: ["مرة واحدة", "مرتين", "ثلاث مرات", "لم يحج"], c: 0, e: "حج النبي صلى الله عليه وسلم مرة واحدة وهي 'حجة الوداع'." },
+                { q: "ما هو السواك؟", a: ["عود لتنظيف الأسنان", "نوع من العطر", "لباس للصلاة", "نوع من الطعام"], c: 0, e: "السواك هو عود من شجر الأراك يستخدم لتنظيف الفم والأسنان وهو سنة مؤكدة." }
             ],
             adhkar: [
-                { q: "ماذا نقول قبل الأكل؟", a: ["باسم الله", "الحمد لله", "سبحان الله", "الله أكبر"], c: 0 },
-                { q: "ماذا يقول المسلم بعد العطس؟", a: ["الحمد لله", "يرحمكم الله", "باسم الله", "أستغفر الله"], c: 0 },
-                { q: "ما هو أفضل الذكر؟", a: ["لا إله إلا الله", "الحمد لله", "سبحان الله", "الله أكبر"], c: 0 }
+                { q: "ماذا نقول قبل الأكل؟", a: ["باسم الله", "الحمد لله", "سبحان الله", "الله أكبر"], c: 0, e: "السنة أن يبدأ المسلم طعامه بقول 'باسم الله'." },
+                { q: "ماذا يقول المسلم بعد العطس؟", a: ["الحمد لله", "يرحمكم الله", "باسم الله", "أستغفر الله"], c: 0, e: "إذا عطس المسلم فليقل 'الحمد لله'، ويرد عليه السامع 'يرحمكم الله'." },
+                { q: "ما هو أفضل الذكر؟", a: ["لا إله إلا الله", "الحمد لله", "سبحان الله", "الله أكبر"], c: 0, e: "قال النبي صلى الله عليه وسلم: 'أفضل الذكر لا إله إلا الله'." },
+                { q: "ماذا نقول عند دخول المسجد؟", a: ["اللهم افتح لي أبواب رحمتك", "اللهم اغفر لي", "باسم الله توكلت على الله", "الحمد لله"], c: 0, e: "من السنة قول 'اللهم افتح لي أبواب رحمتك' عند دخول المسجد." }
             ]
         },
         medium: {
             quran: [
-                { q: "ما هي السورة التي لا تبدأ بالبسملة؟", a: ["التوبة", "النمل", "الفاتحة", "الإخلاص"], c: 0 },
-                { q: "في أي شهر نزل القرآن لأول مرة؟", a: ["رمضان", "رجب", "شعبان", "محرم"], c: 0 },
-                { q: "من هو النبي الذي ذكر أكثر في القرآن؟", a: ["موسى عليه السلام", "إبراهيم عليه السلام", "عيسى عليه السلام", "محمد صلى الله عليه وسلم"], c: 0 },
-                { q: "كم سنة استغرق نزول القرآن كاملاً؟", a: ["23 سنة", "20 سنة", "25 سنة", "13 سنة"], c: 0 }
+                { q: "ما هي السورة التي لا تبدأ بالبسملة؟", a: ["التوبة", "النمل", "الفاتحة", "الإخلاص"], c: 0, e: "سورة التوبة هي الوحيدة التي لا تبدأ بالبسملة، ولها أسباب ذكرها المفسرون." },
+                { q: "في أي شهر نزل القرآن لأول مرة؟", a: ["رمضان", "رجب", "شعبان", "محرم"], c: 0, e: "نزل القرآن في ليلة القدر من شهر رمضان المبارك." },
+                { q: "من هو النبي الذي ذكر أكثر في القرآن؟", a: ["موسى عليه السلام", "إبراهيم عليه السلام", "عيسى عليه السلام", "محمد صلى الله عليه وسلم"], c: 0, e: "ذكر نبي الله موسى عليه السلام في القرآن الكريم أكثر من 130 مرة." },
+                { q: "كم سنة استغرق نزول القرآن كاملاً؟", a: ["23 سنة", "20 سنة", "25 سنة", "13 سنة"], c: 0, e: "نزل القرآن منجماً على النبي صلى الله عليه وسلم طوال فترة نبوته التي استمرت 23 عاماً." },
+                { q: "ما هي السورة التي تسمى 'سنام القرآن'؟", a: ["البقرة", "يس", "الكهف", "آل عمران"], c: 0, e: "تسمى سورة البقرة سنام القرآن لعظم شأنها وطولها." }
             ],
             hadith: [
-                { q: "من الذي جمع أصح مجموعة من الأحاديث؟", a: ["الإمام البخاري", "الإمام مسلم", "الإمام مالك", "الإمام أحمد"], c: 0 },
-                { q: "ماذا تعني كلمة 'صحيح' في مصطلح الحديث؟", a: ["موثوق", "ضعيف", "موضوع", "حسن"], c: 0 },
-                { q: "كم عدد الأحاديث في صحيح البخاري (بدون تكرار)؟", a: ["حوالي 2600", "حوالي 7000", "حوالي 10000", "حوالي 1000"], c: 0 }
+                { q: "من الذي جمع أصح مجموعة من الأحاديث؟", a: ["الإمام البخاري", "الإمام مسلم", "الإمام مالك", "الإمام أحمد"], c: 0, e: "الإمام البخاري هو صاحب 'الجامع الصحيح' الذي يعتبر أصح كتب الحديث." },
+                { q: "ماذا تعني كلمة 'صحيح' في مصطلح الحديث؟", a: ["موثوق", "ضعيف", "موضوع", "حسن"], c: 0, e: "الحديث الصحيح هو ما اتصل سنده بنقل العدل الضابط عن مثله إلى منتهاه من غير شذوذ ولا علة." },
+                { q: "كم عدد الأحاديث في صحيح البخاري (بدون تكرار)؟", a: ["حوالي 2600", "حوالي 7000", "حوالي 10000", "حوالي 1000"], c: 0, e: "يحتوي صحيح البخاري على حوالي 2602 حديثاً بدون المكررات." }
             ],
             sunnah: [
-                { q: "ما اسم ناقة النبي صلى الله عليه وسلم؟", a: ["القصواء", "العضباء", "الجدعاء", "البراق"], c: 0 }
+                { q: "ما اسم ناقة النبي صلى الله عليه وسلم؟", a: ["القصواء", "العضباء", "الجدعاء", "البراق"], c: 0, e: "القصواء هي الناقة التي هاجر عليها النبي صلى الله عليه وسلم." },
+                { q: "ما هي 'العمرة'؟", a: ["زيارة الكعبة في أي وقت", "زيارة الكعبة في وقت الحج فقط", "الصلاة في المسجد النبوي", "الصيام في مكة"], c: 0, e: "العمرة هي زيارة البيت الحرام والقيام بمناسك مخصوصة في أي وقت من العام." }
             ],
             adhkar: [
-                { q: "أي ذكر هو 'ثقيل في الميزان وخفيف على اللسان'؟", a: ["سبحان الله وبحمده سبحان الله العظيم", "لا إله إلا الله", "الحمد لله", "الله أكبر"], c: 0 }
+                { q: "أي ذكر هو 'ثقيل في الميزان وخفيف على اللسان'؟", a: ["سبحان الله وبحمده سبحان الله العظيم", "لا إله إلا الله", "الحمد لله", "الله أكبر"], c: 0, e: "قال النبي: 'كلمتان خفيفتان على اللسان ثقيلتان في الميزان حبيبتان إلى الرحمن: سبحان الله وبحمده سبحان الله العظيم'." }
             ]
         },
         hard: {
             quran: [
-                { q: "ما هي السورة التي تحتوي على بسملتين؟", a: ["النمل", "البقرة", "الإسراء", "الكهف"], c: 0 },
-                { q: "كم عدد السجدات في القرآن الكريم؟", a: ["15", "12", "14", "10"], c: 0 },
-                { q: "ما هي السورة التي تسمى 'عروس القرآن'؟", a: ["الرحمن", "يس", "الواقعة", "الملك"], c: 0 }
+                { q: "ما هي السورة التي تحتوي على بسملتين؟", a: ["النمل", "البقرة", "الإسراء", "الكهف"], c: 0, e: "سورة النمل تحتوي على بسملة في بدايتها وبسملة في الآية 30 'إنه من سليمان وإنه بسم الله الرحمن الرحيم'." },
+                { q: "ما هي السورة التي تسمى 'الفاضحة'؟", a: ["التوبة", "المنافقون", "الأحزاب", "الفتح"], c: 0, e: "تسمى سورة التوبة 'الفاضحة' لأنها فضحت المنافقين وأظهرت نواياهم." },
+                { q: "كم عدد السور المكية في القرآن؟", a: ["86", "28", "114", "90"], c: 0, e: "عدد السور المكية 86 سورة، والمدنية 28 سورة." }
             ],
             hadith: [
-                { q: "ما هو 'الحديث القدسي'؟", a: ["كلام الله يرويه النبي", "كلام الصحابة", "كلام التابعين", "حديث ضعيف"], c: 0 },
-                { q: "ما هو الحديث 'المرسل'؟", a: ["ما رفعه التابعي إلى النبي مباشرة", "حديث منقطع السلسلة", "حديث رواه الكثير", "حديث موضوع"], c: 0 }
+                { q: "ما هو 'الحديث القدسي'؟", a: ["كلام الله يرويه النبي", "كلام الصحابة", "كلام التابعين", "حديث ضعيف"], c: 0, e: "الحديث القدسي هو ما رواه النبي صلى الله عليه وسلم عن ربه عز وجل بلفظه هو." },
+                { q: "ما هو الحديث 'المرسل'؟", a: ["ما رفعه التابعي إلى النبي مباشرة", "حديث منقطع السلسلة", "حديث رواه الكثير", "حديث موضوع"], c: 0, e: "المرسل هو ما سقط من آخره من بعد التابعي، أي أن التابعي يروي عن النبي مباشرة." },
+                { q: "من هو واضع علم مصطلح الحديث؟", a: ["الرامهرمزي", "البخاري", "مسلم", "ابن الصلاح"], c: 0, e: "يعتبر القاضي أبو محمد الرامهرمزي أول من صنف في علم المصطلح في كتابه 'المحدث الفاصل'." }
             ]
         }
     },
     en: {
         easy: {
             quran: [
-                { q: "How many Surahs are in the Holy Quran?", a: ["114", "110", "120", "104"], c: 0 },
-                { q: "Which is the longest Surah in the Quran?", a: ["Al-Baqarah", "Al-Imran", "An-Nisa", "Al-Ma'idah"], c: 0 },
-                { q: "Which Surah is known as the 'Heart of the Quran'?", a: ["Yaseen", "Al-Fatiha", "Al-Ikhlas", "Al-Mulk"], c: 0 },
-                { q: "How many Juz are in the Quran?", a: ["30", "20", "40", "25"], c: 0 },
-                { q: "Which Surah must be recited in every prayer?", a: ["Al-Fatiha", "Al-Ikhlas", "Al-Falaq", "An-Nas"], c: 0 },
-                { q: "What is the first word revealed of the Quran?", a: ["Iqra", "Bismillah", "Alhamdulillah", "Qul"], c: 0 },
-                { q: "Who was the first person to compile the Quran into a book?", a: ["Abu Bakr (RA)", "Umar (RA)", "Uthman (RA)", "Ali (RA)"], c: 0 }
+                { q: "How many Surahs are in the Holy Quran?", a: ["114", "110", "120", "104"], c: 0, e: "The Holy Quran consists of 114 Surahs, starting with Al-Fatiha and ending with An-Nas." },
+                { q: "Which is the longest Surah in the Quran?", a: ["Al-Baqarah", "Al-Imran", "An-Nisa", "Al-Ma'idah"], c: 0, e: "Surah Al-Baqarah is the longest Surah in the Quran with 286 verses." },
+                { q: "Which Surah is known as the 'Heart of the Quran'?", a: ["Yaseen", "Al-Fatiha", "Al-Ikhlas", "Al-Mulk"], c: 0, e: "Surah Yaseen is often referred to as the 'Heart of the Quran' based on some traditions." },
+                { q: "How many Juz are in the Quran?", a: ["30", "20", "40", "25"], c: 0, e: "The Quran is divided into 30 equal parts called Juz to facilitate reading and memorization." },
+                { q: "Which Surah must be recited in every prayer?", a: ["Al-Fatiha", "Al-Ikhlas", "Al-Falaq", "An-Nas"], c: 0, e: "Al-Fatiha is a pillar of prayer; the prayer is not valid without its recitation." },
+                { q: "What is the first word revealed of the Quran?", a: ["Iqra", "Bismillah", "Alhamdulillah", "Qul"], c: 0, e: "The first word revealed to Prophet Muhammad (PBUH) was 'Iqra', which means 'Read'." },
+                { q: "Who was the first person to compile the Quran into a book?", a: ["Abu Bakr (RA)", "Umar (RA)", "Uthman (RA)", "Ali (RA)"], c: 0, e: "The first compilation was done during the caliphate of Abu Bakr (RA) after the Battle of Yamama." },
+                { q: "What is the shortest Surah in the Quran?", a: ["Al-Kawthar", "Al-Ikhlas", "Al-Asr", "An-Nas"], c: 0, e: "Surah Al-Kawthar is the shortest Surah with only 3 verses." },
+                { q: "Which Surah is called 'The Bride of the Quran'?", a: ["Ar-Rahman", "Yaseen", "Al-Waqi'ah", "Al-Mulk"], c: 0, e: "Surah Ar-Rahman is called 'The Bride of the Quran' due to its beautiful style and content." },
+                { q: "How many Sajdahs (prostrations) are in the Quran?", a: ["15", "12", "14", "10"], c: 0, e: "There are 15 places in the Quran where prostration (Sajdah al-Tilawah) is required." }
             ],
             hadith: [
-                { q: "Who is the most famous narrator of Hadith?", a: ["Abu Hurairah", "Umar ibn al-Khattab", "Ali ibn Abi Talib", "Aisha bint Abi Bakr"], c: 0 },
-                { q: "What is the first book of Sahih al-Bukhari about?", a: ["Revelation", "Prayer", "Zakat", "Fasting"], c: 0 },
-                { q: "How many pillars of Islam are there?", a: ["5", "4", "6", "7"], c: 0 },
-                { q: "What is the meaning of 'Hadith'?", a: ["Speech or news", "History", "Story", "Law"], c: 0 }
+                { q: "Who is the most famous narrator of Hadith?", a: ["Abu Hurairah", "Umar ibn al-Khattab", "Ali ibn Abi Talib", "Aisha bint Abi Bakr"], c: 0, e: "Abu Hurairah (RA) narrated the highest number of Hadiths from the Prophet (PBUH)." },
+                { q: "What is the first book of Sahih al-Bukhari about?", a: ["Revelation", "Prayer", "Zakat", "Fasting"], c: 0, e: "Imam Bukhari started his collection with the 'Book of Revelation'." },
+                { q: "How many pillars of Islam are there?", a: ["5", "4", "6", "7"], c: 0, e: "The five pillars are: Shahada, Salah, Zakat, Sawm, and Hajj." },
+                { q: "What is the meaning of 'Hadith'?", a: ["Speech or news", "History", "Story", "Law"], c: 0, e: "In Islamic terminology, Hadith refers to the sayings, actions, or approvals of the Prophet (PBUH)." },
+                { q: "Which book is considered most authentic after the Quran?", a: ["Sahih al-Bukhari", "Sahih Muslim", "Muwatta Malik", "Sunan Abi Dawud"], c: 0, e: "Sahih al-Bukhari is universally accepted as the most authentic book after the Quran." }
             ],
             sunnah: [
-                { q: "Which hand should a Muslim use for eating?", a: ["Right", "Left", "Both", "Either"], c: 0 },
-                { q: "What is the Sunnah way of sleeping?", a: ["On the right side", "On the left side", "On the stomach", "Sitting up"], c: 0 },
-                { q: "How many times did the Prophet (PBUH) perform Hajj?", a: ["Once", "Twice", "Three times", "Never"], c: 0 }
+                { q: "Which hand should a Muslim use for eating?", a: ["Right", "Left", "Both", "Either"], c: 0, e: "It is Sunnah to eat with the right hand, and the Prophet (PBUH) forbade eating with the left." },
+                { q: "What is the Sunnah way of sleeping?", a: ["On the right side", "On the left side", "On the stomach", "Sitting up"], c: 0, e: "The Prophet (PBUH) used to sleep on his right side with his hand under his cheek." },
+                { q: "How many times did the Prophet (PBUH) perform Hajj?", a: ["Once", "Twice", "Three times", "Never"], c: 0, e: "The Prophet (PBUH) performed Hajj only once, known as the 'Farewell Hajj'." },
+                { q: "What is a Siwak?", a: ["A tooth-cleaning twig", "A type of perfume", "A prayer garment", "A type of food"], c: 0, e: "Siwak is a twig from the Arak tree used for cleaning teeth, which is a highly recommended Sunnah." }
             ],
             adhkar: [
-                { q: "What should we say before eating?", a: ["Bismillah", "Alhamdulillah", "SubhanAllah", "Allahu Akbar"], c: 0 },
-                { q: "What should we say after sneezing?", a: ["Alhamdulillah", "YarhamukAllah", "Bismillah", "Astaghfirullah"], c: 0 },
-                { q: "What is the best Dhikr?", a: ["La ilaha illAllah", "Alhamdulillah", "SubhanAllah", "Allahu Akbar"], c: 0 }
+                { q: "What should we say before eating?", a: ["Bismillah", "Alhamdulillah", "SubhanAllah", "Allahu Akbar"], c: 0, e: "It is Sunnah to start eating by saying 'Bismillah' (In the name of Allah)." },
+                { q: "What should we say after sneezing?", a: ["Alhamdulillah", "YarhamukAllah", "Bismillah", "Astaghfirullah"], c: 0, e: "A Muslim should say 'Alhamdulillah' after sneezing, and the listener should reply 'YarhamukAllah'." },
+                { q: "What is the best Dhikr?", a: ["La ilaha illAllah", "Alhamdulillah", "SubhanAllah", "Allahu Akbar"], c: 0, e: "The Prophet (PBUH) said: 'The best Dhikr is La ilaha illAllah'." },
+                { q: "What do we say when entering a Mosque?", a: ["O Allah, open for me the gates of Your mercy", "O Allah, forgive me", "In the name of Allah, I trust in Allah", "Alhamdulillah"], c: 0, e: "The Sunnah is to say 'Allahumma-ftah li abwaba rahmatik' when entering the mosque." }
             ]
         },
         medium: {
             quran: [
-                { q: "Which Surah does not start with Bismillah?", a: ["At-Tawbah", "Al-Naml", "Al-Fatiha", "Al-Ikhlas"], c: 0 },
-                { q: "In which month was the Quran first revealed?", a: ["Ramadan", "Rajab", "Sha'ban", "Muharram"], c: 0 },
-                { q: "Which Prophet is mentioned most in the Quran?", a: ["Musa (AS)", "Ibrahim (AS)", "Isa (AS)", "Muhammad (PBUH)"], c: 0 },
-                { q: "How many years did it take for the full revelation of the Quran?", a: ["23 years", "20 years", "25 years", "13 years"], c: 0 }
+                { q: "Which Surah does not start with Bismillah?", a: ["At-Tawbah", "Al-Naml", "Al-Fatiha", "Al-Ikhlas"], c: 0, e: "Surah At-Tawbah is the only Surah that does not begin with Bismillah." },
+                { q: "In which month was the Quran first revealed?", a: ["Ramadan", "Rajab", "Sha'ban", "Muharram"], c: 0, e: "The Quran was first revealed during the night of Laylat al-Qadr in the month of Ramadan." },
+                { q: "Which Prophet is mentioned most in the Quran?", a: ["Musa (AS)", "Ibrahim (AS)", "Isa (AS)", "Muhammad (PBUH)"], c: 0, e: "Prophet Musa (AS) is mentioned by name more than 130 times in the Quran." },
+                { q: "How many years did it take for the full revelation of the Quran?", a: ["23 years", "20 years", "25 years", "13 years"], c: 0, e: "The Quran was revealed gradually over a period of 23 years." },
+                { q: "Which Surah is called 'The Peak of the Quran'?", a: ["Al-Baqarah", "Yaseen", "Al-Kahf", "Al-Imran"], c: 0, e: "Surah Al-Baqarah is called the 'Sanam' (Peak) of the Quran." }
             ],
             hadith: [
-                { q: "Who compiled the most authentic collection of Hadith?", a: ["Imam Bukhari", "Imam Muslim", "Imam Malik", "Imam Ahmad"], c: 0 },
-                { q: "What does 'Sahih' mean in Hadith terminology?", a: ["Authentic", "Weak", "Fabricated", "Good"], c: 0 },
-                { q: "How many Hadith are in Sahih al-Bukhari (without repetitions)?", a: ["Approx. 2,600", "Approx. 7,000", "Approx. 10,000", "Approx. 1,000"], c: 0 }
+                { q: "Who compiled the most authentic collection of Hadith?", a: ["Imam Bukhari", "Imam Muslim", "Imam Malik", "Imam Ahmad"], c: 0, e: "Imam Bukhari is the author of 'Al-Jami' al-Sahih', the most authentic Hadith collection." },
+                { q: "What does 'Sahih' mean in Hadith terminology?", a: ["Authentic", "Weak", "Fabricated", "Good"], c: 0, e: "A Sahih Hadith is one with a connected chain of narrators, all of whom are reliable and accurate." },
+                { q: "How many Hadith are in Sahih al-Bukhari (without repetitions)?", a: ["Approx. 2,600", "Approx. 7,000", "Approx. 10,000", "Approx. 1,000"], c: 0, e: "Sahih al-Bukhari contains approximately 2,602 Hadiths without repetitions." }
             ],
             sunnah: [
-                { q: "What was the name of the Prophet's (PBUH) camel?", a: ["Al-Qaswa", "Al-Adba", "Al-Jada", "Al-Burraq"], c: 0 }
+                { q: "What was the name of the Prophet's (PBUH) camel?", a: ["Al-Qaswa", "Al-Adba", "Al-Jada", "Al-Burraq"], c: 0, e: "Al-Qaswa was the camel the Prophet (PBUH) rode during the Hijra." },
+                { q: "What is 'Umrah'?", a: ["Visiting the Kaaba at any time", "Visiting the Kaaba only during Hajj", "Praying in the Prophet's Mosque", "Fasting in Mecca"], c: 0, e: "Umrah is a pilgrimage to the Kaaba that can be performed at any time of the year." }
             ],
             adhkar: [
-                { q: "Which Dhikr is 'heavy on the scale and light on the tongue'?", a: ["SubhanAllahi wa bihamdihi, SubhanAllahil Azeem", "La ilaha illAllah", "Alhamdulillah", "Allahu Akbar"], c: 0 }
+                { q: "Which Dhikr is 'heavy on the scale and light on the tongue'?", a: ["SubhanAllahi wa bihamdihi, SubhanAllahil Azeem", "La ilaha illAllah", "Alhamdulillah", "Allahu Akbar"], c: 0, e: "The Prophet said: 'Two words are light on the tongue, heavy on the scale, and beloved to the Most Merciful: SubhanAllahi wa bihamdihi, SubhanAllahil Azeem'." }
             ]
         },
         hard: {
             quran: [
-                { q: "Which Surah contains two Bismillahs?", a: ["Al-Naml", "Al-Baqarah", "Al-Isra", "Al-Kahf"], c: 0 },
-                { q: "How many Sajdahs (prostrations) are in the Quran?", a: ["15", "12", "14", "10"], c: 0 },
-                { q: "Which Surah is called 'The Bride of the Quran'?", a: ["Ar-Rahman", "Yaseen", "Al-Waqi'ah", "Al-Mulk"], c: 0 }
+                { q: "Which Surah contains two Bismillahs?", a: ["Al-Naml", "Al-Baqarah", "Al-Isra", "Al-Kahf"], c: 0, e: "Surah Al-Naml has Bismillah at the start and another in verse 30." },
+                { q: "Which Surah is called 'The Exposer' (Al-Fadihah)?", a: ["At-Tawbah", "Al-Munafiqun", "Al-Ahzab", "Al-Fath"], c: 0, e: "Surah At-Tawbah is called 'Al-Fadihah' because it exposed the hypocrites." },
+                { q: "How many Meccan Surahs are in the Quran?", a: ["86", "28", "114", "90"], c: 0, e: "There are 86 Meccan Surahs and 28 Medinan Surahs." }
             ],
             hadith: [
-                { q: "What is a 'Hadith Qudsi'?", a: ["Words of Allah narrated by the Prophet", "Words of the Sahaba", "Words of the Tabi'un", "A weak hadith"], c: 0 },
-                { q: "What is a 'Mursal' Hadith?", a: ["A hadith where a Tabi'i narrates directly from the Prophet", "A hadith with a broken chain", "A hadith narrated by many people", "A fabricated hadith"], c: 0 }
+                { q: "What is a 'Hadith Qudsi'?", a: ["Words of Allah narrated by the Prophet", "Words of the Sahaba", "Words of the Tabi'un", "A weak hadith"], c: 0, e: "A Hadith Qudsi is a revelation from Allah expressed in the words of the Prophet (PBUH)." },
+                { q: "What is a 'Mursal' Hadith?", a: ["A hadith where a Tabi'i narrates directly from the Prophet", "A hadith with a broken chain", "A hadith narrated by many people", "A fabricated hadith"], c: 0, e: "A Mursal Hadith is one where a Tabi'i (successor) narrates directly from the Prophet, omitting the Sahabi." },
+                { q: "Who was the first to write a book on Hadith terminology?", a: ["Al-Ramahurmuzi", "Bukhari", "Muslim", "Ibn al-Salah"], c: 0, e: "Al-Ramahurmuzi is considered the first to write a dedicated book on Hadith terminology." }
             ]
         }
     }
@@ -136,7 +154,28 @@ export const renderQuiz = (container, props) => {
         userAnswers: [],
         timer: 0,
         timerInterval: null,
-        savedProgress: null
+        savedProgress: null,
+        streak: 0,
+        maxStreak: 0,
+        hintUsed: false,
+        hiddenAnswers: [],
+        showExplanation: false
+    };
+
+    const LEADERBOARD_KEY = 'islamic_quiz_leaderboard';
+
+    const saveToLeaderboard = (score, level, category) => {
+        const leaderboard = JSON.parse(localStorage.getItem(LEADERBOARD_KEY) || '[]');
+        const entry = {
+            score,
+            level,
+            category,
+            date: new Date().toISOString(),
+            name: localStorage.getItem('userName') || 'User'
+        };
+        leaderboard.push(entry);
+        leaderboard.sort((a, b) => b.score - a.score);
+        localStorage.setItem(LEADERBOARD_KEY, JSON.stringify(leaderboard.slice(0, 10)));
     };
 
     const saveProgress = () => {
@@ -196,6 +235,56 @@ export const renderQuiz = (container, props) => {
         return array;
     };
 
+    const renderLeaderboard = () => {
+        const leaderboard = JSON.parse(localStorage.getItem(LEADERBOARD_KEY) || '[]');
+        if (leaderboard.length === 0) {
+            return `<div class="text-center opacity-60 py-8 glass-card rounded-3xl border border-slate-100 dark:border-slate-800">${t('noLeaderboardData')}</div>`;
+        }
+
+        return `
+            <div class="space-y-6">
+                <h3 class="text-2xl font-bold text-slate-800 dark:text-slate-200 flex items-center gap-3 px-2">
+                    <span class="p-2 bg-yellow-500/10 rounded-xl text-yellow-500">
+                        ${TrophyIcon({className: 'w-6 h-6'})}
+                    </span>
+                    ${t('leaderboard')}
+                </h3>
+                <div class="glass-card rounded-[2.5rem] border border-slate-100 dark:border-slate-800 overflow-hidden shadow-sm">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left rtl:text-right">
+                            <thead class="text-[10px] uppercase tracking-widest font-bold text-slate-400 bg-slate-50/50 dark:bg-slate-900/50">
+                                <tr>
+                                    <th class="px-6 py-4">${t('rank')}</th>
+                                    <th class="px-6 py-4">${t('name')}</th>
+                                    <th class="px-6 py-4">${t('score')}</th>
+                                    <th class="px-6 py-4">${t('date')}</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                                ${leaderboard.map((entry, index) => `
+                                    <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-900/50 transition-colors">
+                                        <td class="px-6 py-4">
+                                            <span class="w-8 h-8 rounded-full flex items-center justify-center font-bold ${index === 0 ? 'bg-yellow-500 text-white' : index === 1 ? 'bg-slate-300 text-slate-700' : index === 2 ? 'bg-amber-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'}">
+                                                ${index + 1}
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 font-bold text-slate-700 dark:text-slate-300">${entry.name}</td>
+                                        <td class="px-6 py-4">
+                                            <span class="px-3 py-1 rounded-full bg-theme-50 dark:bg-theme-900/20 text-theme-600 dark:text-theme-400 font-bold">
+                                                ${entry.score}
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 text-slate-400">${new Date(entry.date).toLocaleDateString()}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        `;
+    };
+
     const startQuiz = (level, category) => {
         const lang = getCurrentLanguage();
         const langData = QUIZ_DATA[lang] || QUIZ_DATA.en;
@@ -204,6 +293,11 @@ export const renderQuiz = (container, props) => {
         
         state.level = level;
         state.category = category;
+        state.streak = 0;
+        state.maxStreak = 0;
+        state.hintUsed = false;
+        state.hiddenAnswers = [];
+        state.showExplanation = false;
         
         // Shuffle questions and for each question, shuffle answers
         state.questions = shuffleArray([...categoryQuestions])
@@ -223,7 +317,7 @@ export const renderQuiz = (container, props) => {
         state.currentQuestionIndex = 0;
         state.score = 0;
         state.userAnswers = [];
-        state.timer = state.level === 'hard' ? 15 : (state.level === 'medium' ? 30 : 0);
+        state.timer = state.level === 'hard' ? 15 : (state.level === 'medium' ? 20 : 30);
         
         saveProgress();
         
@@ -231,6 +325,21 @@ export const renderQuiz = (container, props) => {
             startTimer();
         }
         
+        render();
+    };
+
+    const useHint = () => {
+        if (state.hintUsed || state.view !== 'quiz') return;
+        
+        const currentQuestion = state.questions[state.currentQuestionIndex];
+        const incorrectIndices = [];
+        currentQuestion.a.forEach((ans, idx) => {
+            if (idx !== currentQuestion.c) incorrectIndices.push(idx);
+        });
+
+        // Randomly pick 2 incorrect answers to hide
+        state.hiddenAnswers = shuffleArray([...incorrectIndices]).slice(0, 2);
+        state.hintUsed = true;
         render();
     };
 
@@ -256,13 +365,24 @@ export const renderQuiz = (container, props) => {
         const currentQuestion = state.questions[state.currentQuestionIndex];
         const isCorrect = answerIndex === currentQuestion.c;
         
-        if (isCorrect) state.score++;
+        if (isCorrect) {
+            state.score += 10 + (state.streak * 2);
+            state.streak++;
+            state.maxStreak = Math.max(state.maxStreak, state.streak);
+        } else {
+            state.streak = 0;
+        }
+
         state.userAnswers.push({
             question: currentQuestion.q,
             userAnswer: answerIndex === -1 ? t('timeout') : currentQuestion.a[answerIndex],
             correctAnswer: currentQuestion.a[currentQuestion.c],
-            isCorrect
+            isCorrect,
+            explanation: currentQuestion.e
         });
+
+        state.showExplanation = true;
+        render();
 
         const options = container.querySelectorAll('.quiz-option');
         options.forEach((opt, idx) => {
@@ -278,16 +398,19 @@ export const renderQuiz = (container, props) => {
 
         setTimeout(() => {
             state.currentQuestionIndex++;
+            state.hiddenAnswers = [];
+            state.showExplanation = false;
             if (state.currentQuestionIndex < state.questions.length) {
-                state.timer = state.level === 'hard' ? 15 : (state.level === 'medium' ? 30 : 0);
+                state.timer = state.level === 'hard' ? 15 : (state.level === 'medium' ? 20 : 30);
                 if (state.timer > 0) startTimer();
                 render();
             } else {
+                saveToLeaderboard(state.score, state.level, state.category);
                 clearProgress();
                 state.view = 'results';
                 render();
             }
-        }, 1500);
+        }, 3000);
     };
 
     const renderLanding = () => {
@@ -318,20 +441,20 @@ export const renderQuiz = (container, props) => {
                         </h3>
                         <div class="grid grid-cols-1 gap-4">
                             ${['easy', 'medium', 'hard'].map((lvl, idx) => `
-                                <button data-level="${lvl}" class="level-btn p-6 rounded-3xl border-2 border-slate-100 dark:border-slate-800 glass-card text-left transition-all hover:border-theme-500 hover:shadow-xl group relative overflow-hidden">
-                                    <div class="absolute top-0 right-0 w-24 h-24 bg-theme-500/5 rounded-bl-full -mr-8 -mt-8"></div>
+                                <button data-level="${lvl}" class="level-btn p-6 rounded-3xl border-2 border-slate-100 dark:border-slate-800 glass-card text-left transition-all hover:border-theme-500 hover:shadow-xl hover:-translate-y-1 group relative overflow-hidden">
+                                    <div class="absolute top-0 right-0 w-24 h-24 bg-theme-500/5 rounded-bl-full -mr-8 -mt-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                                     <div class="flex justify-between items-center relative z-10">
                                         <div class="flex items-center gap-4">
-                                            <div class="w-12 h-12 rounded-2xl glass flex items-center justify-center text-xl font-bold text-slate-400 group-hover:bg-theme-600 group-hover:text-white transition-all">
+                                            <div class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-xl font-bold text-slate-500 dark:text-slate-400 group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-all duration-500 shadow-sm">
                                                 ${idx + 1}
                                             </div>
                                             <div>
-                                                <h4 class="font-bold text-lg capitalize text-slate-900 dark:text-white group-hover:text-theme-600">${t(lvl)}</h4>
-                                                <p class="text-sm text-slate-500 dark:text-slate-400">${t(lvl + 'Desc')}</p>
+                                                <h4 class="font-bold text-lg capitalize text-slate-800 dark:text-slate-200 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-colors">${t(lvl)}</h4>
+                                                <p class="text-sm text-slate-500 dark:text-slate-400 mt-0.5">${t(lvl + 'Desc')}</p>
                                             </div>
                                         </div>
-                                        <div class="text-slate-300 group-hover:text-theme-500 transition-all">
-                                            ${ChevronRightIcon({className: 'w-6 h-6'})}
+                                        <div class="text-slate-300 dark:text-slate-600 group-hover:text-theme-500 dark:group-hover:text-theme-400 transition-all transform group-hover:translate-x-1">
+                                            ${ChevronRightIcon({className: `w-6 h-6 ${isRtl ? 'rotate-180' : ''}`})}
                                         </div>
                                     </div>
                                 </button>
@@ -345,11 +468,14 @@ export const renderQuiz = (container, props) => {
                         </h3>
                         <div class="grid grid-cols-2 gap-4">
                             ${['quran', 'hadith', 'sunnah', 'adhkar'].map(cat => `
-                                <button data-category="${cat}" class="category-btn p-6 rounded-3xl border-2 border-slate-100 dark:border-slate-800 glass-card text-center transition-all hover:border-theme-500 hover:shadow-xl group">
-                                    <div class="w-14 h-14 mx-auto mb-4 rounded-2xl glass flex items-center justify-center text-theme-600 dark:text-theme-400 group-hover:bg-theme-600 group-hover:text-white transition-all">
-                                        ${cat === 'quran' ? BrainIcon({className: 'w-8 h-8'}) : TrophyIcon({className: 'w-8 h-8'})}
+                                <button data-category="${cat}" class="category-btn p-6 rounded-3xl border-2 border-slate-100 dark:border-slate-800 glass-card text-center transition-all hover:border-theme-500 hover:shadow-xl hover:-translate-y-1 group relative overflow-hidden">
+                                    <div class="absolute inset-0 bg-gradient-to-br from-theme-500/0 to-theme-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                    <div class="relative z-10">
+                                        <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-all duration-500 shadow-sm group-hover:scale-110">
+                                            ${cat === 'quran' ? BrainIcon({className: 'w-8 h-8'}) : TrophyIcon({className: 'w-8 h-8'})}
+                                        </div>
+                                        <h4 class="font-bold capitalize text-slate-800 dark:text-slate-200 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-colors">${t(cat)}</h4>
                                     </div>
-                                    <h4 class="font-bold capitalize text-slate-900 dark:text-white">${t(cat)}</h4>
                                 </button>
                             `).join('')}
                         </div>
@@ -405,6 +531,12 @@ export const renderQuiz = (container, props) => {
         };
         
         renderStartButton();
+
+        // Append Leaderboard
+        const leaderboardContainer = document.createElement('div');
+        leaderboardContainer.className = 'mt-12';
+        leaderboardContainer.innerHTML = renderLeaderboard();
+        container.querySelector('.max-w-4xl').appendChild(leaderboardContainer);
     };
 
     const renderQuizView = () => {
@@ -424,6 +556,12 @@ export const renderQuiz = (container, props) => {
                         </div>
                     </div>
                     <div class="flex items-center gap-4">
+                        ${state.streak > 1 ? `
+                            <div class="flex items-center gap-1.5 px-3 py-1.5 bg-orange-500/10 text-orange-600 dark:text-orange-400 rounded-full text-xs font-bold animate-bounce">
+                                ${TrophyIcon({className: 'w-3.5 h-3.5'})}
+                                <span>${state.streak} ${t('streak')}</span>
+                            </div>
+                        ` : ''}
                         ${state.timer > 0 ? `
                             <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-mono font-bold border border-slate-200 dark:border-slate-700">
                                 ${TimerIcon({className: 'w-4 h-4'})}
@@ -445,20 +583,37 @@ export const renderQuiz = (container, props) => {
                     <h2 class="text-2xl md:text-4xl font-bold text-slate-900 dark:text-white text-center leading-tight mb-12 relative z-10">${question.q}</h2>
                     
                     <div class="grid grid-cols-1 gap-4 relative z-10">
-                        ${question.a.map((ans, idx) => `
-                            <button data-index="${idx}" class="quiz-option w-full p-6 rounded-2xl border-2 border-slate-100 dark:border-slate-800 text-left font-bold text-slate-700 dark:text-slate-300 hover:border-theme-500 hover:bg-theme-50/50 dark:hover:bg-theme-900/10 transition-all active:scale-[0.98] group">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center gap-4">
-                                        <div class="w-10 h-10 rounded-xl glass flex items-center justify-center text-sm text-slate-400 group-hover:bg-theme-600 group-hover:text-white transition-all">
-                                            ${String.fromCharCode(65 + idx)}
+                        ${question.a.map((ans, idx) => {
+                            const isHidden = state.hiddenAnswers.includes(idx);
+                            return `
+                                <button data-index="${idx}" class="quiz-option w-full p-6 rounded-2xl border-2 border-slate-100 dark:border-slate-800 text-left font-bold text-slate-700 dark:text-slate-300 hover:border-theme-500 hover:bg-theme-50/50 dark:hover:bg-theme-900/10 transition-all active:scale-[0.98] group ${isHidden ? 'opacity-0 pointer-events-none' : ''}">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-4">
+                                            <div class="w-10 h-10 rounded-xl glass flex items-center justify-center text-sm text-slate-400 group-hover:bg-theme-600 group-hover:text-white transition-all">
+                                                ${String.fromCharCode(65 + idx)}
+                                            </div>
+                                            <span class="text-lg">${ans}</span>
                                         </div>
-                                        <span class="text-lg">${ans}</span>
+                                        <div class="w-6 h-6 rounded-full border-2 border-slate-200 dark:border-slate-700 group-hover:border-theme-500 transition-all"></div>
                                     </div>
-                                    <div class="w-6 h-6 rounded-full border-2 border-slate-200 dark:border-slate-700 group-hover:border-theme-500 transition-all"></div>
-                                </div>
-                            </button>
-                        `).join('')}
+                                </button>
+                            `;
+                        }).join('')}
                     </div>
+
+                    <div class="mt-8 flex justify-center">
+                        <button id="hint-btn" class="flex items-center gap-2 px-6 py-3 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold hover:bg-amber-500/20 transition-all disabled:opacity-30 disabled:grayscale" ${state.hintUsed ? 'disabled' : ''}>
+                            ${BrainIcon({className: 'w-5 h-5'})}
+                            <span>${t('hint5050')}</span>
+                        </button>
+                    </div>
+
+                    ${state.showExplanation ? `
+                        <div class="mt-8 p-6 bg-theme-50 dark:bg-theme-900/20 border border-theme-100 dark:border-theme-900/30 rounded-3xl animate-in fade-in slide-in-from-bottom-4">
+                            <p class="text-sm font-bold mb-2 text-theme-600 dark:text-theme-400 uppercase tracking-wider">${t('explanation')}</p>
+                            <p class="text-slate-700 dark:text-slate-300 leading-relaxed">${question.e || ''}</p>
+                        </div>
+                    ` : ''}
                 </div>
             </div>
         `;
@@ -472,6 +627,8 @@ export const renderQuiz = (container, props) => {
         container.querySelectorAll('.quiz-option').forEach(btn => {
             btn.onclick = () => handleAnswer(parseInt(btn.dataset.index));
         });
+
+        container.querySelector('#hint-btn').onclick = useHint;
     };
 
     const renderResults = () => {
@@ -502,14 +659,18 @@ export const renderQuiz = (container, props) => {
                             <p class="text-xl md:text-2xl ${colorClass} font-bold">${message}</p>
                         </div>
 
-                        <div class="grid grid-cols-2 gap-8 py-10 border-y border-slate-100 dark:border-slate-800">
+                        <div class="grid grid-cols-3 gap-8 py-10 border-y border-slate-100 dark:border-slate-800">
                             <div class="space-y-1">
                                 <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">${t('score')}</p>
-                                <p class="text-5xl md:text-6xl font-bold text-slate-900 dark:text-white font-display">${state.score}<span class="text-2xl text-slate-400">/${state.questions.length}</span></p>
+                                <p class="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white font-display">${state.score}</p>
                             </div>
                             <div class="space-y-1">
                                 <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">${t('accuracy')}</p>
-                                <p class="text-5xl md:text-6xl font-bold text-slate-900 dark:text-white font-display">${Math.round(percentage)}%</p>
+                                <p class="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white font-display">${Math.round(percentage)}%</p>
+                            </div>
+                            <div class="space-y-1">
+                                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">${t('streak')}</p>
+                                <p class="text-4xl md:text-5xl font-bold text-orange-500 font-display">${state.maxStreak}</p>
                             </div>
                         </div>
 
