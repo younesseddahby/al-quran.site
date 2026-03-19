@@ -201,17 +201,42 @@ const App = (rootElement) => {
 
     const renderContent = () => {
         const langChanged = lastRenderedLanguage !== state.language;
-        if (lastRenderedTab === state.activeTab && !state.isReaderMode && lastRenderedTab !== 'quran' && lastRenderedTab !== 'settings' && !langChanged) return;
+        
+        // Optimization: Don't clear and re-render if the tab hasn't changed
+        // We only skip if:
+        // 1. Tab is the same
+        // 2. Language hasn't changed
+        // 3. We are NOT in reader mode (reader mode handles its own updates usually)
+        //    OR we ARE in reader mode but it's already rendered
+        if (lastRenderedTab === state.activeTab && !langChanged && mainContent.children.length > 0) {
+            // Special case for Quran: if we are in reader mode, we want to stay there
+            // The only reason to re-render is if we are switching BETWEEN list and reader
+            // or if the reader config changed significantly (handled by navigateTo)
+            if (state.activeTab === 'quran') {
+                // If we are already in the correct mode (reader vs list), skip
+                const isCurrentlyReader = !!mainContent.querySelector('#reader-view');
+                if (isCurrentlyReader === state.isReaderMode) return;
+            } else if (state.activeTab !== 'settings') {
+                return;
+            }
+        }
+
         if (currentContentCleanup) currentContentCleanup();
         mainContent.innerHTML = '';
         mainContent.className = 'container mx-auto px-2 sm:px-4 py-4 md:py-6 pb-24 md:pb-8';
         
         lastRenderedLanguage = state.language;
+        lastRenderedTab = state.activeTab;
 
         const props = {
             ...state,
             setActiveTab: (t) => { state.activeTab = t; render(); },
             setQuranMode: (m) => { state.quranMode = m; },
+            setHadithMode: (cfg) => {
+                state.activeTab = 'hadith';
+                state.hadithConfig = cfg;
+                render();
+            },
             setReaderMode: (c) => { state.isReaderMode = !!c; state.readerConfig = c; render(); },
             setTheme: (t) => { state.theme = t; applyStyles(); localStorage.setItem('theme', t); render(); },
             setBaseTheme: (b) => { state.baseTheme = b; applyStyles(); localStorage.setItem('baseTheme', b); render(); },
@@ -246,7 +271,16 @@ const App = (rootElement) => {
                 }
                 state.bookmarks = bookmarks;
                 localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
-                render();
+                
+                // If we are in bookmarks tab, we need a full render to update the list
+                // Otherwise, we just update the state and let the current component handle UI if needed
+                if (state.activeTab === 'bookmarks') {
+                    render();
+                } else {
+                    // Just update the header/nav if needed, but don't re-render the whole content
+                    renderHeader(header, { ...props, activeTab: state.activeTab });
+                    renderMobileNav(mobileNav, { ...props, activeTab: state.activeTab });
+                }
             },
             onBack: () => { state.activeTab = 'home'; state.isReaderMode = false; render(); }
         };
@@ -254,7 +288,7 @@ const App = (rootElement) => {
         switch (state.activeTab) {
             case 'home': currentContentCleanup = renderHomePage(mainContent, props); break;
             case 'quran': currentContentCleanup = renderQuranHub(mainContent, CACHE, props); break;
-            case 'hadith': renderHadithViewer(mainContent, props); break;
+            case 'hadith': renderHadithViewer(mainContent, { ...props, jumpToHadith: state.hadithConfig }); state.hadithConfig = null; break;
             case 'hisn': renderHisnMuslim(mainContent, props); break;
             case 'tasbih': renderTasbih(mainContent, props); break;
             case 'seerah': renderSeerah(mainContent, props); break;

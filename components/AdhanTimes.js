@@ -83,7 +83,13 @@ export const renderAdhanTimes = (container, props = {}) => {
                                 <label for="country" class="block text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1.5 ml-1">${t('country')}</label>
                                 <input type="text" id="country" value="${state.location ? state.location.country : ''}" placeholder="${t('countryExample')}" class="w-full px-4 py-3 glass border border-slate-200 dark:border-slate-800 rounded-xl outline-none focus:ring-2 focus:ring-theme-500/20 focus:border-theme-500/50 transition-all dark:text-white text-sm font-medium">
                             </div>
-                            <button type="submit" class="w-full px-5 py-3 bg-theme-600 text-white rounded-xl font-bold hover:bg-theme-700 transition-all active:scale-95 uppercase tracking-widest text-[10px] shadow-lg shadow-theme-500/20">${t('showTimes')}</button>
+                            <div class="flex gap-2">
+                                <button type="button" id="use-my-location-btn" class="flex-1 px-4 py-3 glass border border-theme-500/30 text-theme-600 dark:text-theme-400 rounded-xl font-bold hover:bg-theme-500/10 transition-all active:scale-95 uppercase tracking-widest text-[9px] flex items-center justify-center gap-2">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                    ${t('useMyLocation') || 'Use My Location'}
+                                </button>
+                                <button type="submit" class="flex-1 px-5 py-3 bg-theme-600 text-white rounded-xl font-bold hover:bg-theme-700 transition-all active:scale-95 uppercase tracking-widest text-[10px] shadow-lg shadow-theme-500/20">${t('showTimes')}</button>
+                            </div>
                         </form>
                     `}
                 </div>
@@ -118,6 +124,10 @@ export const renderAdhanTimes = (container, props = {}) => {
             cityInput.addEventListener('input', handleCityInput);
             const citySuggestionsContainer = container.querySelector('#city-suggestions');
             citySuggestionsContainer.addEventListener('click', handleSuggestionClick);
+            
+            container.querySelector('#use-my-location-btn')?.addEventListener('click', () => {
+                detectLocation();
+            });
         }
     };
 
@@ -195,12 +205,11 @@ export const renderAdhanTimes = (container, props = {}) => {
             if (data.code !== 200 || !data.data) throw new Error(t('findPrayerTimesError'));
             
             state.prayerTimes = data.data;
-            render();
         } catch (err) {
             state.error = err.message;
-            renderContent();
         } finally {
             state.loading = false;
+            render();
         }
     };
 
@@ -383,7 +392,12 @@ export const renderAdhanTimes = (container, props = {}) => {
         const countryInput = container.querySelector('#country');
         const city = cityInput.value.trim();
         const country = countryInput.value.trim();
-        fetchPrayerTimes({ city, country });
+        
+        if (city) {
+            state.location = { city, country };
+            localStorage.setItem('prayerLocation', JSON.stringify(state.location));
+            fetchPrayerTimes(state.location);
+        }
     };
 
     const handleCityInput = (e) => {
@@ -397,11 +411,19 @@ export const renderAdhanTimes = (container, props = {}) => {
         if (item) {
             const cityInput = container.querySelector('#city');
             const countryInput = container.querySelector('#country');
-            cityInput.value = item.dataset.city;
-            countryInput.value = item.dataset.country;
+            const city = item.dataset.city;
+            const country = item.dataset.country;
+            
+            cityInput.value = city;
+            countryInput.value = country;
+            
             const citySuggestionsContainer = container.querySelector('#city-suggestions');
             citySuggestionsContainer.classList.add('hidden');
             state.citySuggestions = [];
+            
+            state.location = { city, country };
+            localStorage.setItem('prayerLocation', JSON.stringify(state.location));
+            fetchPrayerTimes(state.location);
         }
     };
 

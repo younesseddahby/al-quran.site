@@ -1,6 +1,6 @@
 import { createSpinner } from './Spinner.js';
 import { renderErrorState, renderSkeletonGrid } from './UI.js';
-import { CloseIcon, SkipBackwardIcon, SkipForwardIcon, SettingsIcon, ArrowLeftIcon, ArrowRightIcon, ChevronRightIcon, MinusIcon, PlusIcon, BookmarkIcon, BookmarkSolidIcon, ArrowUpIcon, SparklesIcon, ShareIcon, SearchIcon } from './Icons.js';
+import { CloseIcon, SkipBackwardIcon, SkipForwardIcon, SettingsIcon, ArrowLeftIcon, ArrowRightIcon, ChevronRightIcon, MinusIcon, PlusIcon, BookmarkIcon, BookmarkSolidIcon, ArrowUpIcon, SparklesIcon, ShareIcon, SearchIcon, QuranIcon, CheckCircleIcon } from './Icons.js';
 import { t, getCurrentLanguage } from '../i18n.js';
 import { fetchWithRetry } from '../utils/fetchUtils.js';
 
@@ -434,6 +434,9 @@ export const renderQuranReader = (container, cache, props) => {
         const isRtl = getCurrentLanguage() === 'ar';
         const BackIcon = isRtl ? ArrowRightIcon : ArrowLeftIcon;
 
+        // Continue Reading Section removed as per user request
+        let continueReadingHtml = '';
+
         if (state.loading && state.surahs.length === 0) {
             contentArea.innerHTML = `<div class="max-w-7xl mx-auto px-4 py-8">${renderSkeletonGrid(12).outerHTML}</div>`;
             return;
@@ -455,6 +458,7 @@ export const renderQuranReader = (container, cache, props) => {
 
         contentArea.innerHTML = `
             <div class="max-w-7xl mx-auto px-4 py-6 md:py-10 fade-in">
+                ${continueReadingHtml}
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
                     <div class="flex items-center gap-4">
                         <button id="reader-list-back" class="p-2.5 rounded-full glass hover:bg-theme-100 dark:hover:bg-theme-900/30 transition-all active:scale-90 flex items-center gap-2 text-slate-600 dark:text-slate-300 border border-white/20 shadow-lg group">
@@ -582,6 +586,8 @@ export const renderQuranReader = (container, cache, props) => {
                 this.searchTimeout = setTimeout(() => searchVerses(state.verseSearchQuery), 600);
             }
         });
+
+        // Removed continue-reading-card event listener as per user request
 
         contentArea.querySelectorAll('.verse-search-result').forEach(c => c.addEventListener('click', () => {
             fetchPage(parseInt(c.dataset.surah), parseInt(c.dataset.ayah));
@@ -887,6 +893,10 @@ export const renderQuranReader = (container, cache, props) => {
                 </div>
 
                 <div class="flex flex-col gap-4">
+                    <button id="save-progress-btn" class="w-full py-4 rounded-2xl bg-emerald-600 text-white font-bold flex items-center justify-center gap-3 hover:bg-emerald-700 transition-all active:scale-[0.98] shadow-lg shadow-emerald-500/20">
+                        ${CheckCircleIcon({className: "w-5 h-5"})}
+                        ${t('saveProgress') || 'Save Progress'}
+                    </button>
                     <button id="tafsir-ai-btn" class="w-full py-4 rounded-2xl bg-theme-500 text-white font-bold flex items-center justify-center gap-3 hover:bg-theme-600 transition-all active:scale-[0.98] shadow-lg shadow-theme-500/20">
                         ${SparklesIcon({className: "w-5 h-5"})}
                         ${t('askAiAboutVerse') || 'Ask AI about this verse'}
@@ -923,6 +933,32 @@ export const renderQuranReader = (container, cache, props) => {
                 } 
             }));
             setState({ isTafsirModal: false });
+        });
+
+        modal.querySelector('#save-progress-btn')?.addEventListener('click', () => {
+            const surahNum = state.pageData.number;
+            const ayahNum = state.activeTafsirAyah.ayah;
+            const surah = state.pageData;
+            
+            localStorage.setItem('quran_last_read', JSON.stringify({
+                surah: surahNum,
+                ayah: ayahNum,
+                surahName: surah.englishName,
+                totalAyahs: surah.numberOfAyahs
+            }));
+            
+            // Show feedback
+            const btn = modal.querySelector('#save-progress-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                ${t('saved') || 'Saved'}
+            `;
+            btn.classList.replace('bg-emerald-600', 'bg-emerald-500');
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.classList.replace('bg-emerald-500', 'bg-emerald-600');
+            }, 2000);
         });
     };
 

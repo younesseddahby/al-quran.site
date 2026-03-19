@@ -313,15 +313,16 @@ const renderQuickLinks = (container) => {
     `;
     container.appendChild(linksHeader);
 
+    const lastReadData = JSON.parse(localStorage.getItem('quran_last_read'));
+
     const linksContainer = document.createElement('div');
     linksContainer.className = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8";
     const linkItems = [
-        { nav: "ai", icon: SparklesIcon({className: 'w-6 h-6'}), title: t('aiAssistant') || 'AI Assistant', desc: t('aiAssistantDesc') || 'Ask questions about Islam.', meta: 'AI', color: 'theme' },
         { nav: "bookmarks", icon: BookmarkIcon({className: 'w-6 h-6'}), title: t('bookmarks') || 'Bookmarks', desc: t('bookmarksTab') || 'View your saved verses.', meta: 'Saved', color: 'pink' },
         { nav: "quiz", icon: QuizIcon({className: 'w-6 h-6'}), title: t('islamicQuiz'), desc: t('testYourKnowledge') || 'Test your Islamic knowledge.', meta: 'Learn', color: 'orange' },
         { nav: "stories", icon: BookOpenIcon({className: 'w-6 h-6'}), title: t('prophetStories'), desc: t('prophetStoriesDesc'), meta: 'Stories', color: 'teal' },
         { nav: "asma", icon: BookOpenIcon({className: 'w-6 h-6'}), title: t('asmaUlHusna'), desc: t('asmaUlHusnaDesc') || 'The 99 Names of Allah', meta: '99 Names', color: 'violet' },
-        { nav: "quran", subNav: "read", icon: BookOpenIcon({className: 'w-6 h-6'}), title: t('readQuran'), desc: t('continueReadingDesc'), meta: '114 Surahs', color: 'theme' },
+        { nav: "quran", subNav: "read", icon: BookOpenIcon({className: 'w-6 h-6'}), title: t('readQuran'), desc: t('readQuranDesc') || 'Read the Holy Quran', meta: '114 Surahs', color: 'theme' },
         { nav: "quran", subNav: "listen", icon: ListenIcon({className: 'w-6 h-6'}), title: t('exploreRecitations'), desc: t('exploreRecitationsDesc'), meta: 'Audio', color: 'indigo' },
         { nav: "hadith", icon: HadithIcon({className: 'w-6 h-6'}), title: t('discoverHadith'), desc: t('discoverHadithDesc'), meta: '9 Collections', color: 'emerald' },
         { nav: "hisn", icon: ShieldIcon({className: 'w-6 h-6'}), title: t('readHisn'), desc: t('readHisnDesc'), meta: '132 Chapters', color: 'amber' },
@@ -329,7 +330,7 @@ const renderQuickLinks = (container) => {
         { nav: "qibla", icon: QiblaIcon({className: 'w-6 h-6'}), title: t('qiblaFinder') || 'Qibla Finder', desc: t('qiblaDesc') || 'Find the direction of the Kaaba', meta: 'Compass', color: 'cyan' },
     ];
     linksContainer.innerHTML = linkItems.map((link, i) => `
-        <a href="#" data-nav="${link.nav}" ${link.subNav ? `data-sub-nav="${link.subNav}"` : ''} class="quick-link-card fade-in group p-4 glass-card rounded-2xl hover:-translate-y-1 transition-all duration-500 flex flex-col gap-3 hover:shadow-xl hover:shadow-${link.color}-500/10 border border-slate-200/50 dark:border-slate-700/50 hover:border-${link.color}-500/30 active:scale-[0.98] relative overflow-hidden" style="animation-delay: ${0.1 + (i * 0.05)}s">
+        <a href="#" data-nav="${link.nav}" ${link.subNav ? `data-sub-nav="${link.subNav}"` : ''} ${link.surah ? `data-surah="${link.surah}"` : ''} ${link.ayah ? `data-ayah="${link.ayah}"` : ''} class="quick-link-card fade-in group p-4 glass-card rounded-2xl hover:-translate-y-1 transition-all duration-500 flex flex-col gap-3 hover:shadow-xl hover:shadow-${link.color}-500/10 border border-slate-200/50 dark:border-slate-700/50 hover:border-${link.color}-500/30 active:scale-[0.98] relative overflow-hidden" style="animation-delay: ${0.1 + (i * 0.05)}s">
             <div class="absolute -right-8 -top-8 w-24 h-24 bg-${link.color}-500/5 rounded-full blur-[30px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
             <div class="flex items-center justify-between relative z-10">
                 <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 group-hover:bg-${link.color}-500/10 group-hover:text-${link.color}-600 dark:group-hover:text-${link.color}-400 transition-all duration-500 shadow-sm">
@@ -344,78 +345,6 @@ const renderQuickLinks = (container) => {
         </a>
     `).join('');
     container.appendChild(linksContainer);
-
-    // Dashboard Widgets Section - Now below
-    const widgetsContainer = document.createElement('div');
-    widgetsContainer.className = "grid grid-cols-1 md:grid-cols-3 gap-4 mb-8";
-    
-    // Continue Reading Widget
-    const lastRead = JSON.parse(localStorage.getItem('quran_last_read') || 'null');
-    
-    const continueReadingHtml = `
-        <a href="#" data-nav="quran" ${lastRead ? `data-surah="${lastRead.surah}" data-ayah="${lastRead.ayah}"` : ''} class="group p-5 glass-card rounded-3xl hover:-translate-y-1 transition-all duration-500 flex flex-col gap-3 hover:shadow-xl hover:shadow-theme-500/10 border border-slate-200/50 dark:border-slate-700/50 relative overflow-hidden h-full">
-            <div class="absolute top-0 right-0 w-32 h-32 bg-theme-500/5 rounded-full blur-[40px] -mr-10 -mt-10 transition-transform group-hover:scale-125 duration-700"></div>
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-theme-500/10 flex items-center justify-center text-theme-600 dark:text-theme-400 group-hover:bg-theme-600 group-hover:text-white transition-all duration-500 shadow-sm">
-                    ${BookOpenIcon({className: 'w-5 h-5'})}
-                </div>
-                <div class="min-w-0">
-                    <h4 class="font-bold text-slate-900 dark:text-white text-base group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-colors truncate">${t('continueReading')}</h4>
-                    <p class="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider truncate">${lastRead ? `Surah ${lastRead.surahName}` : t('startReading') || 'Start reading'}</p>
-                </div>
-            </div>
-            <div class="mt-auto">
-                <div class="flex items-center justify-between mb-1.5">
-                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">${lastRead ? `Ayah ${lastRead.ayah}` : '0%'}</span>
-                    <span class="text-[10px] font-bold text-theme-600 dark:text-theme-400">${lastRead ? Math.round((lastRead.ayah / lastRead.totalAyahs) * 100) + '%' : '0%'}</span>
-                </div>
-                <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1 overflow-hidden">
-                    <div class="bg-theme-500 h-full rounded-full transition-all duration-1000" style="width: ${lastRead ? Math.min(100, (lastRead.ayah / lastRead.totalAyahs) * 100) : 0}%"></div>
-                </div>
-            </div>
-        </a>
-    `;
-
-    // Daily Ayah Widget
-    const dailyAyahHtml = `
-        <a href="#" id="daily-ayah-widget" data-nav="quran" data-surah="2" data-ayah="255" class="group p-5 glass-card rounded-3xl hover:-translate-y-1 transition-all duration-500 flex flex-col gap-3 hover:shadow-xl hover:shadow-indigo-500/10 border border-slate-200/50 dark:border-slate-700/50 relative overflow-hidden h-full">
-            <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-full blur-[40px] -mr-10 -mt-10 transition-transform group-hover:scale-125 duration-700"></div>
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-600 dark:text-indigo-400 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-500 shadow-sm">
-                    ${QuranIcon({className: 'w-5 h-5'})}
-                </div>
-                <div class="min-w-0">
-                    <h4 class="font-bold text-slate-900 dark:text-white text-base group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors truncate">${t('dailyAyah') || 'Daily Ayah'}</h4>
-                    <p id="daily-ayah-ref" class="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider truncate">Al-Baqarah 2:255</p>
-                </div>
-            </div>
-            <p id="daily-ayah-text" class="text-xs text-slate-600 dark:text-slate-300 line-clamp-2 italic font-medium leading-relaxed">"Allah - there is no deity except Him, the Ever-Living, the Sustainer of [all] existence."</p>
-        </a>
-    `;
-
-    // Daily Hadith Widget
-    const dailyHadithHtml = `
-        <a href="#" id="daily-hadith-widget" data-nav="hadith" class="group p-5 glass-card rounded-3xl hover:-translate-y-1 transition-all duration-500 flex flex-col gap-3 hover:shadow-xl hover:shadow-emerald-500/10 border border-slate-200/50 dark:border-slate-700/50 relative overflow-hidden h-full">
-            <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-[40px] -mr-10 -mt-10 transition-transform group-hover:scale-125 duration-700"></div>
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600 dark:text-emerald-400 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-500 shadow-sm">
-                    ${HadithIcon({className: 'w-5 h-5'})}
-                </div>
-                <div class="min-w-0">
-                    <h4 class="font-bold text-slate-900 dark:text-white text-base group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors truncate">${t('dailyHadith') || 'Daily Hadith'}</h4>
-                    <p id="daily-hadith-ref" class="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider truncate">Sahih al-Bukhari</p>
-                </div>
-            </div>
-            <p id="daily-hadith-text" class="text-xs text-slate-600 dark:text-slate-300 line-clamp-2 italic font-medium leading-relaxed">"Actions are judged by intentions, so each man will have what he intended."</p>
-        </a>
-    `;
-
-    widgetsContainer.innerHTML = `
-        <div class="fade-in stagger-1">${continueReadingHtml}</div>
-        <div class="fade-in stagger-2">${dailyAyahHtml}</div>
-        <div class="fade-in stagger-3">${dailyHadithHtml}</div>
-    `;
-    container.appendChild(widgetsContainer);
 };
 
 // --- MAIN COMPONENT ---

@@ -55,10 +55,10 @@ export const renderQuranListener = (container, cache, props) => {
             return;
         }
         if (state.error) {
-            contentContainer.innerHTML = renderErrorState(state.error, () => {
+            contentContainer.replaceChildren(renderErrorState(state.error, () => {
                 state.error = null;
                 init();
-            }).outerHTML;
+            }));
             return;
         }
 
@@ -131,8 +131,46 @@ export const renderQuranListener = (container, cache, props) => {
             r.name_ar.toLowerCase().includes(lowerQuery)
         );
 
+        const lastPlayed = JSON.parse(localStorage.getItem('quran_listener_last_played') || 'null');
+        let continueListeningHtml = '';
+        if (lastPlayed) {
+            const reciter = state.reciters.find(r => r.id === lastPlayed.reciterId);
+            const surah = state.surahs.find(s => s.number === lastPlayed.surahNumber);
+            if (reciter && surah) {
+                continueListeningHtml = `
+                    <div class="mb-10">
+                        <h2 class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 mb-4 flex items-center gap-2">
+                            <span class="w-8 h-[1px] bg-slate-200 dark:bg-slate-800"></span>
+                            ${t('continueListening') || 'Continue Listening'}
+                        </h2>
+                        <div id="continue-listening-card" class="group relative overflow-hidden glass rounded-3xl border border-theme-500/20 p-5 md:p-6 cursor-pointer hover:shadow-2xl hover:shadow-theme-500/20 transition-all duration-500">
+                            <div class="absolute -right-10 -top-10 w-40 h-40 bg-theme-500/10 rounded-full blur-3xl group-hover:bg-theme-500/20 transition-all duration-700"></div>
+                            <div class="flex items-center justify-between relative z-10">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-2xl bg-theme-500 flex items-center justify-center text-white shadow-lg shadow-theme-500/30 group-hover:scale-110 transition-transform duration-500">
+                                        ${PlayIcon({className: "w-6 h-6"})}
+                                    </div>
+                                    <div>
+                                        <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-colors">${lang === 'ar' ? surah.name : surah.englishName}</h3>
+                                        <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 font-bold uppercase tracking-wider">${lang === 'ar' ? reciter.name_ar : reciter.name_en}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="hidden md:inline text-[10px] font-bold uppercase tracking-widest text-theme-600 dark:text-theme-400 opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 transition-all duration-500">${t('resume') || 'Resume'}</span>
+                                    <div class="w-9 h-9 rounded-full bg-theme-50 dark:bg-theme-900/30 flex items-center justify-center text-theme-600 dark:text-theme-400 border border-theme-200 dark:border-theme-800 group-hover:bg-theme-500 group-hover:text-white group-hover:border-theme-500 transition-all duration-500">
+                                        ${ChevronRightIcon({className: `w-4 h-4 ${isRtl ? 'rotate-180' : ''}`})}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
         contentContainer.innerHTML = `
             <div class="max-w-6xl mx-auto px-4 py-4 md:py-8 space-y-6 md:space-y-10 fade-in">
+                ${continueListeningHtml}
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div class="flex items-center gap-3">
                         <button id="listener-reciters-back" class="p-2 -ml-2 rounded-full glass hover:bg-theme-100 dark:hover:bg-theme-900/30 transition-all active:scale-90 flex items-center gap-1 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800">
@@ -197,6 +235,23 @@ export const renderQuranListener = (container, cache, props) => {
         contentContainer.querySelector('#reciter-search-input').addEventListener('input', (e) => {
             state.reciterSearchQuery = e.target.value;
             renderReciterSelectionView();
+        });
+
+        contentContainer.querySelector('#continue-listening-card')?.addEventListener('click', () => {
+            const lastPlayed = JSON.parse(localStorage.getItem('quran_listener_last_played') || 'null');
+            if (lastPlayed) {
+                const reciter = state.reciters.find(r => r.id === lastPlayed.reciterId);
+                const surah = state.surahs.find(s => s.number === lastPlayed.surahNumber);
+                if (reciter && surah) {
+                    setState({ 
+                        selectedReciter: reciter, 
+                        currentSurah: surah, 
+                        view: 'player',
+                        currentTime: lastPlayed.currentTime 
+                    });
+                    playFullSurah(surah, lastPlayed.currentTime);
+                }
+            }
         });
 
         contentContainer.querySelectorAll('.reciter-card').forEach(card => card.addEventListener('click', () => {
@@ -649,11 +704,12 @@ export const renderQuranListener = (container, cache, props) => {
         }
     };
 
-    const playFullSurah = (surah) => {
+    const playFullSurah = (surah, startTime = 0) => {
         if (!surah || !state.selectedReciter || !state.selectedReciter.url) return;
         const audioUrl = `${state.selectedReciter.url}${String(surah.number).padStart(3, '0')}.mp3`;
         
         if (audio.src === audioUrl && !audio.error) {
+            if (startTime > 0) audio.currentTime = startTime;
             audio.play().catch(e => {
                if (e.name !== 'AbortError') console.error("Audio play error:", e);
             });
@@ -661,11 +717,17 @@ export const renderQuranListener = (container, cache, props) => {
         }
 
         state.currentSurah = surah;
-        state.currentTime = 0;
+        state.currentTime = startTime;
         state.duration = 0;
         
         audio.pause();
         audio.src = audioUrl;
+        if (startTime > 0) {
+            audio.addEventListener('loadedmetadata', function onLoaded() {
+                audio.currentTime = startTime;
+                audio.removeEventListener('loadedmetadata', onLoaded);
+            });
+        }
         audio.load(); // Explicitly call load() after setting src
         audio.volume = state.volume;
         audio.muted = state.isMuted;
@@ -754,7 +816,17 @@ export const renderQuranListener = (container, cache, props) => {
         }
     };
     const onLoadedMetadata = () => updateProgressUI();
-    const onTimeUpdate = () => updateProgressUI();
+    const onTimeUpdate = () => {
+        updateProgressUI();
+        if (!isScrubbing && state.currentSurah && state.selectedReciter) {
+            localStorage.setItem('quran_listener_last_played', JSON.stringify({
+                reciterId: state.selectedReciter.id,
+                surahNumber: state.currentSurah.number,
+                currentTime: audio.currentTime,
+                timestamp: new Date().getTime()
+            }));
+        }
+    };
     const onWaiting = () => setState({ isLoadingAudio: true });
     const onPlaying = () => setState({ isLoadingAudio: false });
     

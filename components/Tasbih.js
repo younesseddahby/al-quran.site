@@ -23,6 +23,7 @@ export const renderTasbih = (container, props = {}) => {
         hapticEnabled: localStorage.getItem('tasbihHaptic') !== 'false',
         totalCount: parseInt(localStorage.getItem('tasbihTotalCount') || '0', 10),
         sessions: parseInt(localStorage.getItem('tasbihSessions') || '0', 10),
+        autoAdvance: localStorage.getItem('tasbihAutoAdvance') === 'true',
         showSettings: false,
         showAddPhrase: false,
         showPhraseDropdown: false
@@ -36,6 +37,7 @@ export const renderTasbih = (container, props = {}) => {
         localStorage.setItem('tasbihHaptic', state.hapticEnabled);
         localStorage.setItem('tasbihTotalCount', state.totalCount);
         localStorage.setItem('tasbihSessions', state.sessions);
+        localStorage.setItem('tasbihAutoAdvance', state.autoAdvance);
     };
 
     const getAllPhrases = () => [...PREDEFINED_TASBIH, ...state.customPhrases];
@@ -45,6 +47,7 @@ export const renderTasbih = (container, props = {}) => {
         const allPhrases = getAllPhrases();
         const phrase = allPhrases[state.selectedPhraseIndex] || allPhrases[0];
         const progress = state.target > 0 ? Math.min(state.count / state.target, 1) : 0;
+        const isUnlimited = state.target === 0;
         
         container.innerHTML = `
             <div class="flex flex-col h-full max-w-2xl mx-auto fade-in">
@@ -73,16 +76,26 @@ export const renderTasbih = (container, props = {}) => {
                 <div class="flex-grow flex flex-col items-center justify-center p-4 md:p-8 relative">
                     <!-- Phrase Selection -->
                     <div class="w-full max-w-sm mb-6 relative z-10">
-                        <button id="phrase-select-btn" class="w-full p-4 md:p-5 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 flex items-center justify-between group hover:border-theme-500/30 transition-all duration-300">
-                            <div class="text-left min-w-0 flex-grow pr-2">
-                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">${t('currentPhrase')}</p>
-                                <h3 class="font-amiri text-2xl md:text-3xl text-slate-800 dark:text-white truncate leading-[1.6]">${phrase.ar}</h3>
-                                <p class="text-[13px] text-slate-500 dark:text-slate-400 truncate mt-1">${phrase.en || phrase.translation || ''}</p>
-                            </div>
-                            <div class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover:text-theme-600 transition-colors ml-3 flex-shrink-0">
-                                ${ArrowRightIcon({className: `w-4 h-4 transition-transform duration-300 ${state.showPhraseDropdown ? 'rotate-90' : 'rotate-0'}`})}
-                            </div>
-                        </button>
+                        <div class="flex items-center gap-2">
+                            <button id="prev-phrase-btn" class="w-10 h-10 flex items-center justify-center rounded-xl glass border border-slate-200/50 dark:border-slate-700/50 text-slate-400 hover:text-theme-600 hover:border-theme-500/30 transition-all active:scale-90">
+                                ${ArrowLeftIcon({className: "w-4 h-4"})}
+                            </button>
+                            
+                            <button id="phrase-select-btn" class="flex-1 p-4 md:p-5 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 flex items-center justify-between group hover:border-theme-500/30 transition-all duration-300 min-w-0">
+                                <div class="text-left min-w-0 flex-grow pr-2">
+                                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-2">${t('currentPhrase')}</p>
+                                    <h3 class="font-amiri text-xl md:text-2xl text-slate-800 dark:text-white truncate leading-[1.4]">${phrase.ar}</h3>
+                                    <p class="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5">${phrase.en || phrase.translation || ''}</p>
+                                </div>
+                                <div class="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover:text-theme-600 transition-colors ml-2 flex-shrink-0">
+                                    ${ArrowRightIcon({className: `w-3 h-3 transition-transform duration-300 ${state.showPhraseDropdown ? 'rotate-90' : 'rotate-0'}`})}
+                                </div>
+                            </button>
+
+                            <button id="next-phrase-btn" class="w-10 h-10 flex items-center justify-center rounded-xl glass border border-slate-200/50 dark:border-slate-700/50 text-slate-400 hover:text-theme-600 hover:border-theme-500/30 transition-all active:scale-90">
+                                ${ArrowRightIcon({className: "w-4 h-4"})}
+                            </button>
+                        </div>
 
                         <!-- Phrase Dropdown -->
                         <div id="phrase-dropdown" class="absolute top-full left-0 right-0 mt-2 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 shadow-2xl z-50 ${state.showPhraseDropdown ? 'block' : 'hidden'} max-h-[280px] overflow-y-auto custom-scrollbar">
@@ -104,21 +117,21 @@ export const renderTasbih = (container, props = {}) => {
                     </div>
 
                     <!-- Counter Circle -->
-                    <div id="tasbih-tap-area" class="relative w-60 h-60 md:w-64 md:h-64 flex items-center justify-center cursor-pointer group active:scale-[0.98] transition-transform duration-150">
+                    <div id="tasbih-tap-area" class="relative w-64 h-64 md:w-72 md:h-72 flex items-center justify-center cursor-pointer group active:scale-[0.98] transition-transform duration-150">
                         <!-- Progress Ring -->
                         <svg viewBox="0 0 100 100" class="absolute inset-0 w-full h-full -rotate-90">
                             <circle cx="50" cy="50" r="45" class="stroke-slate-100 dark:stroke-slate-800/50 fill-none" stroke-width="6"></circle>
-                            <circle id="tasbih-progress-ring" cx="50" cy="50" r="45" class="stroke-theme-500 fill-none transition-all duration-500" stroke-width="6" stroke-dasharray="282.7" stroke-dashoffset="${282.7 * (1 - progress)}" stroke-linecap="round" style="opacity: ${state.count === 0 ? 0 : 1}"></circle>
+                            <circle id="tasbih-progress-ring" cx="50" cy="50" r="45" class="stroke-theme-500 fill-none transition-all duration-500" stroke-width="6" stroke-dasharray="282.7" stroke-dashoffset="${282.7 * (1 - progress)}" stroke-linecap="round" style="opacity: ${state.count === 0 || isUnlimited ? 0 : 1}"></circle>
                         </svg>
 
                         <!-- Inner Circle -->
                         <div class="w-[88%] h-[88%] rounded-full glass-card border border-slate-200/50 dark:border-slate-700/50 shadow-inner flex flex-col items-center justify-center relative overflow-hidden group-hover:border-theme-500/30 transition-colors">
                             <div class="absolute inset-0 bg-theme-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.25em] mb-1">${t('count')}</span>
-                            <span id="tasbih-count" class="text-6xl md:text-7xl font-display font-bold text-slate-800 dark:text-white tabular-nums tracking-tighter">${state.count}</span>
-                            <div class="mt-1 flex flex-col items-center">
-                                <span class="text-[10px] font-bold text-theme-600 dark:text-theme-400">${Math.floor(progress * 100)}%</span>
-                                <span class="text-[9px] text-slate-400 font-medium uppercase tracking-wider">${t('target')}: ${state.target}</span>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.25em] mb-1">${t('count')}</span>
+                            <span id="tasbih-count" class="text-7xl md:text-8xl font-display font-bold text-slate-800 dark:text-white tabular-nums tracking-tighter transition-all duration-200">${state.count}</span>
+                            <div class="mt-2 flex flex-col items-center">
+                                <span class="text-[11px] font-bold text-theme-600 dark:text-theme-400">${isUnlimited ? '∞' : Math.floor(progress * 100) + '%'}</span>
+                                <span class="text-[10px] text-slate-400 font-medium uppercase tracking-wider">${t('target')}: ${isUnlimited ? t('unlimited') : state.target}</span>
                             </div>
                         </div>
 
@@ -129,13 +142,13 @@ export const renderTasbih = (container, props = {}) => {
                     <!-- Total Stats -->
                     <div class="mt-10 flex items-center gap-8">
                         <div class="text-center">
-                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">${t('total')}</p>
-                            <p class="text-base font-bold text-slate-700 dark:text-slate-300">${state.totalCount.toLocaleString()}</p>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">${t('total')}</p>
+                            <p class="text-lg font-bold text-slate-700 dark:text-slate-300">${state.totalCount.toLocaleString()}</p>
                         </div>
-                        <div class="w-px h-6 bg-slate-200 dark:bg-slate-800"></div>
+                        <div class="w-px h-8 bg-slate-200 dark:bg-slate-800"></div>
                         <div class="text-center">
-                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">${t('sessions')}</p>
-                            <p class="text-base font-bold text-slate-700 dark:text-slate-300">${state.sessions.toLocaleString()}</p>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">${t('sessions')}</p>
+                            <p class="text-lg font-bold text-slate-700 dark:text-slate-300">${state.sessions.toLocaleString()}</p>
                         </div>
                     </div>
                 </div>
@@ -155,10 +168,10 @@ export const renderTasbih = (container, props = {}) => {
                                 <!-- Target Selection -->
                                 <div>
                                     <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-3">${t('targetCount')}</label>
-                                    <div class="grid grid-cols-4 gap-2 mb-3">
-                                        ${[33, 99, 100, 1000].map(val => `
-                                            <button data-target="${val}" class="target-option py-2 rounded-xl border transition-all font-bold text-sm ${state.target === val ? 'bg-theme-500 border-theme-500 text-white shadow-lg shadow-theme-500/30' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-theme-500/50'}">
-                                                ${val}
+                                    <div class="grid grid-cols-5 gap-2 mb-3">
+                                        ${[33, 99, 100, 1000, 0].map(val => `
+                                            <button data-target="${val}" class="target-option py-2 rounded-xl border transition-all font-bold text-xs ${state.target === val ? 'bg-theme-500 border-theme-500 text-white shadow-lg shadow-theme-500/30' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-theme-500/50'}">
+                                                ${val === 0 ? t('unlimited') : val}
                                             </button>
                                         `).join('')}
                                     </div>
@@ -186,11 +199,27 @@ export const renderTasbih = (container, props = {}) => {
                                     </button>
                                 </div>
 
+                                <!-- Auto Advance -->
+                                <div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-200/50 dark:border-slate-700/50">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-xl bg-theme-500/10 flex items-center justify-center text-theme-600 dark:text-theme-400">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-bold text-slate-800 dark:text-white">${t('autoAdvance')}</p>
+                                            <p class="text-[10px] text-slate-500 dark:text-slate-400">${t('autoAdvanceDesc')}</p>
+                                        </div>
+                                    </div>
+                                    <button id="auto-advance-toggle" class="w-12 h-6 rounded-full relative transition-colors ${state.autoAdvance ? 'bg-theme-500' : 'bg-slate-300 dark:bg-slate-700'}">
+                                        <div class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${state.autoAdvance ? 'translate-x-6' : ''}"></div>
+                                    </button>
+                                </div>
+
                                 <!-- Custom Phrases Management -->
                                 <div>
                                     <div class="flex items-center justify-between mb-3">
                                         <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">${t('customPhrases')}</label>
-                                        <button id="add-phrase-inline-btn" class="text-[10px] font-bold text-theme-600 dark:text-theme-400 uppercase tracking-wider hover:underline">${t('add')}</button>
+                                        <button id="add-phrase-inline-btn" class="px-3 py-1 bg-theme-500/10 text-theme-600 dark:text-theme-400 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-theme-500 hover:text-white transition-all active:scale-95 border border-theme-500/20">${t('add')}</button>
                                     </div>
                                     <div class="space-y-2 max-h-[150px] overflow-y-auto custom-scrollbar pr-1">
                                         ${state.customPhrases.length === 0 ? `
@@ -269,6 +298,9 @@ export const renderTasbih = (container, props = {}) => {
             if (state.target > 0 && state.count >= state.target) {
                 state.sessions++;
                 state.count = 0;
+                if (state.autoAdvance) {
+                    state.selectedPhraseIndex = (state.selectedPhraseIndex + 1) % getAllPhrases().length;
+                }
                 if (state.hapticEnabled && navigator.vibrate) navigator.vibrate([100, 50, 100]);
             } else if (state.hapticEnabled && navigator.vibrate) {
                 navigator.vibrate(20);
@@ -280,12 +312,30 @@ export const renderTasbih = (container, props = {}) => {
 
         container.querySelector('#reset-btn')?.addEventListener('click', () => {
             state.count = 0;
+            state.totalCount = 0;
+            state.sessions = 0;
             saveState();
             render();
         });
 
         container.querySelector('#phrase-select-btn')?.addEventListener('click', () => {
             state.showPhraseDropdown = !state.showPhraseDropdown;
+            render();
+        });
+
+        container.querySelector('#prev-phrase-btn')?.addEventListener('click', () => {
+            const allPhrases = getAllPhrases();
+            state.selectedPhraseIndex = (state.selectedPhraseIndex - 1 + allPhrases.length) % allPhrases.length;
+            state.count = 0;
+            saveState();
+            render();
+        });
+
+        container.querySelector('#next-phrase-btn')?.addEventListener('click', () => {
+            const allPhrases = getAllPhrases();
+            state.selectedPhraseIndex = (state.selectedPhraseIndex + 1) % allPhrases.length;
+            state.count = 0;
+            saveState();
             render();
         });
 
@@ -335,6 +385,12 @@ export const renderTasbih = (container, props = {}) => {
 
         container.querySelector('#haptic-toggle')?.addEventListener('click', () => {
             state.hapticEnabled = !state.hapticEnabled;
+            saveState();
+            render();
+        });
+
+        container.querySelector('#auto-advance-toggle')?.addEventListener('click', () => {
+            state.autoAdvance = !state.autoAdvance;
             saveState();
             render();
         });
