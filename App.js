@@ -62,7 +62,6 @@ const App = (rootElement) => {
         { id: 'hadith', label: t('hadith'), icon: HadithIcon, mobileLabel: t('hadithTab') },
         { id: 'hisn', label: t('hisnMuslim'), icon: ShieldIcon, mobileLabel: t('adhkarTab') },
         { id: 'tasbih', label: t('tasbih'), icon: BeadsIcon, mobileLabel: t('tasbihTab') },
-        { id: 'seerah', label: t('seerah'), icon: BookOpenIcon, mobileLabel: t('seerahTab') },
         { id: 'adhan', label: t('prayerTimes'), icon: PrayerIcon, mobileLabel: t('adhanTab') },
     ];
 
@@ -98,12 +97,19 @@ const App = (rootElement) => {
         if (state.isReaderMode && state.activeTab === 'quran') {
             const currentScrollY = window.scrollY;
             const readerTopbar = document.getElementById('reader-topbar');
+            const readerBottomNav = document.getElementById('reader-bottom-nav');
+            const backToTopBtn = document.getElementById('back-to-top');
             
             // Always show at the top or when scrolling up
             if (currentScrollY < 50 || currentScrollY < lastScrollY) {
                 if (!isHeaderVisible) {
                     header.style.transform = 'translateY(0)';
                     if (readerTopbar) readerTopbar.style.transform = 'translateY(0)';
+                    if (readerBottomNav) readerBottomNav.style.transform = 'translateY(0)';
+                    if (backToTopBtn) {
+                        backToTopBtn.style.opacity = '1';
+                        backToTopBtn.style.transform = 'translateY(0)';
+                    }
                     isHeaderVisible = true;
                 }
             } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
@@ -111,6 +117,11 @@ const App = (rootElement) => {
                 if (isHeaderVisible) {
                     header.style.transform = 'translateY(-100%)';
                     if (readerTopbar) readerTopbar.style.transform = 'translateY(-100%)';
+                    if (readerBottomNav) readerBottomNav.style.transform = 'translateY(150%)';
+                    if (backToTopBtn) {
+                        backToTopBtn.style.opacity = '0';
+                        backToTopBtn.style.transform = 'translateY(50px)';
+                    }
                     isHeaderVisible = false;
                 }
             }
