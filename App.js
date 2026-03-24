@@ -60,7 +60,6 @@ const App = (rootElement) => {
         { id: 'home', label: t('home'), icon: HomeIcon, mobileLabel: t('home') },
         { id: 'quran', label: t('quran'), icon: QuranIcon, mobileLabel: t('quran') },
         { id: 'hadith', label: t('hadith'), icon: HadithIcon, mobileLabel: t('hadithTab') },
-        { id: 'hisn', label: t('hisnMuslim'), icon: ShieldIcon, mobileLabel: t('adhkarTab') },
         { id: 'tasbih', label: t('tasbih'), icon: BeadsIcon, mobileLabel: t('tasbihTab') },
         { id: 'adhan', label: t('prayerTimes'), icon: PrayerIcon, mobileLabel: t('adhanTab') },
     ];
