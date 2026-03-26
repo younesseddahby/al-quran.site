@@ -1,5 +1,5 @@
 import { 
-    CloseIcon, SunIcon, MoonIcon, SystemThemeIcon, FacebookIcon, InstagramIcon, TelegramIcon, XIcon, WhatsappIcon, EmailIcon, UserIcon,
+    CloseIcon, SunIcon, MoonIcon, SystemThemeIcon, FacebookIcon, InstagramIcon, TelegramIcon, XIcon, GithubIcon, EmailIcon, UserIcon,
     CheckIcon, GridViewIcon, ListViewIcon, ArrowLeftIcon, ArrowRightIcon, BookOpenIcon
 } from './Icons.js';
 import { t, getCurrentLanguage } from '../i18n.js';
@@ -23,7 +23,7 @@ const socialLinks = [
     { href: 'https://www.instagram.com/youness_eddahby', icon: InstagramIcon({className: "w-5 h-5"}), label: 'Instagram' },
     { href: 'https://t.me/youness_eddahby', icon: TelegramIcon({className: "w-5 h-5"}), label: 'Telegram' },
     { href: 'https://x.com/YounessEddahby', icon: XIcon({className: "w-5 h-5"}), label: 'Twitter/X' },
-    { href: 'https://wa.me/qr/FCEFAKNUJNCIF1', icon: WhatsappIcon({className: "w-5 h-5"}), label: 'WhatsApp' },
+    { href: 'https://github.com/younesseddahby', icon: GithubIcon({className: "w-5 h-5"}), label: 'GitHub' },
 ];
 
 const getContactInfo = () => [
@@ -120,7 +120,6 @@ export const renderSettingsPage = (container, props) => {
                                 </div>
                                 <div class="glass-card rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800/50">
                                     ${renderSettingItem(t('theme'), t('themeSettingsSubtitle'), renderThemeSelector())}
-                                    ${renderSettingItem(t('colorTheme'), t('colorThemeSubtitle'), renderBaseThemeSelector())}
                                     ${renderSettingItem(t('accentColor'), t('accentColorSubtitle') || 'Choose your favorite highlight color', renderAccentColorSelector())}
                                     ${renderSettingItem(t('interfaceAnimations'), t('interfaceAnimationsSubtitle'), renderAnimationsToggle())}
                                 </div>
