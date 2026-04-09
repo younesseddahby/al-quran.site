@@ -30,28 +30,6 @@ const getContactInfo = () => [
     { icon: UserIcon(), label: 'Youness Eddahby' },
 ];
 
-const getArabicFonts = () => [
-    { id: 'noto_naskh_arabic', name: t('font_noto_naskh_arabic') },
-    { id: 'amiri', name: t('font_amiri') },
-    { id: 'scheherazade', name: t('font_scheherazade') },
-    { id: 'reem_kufi', name: t('font_reem_kufi') },
-    { id: 'vazirmatn', name: 'Vazirmatn' },
-    { id: 'lateef', name: t('font_lateef') },
-    { id: 'alkalami', name: t('font_alkalami') },
-    { id: 'gulzar', name: 'Gulzar' },
-    { id: 'cairo', name: t('font_cairo') },
-    { id: 'almarai', name: t('font_almarai') },
-    { id: 'tajawal', name: t('font_tajawal') },
-    { id: 'el_messiri', name: t('font_el_messiri') },
-    { id: 'changa', name: t('font_changa') },
-    { id: 'mada', name: t('font_mada') },
-    { id: 'harmattan', name: t('font_harmattan') },
-    { id: 'lalezar', name: t('font_lalezar') },
-    { id: 'kufam', name: t('font_kufam') },
-    { id: 'aref_ruqaa', name: t('font_aref_ruqaa') },
-    { id: 'mirza', name: t('font_mirza') },
-];
-
 let playerSearchQuery = '';
 
 export const resetSettingsPageState = () => {
@@ -61,8 +39,7 @@ export const resetSettingsPageState = () => {
 export const renderSettingsPage = (container, props) => {
     const { 
         theme, setTheme, themeColor, setThemeColor, baseTheme, setBaseTheme, language, setLanguage,
-        fontSize, setFontSize,
-        arabicFont, setArabicFont, surahListLayout, setSurahListLayout, surahGridCols, setSurahGridCols,
+        surahListLayout, setSurahListLayout, surahGridCols, setSurahGridCols,
         readerDisplayMode, setReaderDisplayMode, debugMode, setDebugMode,
         animationsEnabled, setAnimationsEnabled, onBack 
     } = props;
@@ -136,8 +113,6 @@ export const renderSettingsPage = (container, props) => {
                                 <div class="glass-card rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800/50">
                                     ${renderSettingItem(t('language'), t('appLanguageSubtitle') || 'Select your preferred app language', renderLanguageSelector())}
                                     ${language !== 'ar' ? renderSettingItem(t('readerSettings'), t('readerSettingsSubtitle') || 'Configure how the Quran is displayed', renderReaderSettingsSelector()) : ''}
-                                    ${renderSettingItem(t('arabicFont'), t('arabicFontSubtitle') || 'Choose a font for Arabic text', renderArabicFontSelector())}
-                                    ${renderSettingItem(t('fontSize'), t('fontSizeSubtitle') || 'Adjust text size for better readability', renderFontSizeSelector())}
                                 </div>
                             </section>
 
@@ -263,33 +238,6 @@ export const renderSettingsPage = (container, props) => {
         </div>
     `;
 
-    const renderArabicFontSelector = () => `
-        <select class="arabic-font-select glass text-slate-900 dark:text-white text-sm font-bold py-3 px-5 rounded-2xl border-none focus:ring-2 focus:ring-theme-500 shadow-sm min-w-[200px]">
-            ${getArabicFonts().map(f => `<option value="${f.id}" ${arabicFont === f.id ? 'selected' : ''}>${f.name}</option>`).join('')}
-        </select>
-    `;
-
-    const renderFontSizeSelector = () => {
-        const sizes = [
-            { id: 'x-small', label: 'XS' },
-            { id: 'small', label: 'S' },
-            { id: 'medium', label: 'M' },
-            { id: 'large', label: 'L' },
-            { id: 'x-large', label: 'XL' },
-            { id: 'xx-large', label: '2XL' },
-            { id: 'xxx-large', label: '3XL' }
-        ];
-        return `
-            <div class="flex items-center glass p-1.5 rounded-[1.25rem] border border-slate-200/50 dark:border-slate-700/50">
-                ${sizes.map(s => `
-                    <button data-size="${s.id}" class="font-size-btn w-10 h-10 flex items-center justify-center rounded-xl text-[10px] font-bold transition-all ${fontSize === s.id ? 'glass text-theme-600 shadow-md scale-110' : 'text-slate-500'}">
-                        ${s.label}
-                    </button>
-                `).join('')}
-            </div>
-        `;
-    };
-
     const renderSurahLayoutSelector = () => `
         <div class="space-y-6">
             <div class="flex items-center justify-between p-4 glass rounded-3xl border border-slate-100 dark:border-slate-800">
@@ -363,9 +311,6 @@ export const renderSettingsPage = (container, props) => {
         container.querySelectorAll('.mode-btn').forEach(btn => btn.addEventListener('click', () => setReaderDisplayMode(btn.dataset.mode)));
         container.querySelectorAll('.layout-btn').forEach(btn => btn.addEventListener('click', () => setSurahListLayout(btn.dataset.layout)));
         container.querySelectorAll('.grid-cols-btn').forEach(btn => btn.addEventListener('click', () => setSurahGridCols(btn.dataset.cols)));
-        
-        container.querySelector('.arabic-font-select')?.addEventListener('change', (e) => setArabicFont(e.target.value));
-        container.querySelectorAll('.font-size-btn').forEach(btn => btn.addEventListener('click', () => setFontSize(btn.dataset.size)));
 
         container.querySelector('#reset-settings-btn')?.addEventListener('click', () => {
             if (confirm(t('confirmResetSettings') || 'Are you sure you want to reset all settings to default?')) {
