@@ -8,7 +8,7 @@ export const renderSeerah = (container, props) => {
         view: 'toc', // 'toc', 'content'
         selectedChapter: localStorage.getItem('last_seerah_chapter') || null,
         searchQuery: '',
-        bookmark: localStorage.getItem('seerah_bookmark') || null,
+        bookmark: props.bookmarks.seerah.length > 0 ? props.bookmarks.seerah[props.bookmarks.seerah.length - 1].id : null,
     };
 
     const render = () => {
@@ -59,14 +59,19 @@ export const renderSeerah = (container, props) => {
                     </button>
                 ` : ''}
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                     ${SEERAH_CHAPTERS.filter(c => t(c.titleKey).toLowerCase().includes(state.searchQuery.toLowerCase())).map((chapter, index) => `
-                        <button data-chapter-id="${chapter.id}" class="p-5 glass-card rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md hover:border-theme-500/30 transition-all flex items-center justify-between group">
-                            <div class="flex items-center gap-4">
-                                <span class="text-2xl font-bold text-slate-200 dark:text-slate-700 font-display">${(index + 1).toString().padStart(2, '0')}</span>
-                                <span class="font-bold text-slate-700 dark:text-slate-200 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-colors">${t(chapter.titleKey)}</span>
+                        <button data-chapter-id="${chapter.id}" class="p-6 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 shadow-sm hover:shadow-xl hover:shadow-theme-500/10 hover:border-theme-500/30 hover:-translate-y-1 transition-all duration-500 flex items-center justify-between group relative overflow-hidden">
+                            <div class="absolute -right-8 -top-8 w-32 h-32 bg-theme-500/5 rounded-full blur-[40px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                            <div class="flex items-center gap-5 relative z-10">
+                                <div class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-all duration-500 shadow-sm font-display font-bold text-xl">
+                                    ${(index + 1).toString().padStart(2, '0')}
+                                </div>
+                                <span class="font-bold text-lg text-slate-800 dark:text-slate-200 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-colors text-left rtl:text-right">${t(chapter.titleKey)}</span>
                             </div>
-                            ${ChevronRightIcon({className: `w-5 h-5 text-slate-300 group-hover:text-theme-500 transition-all ${isRtl ? 'rotate-180' : ''}`})}
+                            <div class="relative z-10 w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-all duration-500 flex-shrink-0">
+                                ${ChevronRightIcon({className: `w-5 h-5 ${isRtl ? 'rotate-180' : ''}`})}
+                            </div>
                         </button>
                     `).join('')}
                 </div>
@@ -109,7 +114,7 @@ export const renderSeerah = (container, props) => {
                         <span class="text-xs font-bold uppercase tracking-wider">${t('back')}</span>
                     </button>
                     <div class="flex items-center gap-2">
-                        <button id="seerah-bookmark" class="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all ${state.bookmark === state.selectedChapter ? 'text-theme-500 bg-theme-50 dark:bg-theme-900/20' : 'text-slate-400'}">
+                        <button id="seerah-bookmark" class="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all ${props.bookmarks.seerah.some(b => b.id === state.selectedChapter) ? 'text-theme-500 bg-theme-50 dark:bg-theme-900/20' : 'text-slate-400'}">
                             ${BookmarkIcon({className: "w-5 h-5"})}
                         </button>
                         <button id="seerah-share" class="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-slate-400">
@@ -152,12 +157,17 @@ export const renderSeerah = (container, props) => {
         });
 
         wrapper.querySelector('#seerah-bookmark')?.addEventListener('click', () => {
-            if (state.bookmark === state.selectedChapter) {
-                state.bookmark = null;
-                localStorage.removeItem('seerah_bookmark');
+            const isBookmarked = props.bookmarks.seerah.some(b => b.id === state.selectedChapter);
+            if (isBookmarked) {
+                props.toggleBookmark('seerah', { id: state.selectedChapter });
             } else {
-                state.bookmark = state.selectedChapter;
-                localStorage.setItem('seerah_bookmark', state.bookmark);
+                props.toggleBookmark('seerah', { 
+                    id: state.selectedChapter,
+                    title: t(chapter.titleKey),
+                    subtitle: t('seerah'),
+                    text: content.substring(0, 150) + '...',
+                    lang: lang
+                });
             }
             render();
         });

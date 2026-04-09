@@ -8,9 +8,12 @@ export const renderProphetStories = (container, props) => {
     const lang = getCurrentLanguage();
     const stories = PROPHET_STORIES[lang] || PROPHET_STORIES.en;
     
+    const initialStoryId = localStorage.getItem('last_prophet_story');
+    const initialStory = initialStoryId ? stories.find(s => s.id === initialStoryId) : null;
+
     let state = {
-        view: 'list', // 'list' or 'story'
-        activeStory: null,
+        view: initialStory ? 'story' : 'list',
+        activeStory: initialStory,
         searchQuery: ''
     };
 
@@ -54,19 +57,22 @@ export const renderProphetStories = (container, props) => {
                 <input type="text" id="stories-search" placeholder="${t('searchStories') || 'Search stories...'}" value="${state.searchQuery}" class="w-full pl-12 pr-4 py-4 glass border border-slate-200/50 dark:border-slate-800/50 rounded-2xl outline-none focus:ring-4 focus:ring-theme-500/20 focus:border-theme-500 transition-all shadow-lg text-slate-800 dark:text-white placeholder:text-slate-400">
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
                 ${filteredStories.map(story => `
-                    <button data-story-id="${story.id}" class="story-card group p-6 glass-card rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-left rtl:text-right flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-2xl glass flex items-center justify-center text-theme-600 dark:text-theme-400 group-hover:bg-theme-600 group-hover:text-white transition-colors">
+                    <button data-story-id="${story.id}" class="story-card group p-6 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 shadow-sm hover:shadow-xl hover:shadow-theme-500/10 hover:border-theme-500/30 hover:-translate-y-1 transition-all duration-500 text-left rtl:text-right flex items-center justify-between relative overflow-hidden">
+                        <div class="absolute -right-8 -top-8 w-32 h-32 bg-theme-500/5 rounded-full blur-[40px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                        <div class="flex items-center gap-4 relative z-10">
+                            <div class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-all duration-500 shadow-sm">
                                 ${BookOpenIcon({className: 'w-6 h-6'})}
                             </div>
                             <div>
-                                <h3 class="font-bold text-lg text-slate-900 dark:text-white">${story.name}</h3>
-                                <p class="text-xs text-slate-500 dark:text-slate-400">${t('readStory') || 'Read Story'}</p>
+                                <h3 class="font-bold text-lg text-slate-900 dark:text-white group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-colors">${story.name}</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1">${t('readStory') || 'Read Story'}</p>
                             </div>
                         </div>
-                        ${ChevronRightIcon({className: 'w-5 h-5 text-slate-300 group-hover:text-theme-500 transition-colors rtl:rotate-180'})}
+                        <div class="relative z-10 w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-all duration-500">
+                            ${ChevronRightIcon({className: 'w-5 h-5 rtl:rotate-180'})}
+                        </div>
                     </button>
                 `).join('')}
             </div>
@@ -158,11 +164,13 @@ export const renderProphetStories = (container, props) => {
 
         wrapper.querySelector('#story-back-btn').onclick = () => {
             state.view = 'list';
+            localStorage.removeItem('last_prophet_story');
             render();
         };
 
         wrapper.querySelector('#story-finish-btn').onclick = () => {
             state.view = 'list';
+            localStorage.removeItem('last_prophet_story');
             render();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };

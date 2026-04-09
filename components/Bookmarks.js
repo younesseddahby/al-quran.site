@@ -1,5 +1,5 @@
 import { t, getCurrentLanguage } from '../i18n.js';
-import { QuranIcon, HadithIcon, BookmarkIcon, TrashIcon, ArrowLeftIcon, ArrowRightIcon, ChevronRightIcon } from './Icons.js';
+import { QuranIcon, HadithIcon, BookmarkIcon, TrashIcon, ArrowLeftIcon, ArrowRightIcon, ChevronRightIcon, BookOpenIcon } from './Icons.js';
 
 export const renderBookmarks = (container, props) => {
     const { bookmarks, toggleBookmark, setActiveTab, setReaderMode } = props;
@@ -18,7 +18,8 @@ export const renderBookmarks = (container, props) => {
 
         const quranCount = bookmarks.quran.length;
         const hadithCount = bookmarks.hadith.length;
-        const totalCount = quranCount + hadithCount;
+        const seerahCount = bookmarks.seerah?.length || 0;
+        const totalCount = quranCount + hadithCount + seerahCount;
 
         wrapper.innerHTML = `
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
@@ -33,10 +34,11 @@ export const renderBookmarks = (container, props) => {
                     </div>
                 </div>
                 
-                <div class="flex glass p-1 rounded-2xl border border-white/10 shadow-sm">
-                    <button data-filter="all" class="filter-btn px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all ${state.activeFilter === 'all' ? 'bg-theme-500 text-white shadow-md' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}">${t('all') || 'All'} (${totalCount})</button>
-                    <button data-filter="quran" class="filter-btn px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all ${state.activeFilter === 'quran' ? 'bg-theme-500 text-white shadow-md' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}">${t('quran')} (${quranCount})</button>
-                    <button data-filter="hadith" class="filter-btn px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all ${state.activeFilter === 'hadith' ? 'bg-theme-500 text-white shadow-md' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}">${t('hadith')} (${hadithCount})</button>
+                <div class="flex glass p-1 rounded-2xl border border-white/10 shadow-sm overflow-x-auto hide-scrollbar">
+                    <button data-filter="all" class="filter-btn px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap ${state.activeFilter === 'all' ? 'bg-theme-500 text-white shadow-md' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}">${t('all') || 'All'} (${totalCount})</button>
+                    <button data-filter="quran" class="filter-btn px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap ${state.activeFilter === 'quran' ? 'bg-theme-500 text-white shadow-md' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}">${t('quran')} (${quranCount})</button>
+                    <button data-filter="hadith" class="filter-btn px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap ${state.activeFilter === 'hadith' ? 'bg-theme-500 text-white shadow-md' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}">${t('hadith')} (${hadithCount})</button>
+                    <button data-filter="seerah" class="filter-btn px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap ${state.activeFilter === 'seerah' ? 'bg-theme-500 text-white shadow-md' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}">${t('seerah')} (${seerahCount})</button>
                 </div>
             </div>
 
@@ -66,6 +68,9 @@ export const renderBookmarks = (container, props) => {
         if (state.activeFilter === 'all' || state.activeFilter === 'hadith') {
             items = [...items, ...bookmarks.hadith.map(b => ({ ...b, type: 'hadith' }))];
         }
+        if (state.activeFilter === 'all' || state.activeFilter === 'seerah') {
+            items = [...items, ...(bookmarks.seerah || []).map(b => ({ ...b, type: 'seerah' }))];
+        }
 
         // Sort by date added (assuming we added a timestamp, but for now just reverse)
         items.reverse();
@@ -86,11 +91,10 @@ export const renderBookmarks = (container, props) => {
 
         return items.map(item => `
             <div class="group p-5 md:p-6 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 hover:shadow-xl hover:shadow-theme-500/10 hover:border-theme-500/30 hover:-translate-y-1 transition-all duration-500 relative overflow-hidden">
-                <div class="absolute -right-8 -top-8 w-32 h-32 bg-theme-500/5 rounded-full blur-[40px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                 <div class="flex justify-between items-start mb-4 relative z-10">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-all duration-500 shadow-sm">
-                            ${item.type === 'quran' ? QuranIcon({className: "w-5 h-5"}) : HadithIcon({className: "w-5 h-5"})}
+                            ${item.type === 'quran' ? QuranIcon({className: "w-5 h-5"}) : (item.type === 'hadith' ? HadithIcon({className: "w-5 h-5"}) : BookOpenIcon({className: "w-5 h-5"}))}
                         </div>
                         <div>
                             <h4 class="font-bold text-base text-slate-800 dark:text-slate-200 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-colors">${item.title}</h4>
@@ -101,7 +105,7 @@ export const renderBookmarks = (container, props) => {
                         ${TrashIcon({className: "w-4 h-4"})}
                     </button>
                 </div>
-                <div class="relative cursor-pointer bookmark-content z-10" data-id="${item.id}" data-type="${item.type}" data-surah="${item.surahNum}" data-ayah="${item.ayahNum}">
+                <div class="relative cursor-pointer bookmark-content z-10" data-id="${item.id}" data-type="${item.type}" data-surah="${item.surahNum || ''}" data-ayah="${item.ayahNum || ''}" data-collection="${item.collection || ''}" data-hadith="${item.hadithNumber || ''}">
                     <p class="text-base md:text-lg leading-relaxed text-slate-700 dark:text-slate-300 ${item.lang === 'ar' ? 'font-amiri text-right text-xl md:text-2xl' : 'text-left'} line-clamp-3" dir="${item.lang === 'ar' ? 'rtl' : 'ltr'}">
                         ${item.text}
                     </p>
@@ -134,9 +138,13 @@ export const renderBookmarks = (container, props) => {
                     setReaderMode({ surah: { number: surahNum }, ayah: ayahNum });
                     setActiveTab('quran');
                 } else if (type === 'hadith') {
-                    // For hadith, we might need more logic to jump to specific one
-                    // For now just go to hadith tab
+                    const collection = item.dataset.collection;
+                    const hadithNumber = parseInt(item.dataset.hadith);
+                    props.setHadithMode({ collection, hadithNumber });
                     setActiveTab('hadith');
+                } else if (type === 'seerah') {
+                    localStorage.setItem('last_seerah_chapter', item.dataset.id);
+                    setActiveTab('seerah');
                 }
             });
         });

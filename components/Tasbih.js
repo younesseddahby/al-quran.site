@@ -254,11 +254,11 @@ export const renderTasbih = (container, props = {}) => {
                             <div class="space-y-4">
                                 <div>
                                     <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">${t('arabicText')}</label>
-                                    <textarea id="new-phrase-arabic" class="w-full p-4 glass rounded-2xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-theme-500/50 font-amiri text-xl text-right" rows="2" placeholder="سبحان الله"></textarea>
+                                    <textarea id="new-phrase-arabic" class="w-full p-4 glass rounded-2xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-theme-500/50 font-amiri text-xl text-right text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-600" rows="2" placeholder="سبحان الله"></textarea>
                                 </div>
                                 <div>
                                     <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">${t('translation')}</label>
-                                    <input id="new-phrase-translation" type="text" class="w-full p-4 glass rounded-2xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-theme-500/50 text-sm" placeholder="Glory be to Allah">
+                                    <input id="new-phrase-translation" type="text" class="w-full p-4 glass rounded-2xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-theme-500/50 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-600" placeholder="Glory be to Allah">
                                 </div>
                             </div>
                             <div class="flex gap-3 mt-8">
@@ -279,6 +279,9 @@ export const renderTasbih = (container, props = {}) => {
         container.querySelector('#tasbih-back-btn')?.addEventListener('click', () => props.onBack?.());
         
         const tapArea = container.querySelector('#tasbih-tap-area');
+        const countEl = container.querySelector('#tasbih-count');
+        const progressRing = container.querySelector('#tasbih-progress-ring');
+        
         tapArea?.addEventListener('click', (e) => {
             state.count++;
             state.totalCount++;
@@ -295,11 +298,24 @@ export const renderTasbih = (container, props = {}) => {
             rippleContainer.appendChild(ripple);
             setTimeout(() => ripple.remove(), 600);
 
+            // Update UI selectively instead of full render
+            if (countEl) countEl.textContent = state.count;
+            if (progressRing && state.target > 0) {
+                const progress = Math.min(state.count / state.target, 1);
+                progressRing.style.strokeDashoffset = 282.7 * (1 - progress);
+                progressRing.style.opacity = state.count === 0 ? 0 : 1;
+            }
+
             if (state.target > 0 && state.count >= state.target) {
                 state.sessions++;
                 state.count = 0;
                 if (state.autoAdvance) {
                     state.selectedPhraseIndex = (state.selectedPhraseIndex + 1) % getAllPhrases().length;
+                    render(); // Need full render for phrase change
+                } else {
+                    // Update UI for reset
+                    if (countEl) countEl.textContent = state.count;
+                    if (progressRing) progressRing.style.strokeDashoffset = 282.7;
                 }
                 if (state.hapticEnabled && navigator.vibrate) navigator.vibrate([100, 50, 100]);
             } else if (state.hapticEnabled && navigator.vibrate) {
@@ -307,7 +323,7 @@ export const renderTasbih = (container, props = {}) => {
             }
             
             saveState();
-            render();
+            // render(); // Removed full render
         });
 
         container.querySelector('#reset-btn')?.addEventListener('click', () => {

@@ -316,11 +316,12 @@ const renderQuickLinks = (container) => {
     const lastReadData = JSON.parse(localStorage.getItem('quran_last_read'));
 
     const linksContainer = document.createElement('div');
-    linksContainer.className = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8";
+    linksContainer.className = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-12";
     const linkItems = [
+        { nav: "seerah", icon: BookOpenIcon({className: 'w-6 h-6'}), title: t('prophetSeerah') || "Prophet's Seerah", desc: t('seerahHeroDesc') || "Explore the life and legacy of the Prophet Muhammad (PBUH)", meta: 'Biography', color: 'indigo' },
+        { nav: "stories", icon: SparklesIcon({className: 'w-6 h-6'}), title: t('prophetStories') || "Prophet Stories", desc: t('prophetStoriesDesc') || "Stories of the Prophets from Adam to Muhammad (PBUH)", meta: 'Stories', color: 'amber' },
         { nav: "bookmarks", icon: BookmarkIcon({className: 'w-6 h-6'}), title: t('bookmarks') || 'Bookmarks', desc: t('bookmarksTab') || 'View your saved verses.', meta: 'Saved', color: 'pink' },
         { nav: "quiz", icon: QuizIcon({className: 'w-6 h-6'}), title: t('islamicQuiz'), desc: t('testYourKnowledge') || 'Test your Islamic knowledge.', meta: 'Learn', color: 'orange' },
-        { nav: "stories", icon: BookOpenIcon({className: 'w-6 h-6'}), title: t('prophetStories'), desc: t('prophetStoriesDesc'), meta: 'Stories', color: 'teal' },
         { nav: "asma", icon: BookOpenIcon({className: 'w-6 h-6'}), title: t('asmaUlHusna'), desc: t('asmaUlHusnaDesc') || 'The 99 Names of Allah', meta: '99 Names', color: 'violet' },
         { nav: "quran", subNav: "read", icon: BookOpenIcon({className: 'w-6 h-6'}), title: t('readQuran'), desc: t('readQuranDesc') || 'Read the Holy Quran', meta: '114 Surahs', color: 'theme' },
         { nav: "quran", subNav: "listen", icon: ListenIcon({className: 'w-6 h-6'}), title: t('exploreRecitations'), desc: t('exploreRecitationsDesc'), meta: 'Audio', color: 'indigo' },
@@ -345,6 +346,39 @@ const renderQuickLinks = (container) => {
         </a>
     `).join('');
     container.appendChild(linksContainer);
+};
+
+const renderProphetStoriesSection = (container, state) => {
+    const sectionHeader = document.createElement('h3');
+    sectionHeader.className = "font-bold font-display text-lg md:text-xl text-slate-900 dark:text-white mb-4 flex items-center gap-2";
+    sectionHeader.innerHTML = `
+        <span class="w-1.5 h-6 bg-amber-500 rounded-full"></span>
+        ${t('prophetStories') || 'Prophet Stories'}
+    `;
+    container.appendChild(sectionHeader);
+
+    const storiesContainer = document.createElement('div');
+    storiesContainer.className = "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 mb-8";
+    
+    const prophets = [
+        { id: 'adam', name: 'Adam', nameAr: 'آدم' },
+        { id: 'nuh', name: 'Noah', nameAr: 'نوح' },
+        { id: 'ibrahim', name: 'Abraham', nameAr: 'إبراهيم' },
+        { id: 'musa', name: 'Moses', nameAr: 'موسى' },
+        { id: 'isa', name: 'Jesus', nameAr: 'عيسى' },
+        { id: 'muhammad', name: 'Muhammad', nameAr: 'محمد' }
+    ];
+
+    storiesContainer.innerHTML = prophets.map((p, i) => `
+        <a href="#" data-nav="stories" data-prophet-id="${p.id}" class="group p-3 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 hover:border-amber-500/30 hover:-translate-y-1 transition-all duration-300 text-center flex flex-col items-center gap-2 fade-in" style="animation-delay: ${0.2 + (i * 0.05)}s">
+            <div class="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-600 dark:text-amber-400 group-hover:bg-amber-500 group-hover:text-white transition-all duration-500 shadow-sm font-amiri text-lg">
+                ${p.nameAr}
+            </div>
+            <span class="text-[10px] font-bold text-slate-700 dark:text-slate-300 group-hover:text-amber-600 transition-colors">${getCurrentLanguage() === 'ar' ? p.nameAr : p.name}</span>
+        </a>
+    `).join('');
+    
+    container.appendChild(storiesContainer);
 };
 
 // --- MAIN COMPONENT ---
@@ -392,6 +426,7 @@ export const renderHomePage = (container, props) => {
         });
         
         renderQuickLinks(quickLinksContainer);
+        renderProphetStoriesSection(quickLinksContainer, state);
         
         getDailyAyah().then(ayah => {
             if (ayah) {
@@ -450,6 +485,11 @@ export const renderHomePage = (container, props) => {
         if (link) {
             e.preventDefault();
             const tabId = link.dataset.nav;
+            const prophetId = link.dataset.prophetId;
+            
+            if (tabId === 'stories' && prophetId) {
+                localStorage.setItem('last_prophet_story', prophetId);
+            }
             
             const surah = link.dataset.surah;
             const ayah = link.dataset.ayah;

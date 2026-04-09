@@ -41,7 +41,7 @@ const App = (rootElement) => {
         surahGridCols: localStorage.getItem('surahGridCols') || '3',
         readerDisplayMode: localStorage.getItem('readerDisplayMode') || 'both', // 'both', 'translation'
         debugMode: localStorage.getItem('debugMode') === 'true',
-        bookmarks: JSON.parse(localStorage.getItem('bookmarks') || '{"quran": [], "hadith": []}'),
+        bookmarks: JSON.parse(localStorage.getItem('bookmarks') || '{"quran": [], "hadith": [], "seerah": []}'),
         isReaderMode: false,
         readerConfig: null,
         quranMode: 'read',
@@ -60,6 +60,7 @@ const App = (rootElement) => {
         { id: 'home', label: t('home'), icon: HomeIcon, mobileLabel: t('home') },
         { id: 'quran', label: t('quran'), icon: QuranIcon, mobileLabel: t('quran') },
         { id: 'hadith', label: t('hadith'), icon: HadithIcon, mobileLabel: t('hadithTab') },
+        { id: 'seerah', label: t('seerah'), icon: BookOpenIcon, mobileLabel: t('seerah') },
         { id: 'tasbih', label: t('tasbih'), icon: BeadsIcon, mobileLabel: t('tasbihTab') },
         { id: 'adhan', label: t('prayerTimes'), icon: PrayerIcon, mobileLabel: t('adhanTab') },
     ];
