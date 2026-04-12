@@ -1,19 +1,21 @@
 {
-  "name": "The Holy Quran",
-  "short_name": "Al-Quran",
+  "short_name": "Al Quran",
+  "name": "The Holy Quran App",
+  "description": "Experience the Holy Quran online with translations, audio recitations, prayer times, and daily Islamic reminders. Your all-in-one digital Islamic companion.",
   "icons": [
     {
-      "src": "/android-chrome-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png"
+      "src": "android-chrome-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
     },
     {
-      "src": "/android-chrome-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png"
+      "src": "android-chrome-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
     }
   ],
-  "theme_color": "#ffffff",
-  "background_color": "#ffffff",
-  "display": "standalone"
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#0d9488",
+  "background_color": "#f9fafb"
 }

@@ -384,26 +384,90 @@ const App = (rootElement) => {
     };
 
     const updateMetadata = () => {
-        let title = 'The Holy Quran App | Read & Listen Quran Online';
-        let description = 'Read and listen to the Holy Quran online with multi-language translations and audio recitations.';
         const baseUrl = 'https://al-quran.site';
+        let title = 'The Holy Quran App | Read, Listen & Learn Islam Online';
+        let description = 'Experience the Holy Quran online with translations, audio recitations, prayer times, and daily Islamic reminders. Your all-in-one digital Islamic companion.';
         let canonical = baseUrl;
+
+        const seoData = {
+            home: {
+                title: 'The Holy Quran App | Read, Listen & Learn Islam Online',
+                description: 'Experience the Holy Quran online with translations, audio recitations, prayer times, and daily Islamic reminders. Your all-in-one digital Islamic companion.'
+            },
+            quran: {
+                title: 'Read & Listen to Holy Quran Online | Multi-Language',
+                description: 'Access the full Holy Quran with beautiful recitations and accurate translations. Read by Surah or Juz with customizable fonts and themes for a better experience.'
+            },
+            hadith: {
+                title: 'Explore Sahih Hadith Collections | Prophet\'s Sayings',
+                description: 'Search and read authentic Hadith from Sahih al-Bukhari, Muslim, and more. Gain deeper insights into the Sunnah and teachings of Prophet Muhammad (PBUH).'
+            },
+            seerah: {
+                title: 'Prophet Muhammad (PBUH) Seerah | Life of the Messenger',
+                description: 'Discover the detailed biography of Prophet Muhammad (PBUH). Learn about his life, character, and the history of Islam through an engaging and educational Seerah.'
+            },
+            tasbih: {
+                title: 'Digital Tasbih Counter | Online Dhikr & Zikir',
+                description: 'Use our digital Tasbih counter for your daily Dhikr. Save custom supplications, track your progress, and stay consistent with your morning and evening zikir.'
+            },
+            adhan: {
+                title: 'Accurate Prayer Times & Adhan Alerts | Global Search',
+                description: 'Get precise Salah times for your location. Never miss a prayer with Adhan notifications, Hijri calendar integration, and a countdown to the next prayer.'
+            },
+            hisn: {
+                title: 'Hisn al-Muslim | Authentic Duas & Supplications',
+                description: 'Access the complete Hisn al-Muslim collection. Find authentic Duas for every occasion, from morning and evening adhkar to specific prayers for protection.'
+            },
+            quiz: {
+                title: 'Islamic Quiz | Test Your Knowledge of Islam',
+                description: 'Challenge yourself with our interactive Islamic quiz. Learn about the Quran, Hadith, Seerah, and Islamic history while having fun and tracking your score.'
+            },
+            stories: {
+                title: 'Stories of the Prophets | From Adam to Muhammad (PBUH)',
+                description: 'Read inspiring stories of the Prophets mentioned in the Quran. Learn about their struggles, miracles, and the timeless lessons they brought to humanity.'
+            },
+            asma: {
+                title: '99 Names of Allah | Asma-ul-Husna with Meanings',
+                description: 'Explore the 99 Names of Allah (Asma-ul-Husna). Learn the beautiful meanings, benefits, and spiritual significance of each Divine Name in Islam.'
+            },
+            qibla: {
+                title: 'Accurate Qibla Finder | Locate Kaaba Direction Online',
+                description: 'Find the exact Qibla direction from anywhere in the world. Use our precise compass tool to locate the Kaaba in Makkah for your daily prayers.'
+            },
+            bookmarks: {
+                title: 'My Bookmarks | Saved Verses & Hadiths',
+                description: 'Access your saved Quranic verses, Hadiths, and Seerah chapters in one place. Keep track of your spiritual journey and favorite Islamic content.'
+            },
+            settings: {
+                title: 'Settings | Customize Your Islamic App Experience',
+                description: 'Personalize your app with custom themes, languages, and display modes. Configure prayer times and interface preferences to suit your needs.'
+            }
+        };
 
         if (state.activeTab === 'quran' && CACHE.selectedSurah && CACHE.readerView === 'reader') {
             const surahNum = CACHE.selectedSurah.number;
             const slug = Object.keys(SURAH_SLUGS).find(key => SURAH_SLUGS[key] === surahNum) || surahNum;
             title = `Surah ${slug.toString().replace(/-/g, ' ').toUpperCase()} | Read Quran Online`;
+            description = `Read Surah ${slug.toString().replace(/-/g, ' ')} with translation and audio. Explore the meanings and lessons of this chapter from the Holy Quran.`;
             canonical = `${baseUrl}/surah/${slug}`;
-        } else if (state.activeTab === 'home') {
-            title = 'The Holy Quran App | Read Quran Online | Listen Quran Audio';
-            canonical = baseUrl;
         } else {
-            title = `${state.activeTab.charAt(0).toUpperCase() + state.activeTab.slice(1)} | The Holy Quran App`;
-            canonical = `${baseUrl}/${state.activeTab}`;
+            const data = seoData[state.activeTab] || seoData.home;
+            title = data.title;
+            description = data.description;
+            canonical = state.activeTab === 'home' ? baseUrl : `${baseUrl}/${state.activeTab}`;
         }
 
         document.title = title;
         
+        // Update meta description
+        let metaDesc = document.querySelector('meta[name="description"]');
+        if (!metaDesc) {
+            metaDesc = document.createElement('meta');
+            metaDesc.setAttribute('name', 'description');
+            document.head.appendChild(metaDesc);
+        }
+        metaDesc.setAttribute('content', description);
+
         // Update canonical link
         let link = document.querySelector("link[rel='canonical']");
         if (!link) {
