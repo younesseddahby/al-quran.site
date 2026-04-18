@@ -245,6 +245,7 @@ const renderPrayerWidget = (container, state) => {
         const prayerOrder = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
         const timings = state.prayerTimes.timings;
         const now = new Date();
+        const location = JSON.parse(localStorage.getItem('prayerLocation'));
         let nextPrayerName = null;
         let nextPrayerTime = Infinity;
 
@@ -262,14 +263,17 @@ const renderPrayerWidget = (container, state) => {
         
         prayerContainer.innerHTML = `
             <div class="p-6 glass-card rounded-3xl h-full flex flex-col transition-all duration-500 hover:shadow-theme-500/5 border border-slate-200/50 dark:border-slate-700/50">
-                <div class="flex justify-between items-center mb-6">
-                    <div class="flex items-center gap-2">
-                        <div class="w-8 h-8 rounded-lg bg-theme-500/10 flex items-center justify-center text-theme-600 dark:text-theme-400">
-                            ${ClockIcon({className: 'w-5 h-5'})}
+                <div class="flex justify-between items-start mb-6">
+                    <div class="flex flex-col gap-1">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-lg bg-theme-500/10 flex items-center justify-center text-theme-600 dark:text-theme-400">
+                                ${ClockIcon({className: 'w-5 h-5'})}
+                            </div>
+                            <h3 class="font-bold font-display text-lg text-slate-900 dark:text-white">${t('prayerTimes')}</h3>
                         </div>
-                        <h3 class="font-bold font-display text-lg text-slate-900 dark:text-white">${t('prayerTimes')}</h3>
+                        ${location ? `<p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest pl-10">${location.city}</p>` : ''}
                     </div>
-                    <a href="#" data-nav="adhan" class="text-xs font-bold text-theme-600 dark:text-theme-400 hover:underline flex items-center gap-1">
+                    <a href="#" data-nav="adhan" class="text-xs font-bold text-theme-600 dark:text-theme-400 hover:underline flex items-center gap-1 mt-1">
                         ${t('viewAll')}
                     </a>
                 </div>
