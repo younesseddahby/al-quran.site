@@ -233,7 +233,9 @@ const App = (rootElement) => {
 
         if (currentContentCleanup) currentContentCleanup();
         mainContent.innerHTML = '';
-        mainContent.className = 'container mx-auto px-2 sm:px-4 py-4 md:py-6 pb-24 md:pb-8';
+        mainContent.className = state.isReaderMode && state.activeTab === 'quran' 
+            ? 'w-full px-0 py-0 pb-24' 
+            : 'container mx-auto px-2 sm:px-4 py-4 md:py-6 pb-24 md:pb-8';
         
         lastRenderedLanguage = state.language;
         lastRenderedTab = state.activeTab;

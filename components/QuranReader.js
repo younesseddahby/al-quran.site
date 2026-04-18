@@ -300,13 +300,13 @@ export const renderQuranReader = (container, cache, props) => {
                 html = batch.map((a, i) => {
                     const isBookmarked = props.bookmarks.quran.some(b => b.id === `${state.pageData.number}:${a.numberInSurah}`);
                     return `
-                    <div class="ayah-item group p-0.5 md:p-1 rounded-lg md:rounded-xl border border-transparent hover:border-theme-500/20 hover:bg-theme-50/30 dark:hover:bg-theme-900/10 transition-all cursor-pointer fade-in ${state.activeAyah == a.numberInSurah ? 'bg-theme-50 dark:bg-theme-900/20 border-theme-500/30' : ''}" 
+                    <div class="ayah-item group p-0 md:p-0.5 rounded-md border border-transparent hover:border-theme-500/20 hover:bg-theme-50/30 dark:hover:bg-theme-900/10 transition-all cursor-pointer fade-in ${state.activeAyah == a.numberInSurah ? 'bg-theme-50 dark:bg-theme-900/20 border-theme-500/30' : ''}" 
                          style="animation-delay: ${i * 30}ms"
                          data-num="${a.numberInSurah}" 
                          data-ayah-number="${a.numberInSurah}">
-                        <div class="flex items-start justify-between gap-1 md:gap-2 mb-1 md:mb-2">
-                            <div class="flex items-center gap-1 md:gap-1.5">
-                                <span class="w-6 h-6 md:w-8 md:h-8 flex-shrink-0 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-md text-[8px] md:text-xs font-bold text-slate-500 group-hover:bg-theme-600 group-hover:text-white transition-all">${a.numberInSurah}</span>
+                        <div class="flex items-start justify-between gap-1 mb-0.5">
+                            <div class="flex items-center gap-1">
+                                <span class="w-6 h-6 flex-shrink-0 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-md text-[7px] md:text-[9px] font-bold text-slate-500 group-hover:bg-theme-600 group-hover:text-white transition-all">${a.numberInSurah}</span>
                                 <button class="bookmark-ayah-btn p-0.5 md:p-1 rounded-md hover:bg-theme-100 dark:hover:bg-theme-800 text-slate-400 hover:text-theme-600 transition-all" data-surah="${state.pageData.number}" data-ayah="${a.numberInSurah}">
                                     ${isBookmarked ? BookmarkSolidIcon({className: "w-3 h-3 md:w-3.5 h-3.5 text-theme-600"}) : BookmarkIcon({className: "w-3 h-3 md:w-3.5 h-3.5"})}
                                 </button>
@@ -644,26 +644,25 @@ export const renderQuranReader = (container, cache, props) => {
             </div>
             
             <div class="pt-14 pb-20 md:pt-16 md:pb-28 max-w-full mx-auto px-0 ${fontSizeClass} ${fontClass}" id="reader-scroll-container">
-                <div class="glass-card rounded-none md:rounded-xl p-0.5 md:p-1 shadow-2xl page-texture border-x-0 md:border-x border-white/5 transition-all duration-500 relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-theme-500/5 to-transparent pointer-events-none"></div>
+                <div class="glass-card rounded-none p-0 shadow-none border-0 transition-all duration-500 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-12 bg-gradient-to-b from-theme-500/5 to-transparent pointer-events-none"></div>
                     
-                    <div class="text-center mb-2 relative z-10">
-                        <p class="text-[8px] font-bold text-theme-600/60 dark:text-theme-400/60 uppercase tracking-[0.3em] animate-pulse">
+                    <div class="text-center mb-1 relative z-10">
+                        <p class="text-[7px] font-bold text-theme-600/40 dark:text-theme-400/40 uppercase tracking-[0.2em]">
                             ${t('clickAyahForTafsir') || (getCurrentLanguage() === 'ar' ? 'انقر على الآية لعرض التفسير' : 'Click on any verse to view its Tafsir')}
                         </p>
                     </div>
 
-                    <div class="text-center mb-4 md:mb-8 relative z-10">
+                    <div class="text-center mb-2 md:mb-4 relative z-10">
                          ${(s.number !== 1 && s.number !== 9) ? `
-                            <div class="mb-2 md:mb-6">
-                                <p class="font-amiri text-2xl md:text-4xl lg:text-5xl text-slate-900 dark:text-white leading-relaxed drop-shadow-sm">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</p>
-                                <div class="w-16 h-0.5 bg-gradient-to-r from-transparent via-theme-500/30 to-transparent mx-auto mt-2"></div>
+                            <div class="mb-1 md:mb-2">
+                                <p class="font-amiri text-xl md:text-3xl text-slate-900 dark:text-white leading-relaxed">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</p>
                             </div>
                          ` : ''}
-                         <div class="inline-flex items-center gap-2 px-4 py-1.5 glass rounded-full border border-white/10 shadow-lg">
-                            <span class="text-[9px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.3em]">${s.revelationType}</span>
-                            <div class="w-1.5 h-1.5 rounded-full bg-theme-500 shadow-[0_0_8px_rgba(var(--theme-color-500-rgb),0.6)]"></div>
-                            <span class="text-[9px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.3em]">${s.numberOfAyahs} ${t('ayahs')}</span>
+                         <div class="inline-flex items-center gap-1.5 px-3 py-1 glass rounded-full border border-white/5 opacity-80">
+                            <span class="text-[8px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">${s.revelationType}</span>
+                            <div class="w-1 h-1 rounded-full bg-theme-500/50"></div>
+                            <span class="text-[8px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">${s.numberOfAyahs} ${t('ayahs')}</span>
                          </div>
                     </div>
 

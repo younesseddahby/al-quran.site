@@ -10,11 +10,13 @@ export const renderQuranHub = (container, cache, props) => {
     let isInitialized = false;
 
     const render = () => {
+        const isReaderView = cache.readerView === 'reader';
+        
         // Only clear the container if we haven't rendered the toggle skeleton yet
         if (!isInitialized) {
             container.innerHTML = `
-                <div class="space-y-4 md:space-y-8">
-                    <div class="flex justify-center">
+                <div class="space-y-1 md:space-y-2 fade-in">
+                    <div id="quran-mode-toggle-wrap" class="flex justify-center pt-2 ${isReaderView ? 'hidden' : ''}">
                         <div class="inline-flex p-1 glass rounded-[2rem] shadow-inner border border-slate-200/50 dark:border-slate-700/50">
                             <button data-mode="read" class="mode-btn px-4 sm:px-8 py-2 md:py-3 text-xs md:text-sm font-bold rounded-[1.5rem] flex items-center gap-2 md:gap-2.5 transition-all duration-500 transform active:scale-95">
                                 ${QuranIcon({className: "w-4 h-4 md:w-5 md:h-5"})} <span>${t('read')}</span>
@@ -48,6 +50,14 @@ export const renderQuranHub = (container, cache, props) => {
         const contentArea = container.querySelector('#hub-content-area');
         if (!contentArea) return;
 
+        // Update Toggle visibility
+        const toggleWrap = container.querySelector('#quran-mode-toggle-wrap');
+        const isReaderView = cache.readerView === 'reader';
+        if (toggleWrap) {
+            if (isReaderView) toggleWrap.classList.add('hidden');
+            else toggleWrap.classList.remove('hidden');
+        }
+        
         // Update Toggle Styling
         container.querySelectorAll('.mode-btn').forEach(btn => {
             const isActive = btn.dataset.mode === mode;
@@ -55,6 +65,13 @@ export const renderQuranHub = (container, cache, props) => {
                 isActive ? 'glass text-theme-700 dark:text-theme-300 shadow-xl shadow-slate-200/50 dark:shadow-none' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
             }`;
         });
+
+        // If we are already in the correct mode and have content, don't re-render everything
+        // This prevents scroll position loss when App.js re-renders
+        if (contentArea.dataset.renderedMode === mode) {
+            return;
+        }
+        contentArea.dataset.renderedMode = mode;
 
         // Cleanup previous sub-component
         if (currentCleanup) {
