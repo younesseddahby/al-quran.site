@@ -38,21 +38,7 @@ export const renderQuranReader = (container, cache, props) => {
         contentArea.className = 'quran-reader-inner min-h-full transition-opacity duration-300';
         container.innerHTML = '';
         container.appendChild(contentArea);
-        
-        contentArea.addEventListener('touchstart', e => { 
-            touchStartX = e.changedTouches[0].screenX;
-            touchStartY = e.changedTouches[0].screenY;
-        }, { passive: true });
-        contentArea.addEventListener('touchend', e => { 
-            const distX = e.changedTouches[0].screenX - touchStartX;
-            const distY = e.changedTouches[0].screenY - touchStartY;
-            handleSwipe(distX, distY);
-        }, { passive: true });
     }
-
-    let touchStartX = 0;
-    let touchStartY = 0;
-    const SWIPE_THRESHOLD = 70;
 
     const setState = (newState) => {
         Object.assign(state, newState);
@@ -309,12 +295,12 @@ export const renderQuranReader = (container, cache, props) => {
             } else {
                 // Block style for translations
                 container.classList.remove('quran-arabic-text');
-                container.classList.add('space-y-2');
+                container.classList.add('space-y-1');
                 
                 html = batch.map((a, i) => {
                     const isBookmarked = props.bookmarks.quran.some(b => b.id === `${state.pageData.number}:${a.numberInSurah}`);
                     return `
-                    <div class="ayah-item group p-1 md:p-2 rounded-lg md:rounded-xl border border-transparent hover:border-theme-500/20 hover:bg-theme-50/30 dark:hover:bg-theme-900/10 transition-all cursor-pointer fade-in ${state.activeAyah == a.numberInSurah ? 'bg-theme-50 dark:bg-theme-900/20 border-theme-500/30' : ''}" 
+                    <div class="ayah-item group p-0.5 md:p-1 rounded-lg md:rounded-xl border border-transparent hover:border-theme-500/20 hover:bg-theme-50/30 dark:hover:bg-theme-900/10 transition-all cursor-pointer fade-in ${state.activeAyah == a.numberInSurah ? 'bg-theme-50 dark:bg-theme-900/20 border-theme-500/30' : ''}" 
                          style="animation-delay: ${i * 30}ms"
                          data-num="${a.numberInSurah}" 
                          data-ayah-number="${a.numberInSurah}">
@@ -414,19 +400,6 @@ export const renderQuranReader = (container, cache, props) => {
         } else if (retryCount < 10) {
             // If element not found, retry after a short delay (useful during batch rendering)
             setTimeout(() => scrollToAyah(num, retryCount + 1), 150);
-        }
-    };
-
-    const handleSwipe = (distX, distY) => {
-        if (state.loading || state.processing || state.view !== 'reader') return;
-        if (state.isSettingsModal || state.isTafsirModal || state.isJumpModal) return;
-        if (Math.abs(distY) > Math.abs(distX)) return;
-        if (Math.abs(distX) < SWIPE_THRESHOLD) return;
-        const currentNum = state.pageData?.number || 0;
-        if (distX < 0) {
-            if (currentNum < 114) fetchPage(currentNum + 1);
-        } else {
-            if (currentNum > 1) fetchPage(currentNum - 1);
         }
     };
 
@@ -621,7 +594,7 @@ export const renderQuranReader = (container, cache, props) => {
 
         // If we are already showing this surah, don't re-render the whole shell
         // This prevents wiping out the ayahs rendered by renderAyahsBatch
-        if (contentArea.dataset.surahId == s.number && contentArea.querySelector('#ayah-container')) {
+        if (contentArea.dataset.surahId == s.number && contentArea.querySelector('#reader-topbar')) {
             const jumpTrigger = contentArea.querySelector('#jump-trigger');
             if (jumpTrigger) {
                 jumpTrigger.innerHTML = `${t('surah')} ${s.number} • ${t('ayah')} ${state.activeAyah}`;
@@ -642,7 +615,8 @@ export const renderQuranReader = (container, cache, props) => {
 
         const percentageRead = (state.activeAyah / s.numberOfAyahs) * 100;
         contentArea.innerHTML = `
-            <div id="reader-header" class="fixed top-0 inset-x-0 h-14 md:h-16 glass z-[60] border-b border-white/10 flex items-center px-4 md:px-6 justify-between transition-all duration-500 transform -translate-y-full shadow-xl backdrop-blur-2xl">
+            <div id="reader-topbar-hover-zone" class="fixed top-0 inset-x-0 h-4 z-[70] pointer-events-auto"></div>
+            <div id="reader-topbar" class="fixed top-0 inset-x-0 h-14 md:h-16 glass z-[60] border-b border-white/10 flex items-center px-2 md:px-4 justify-between transition-all duration-500 transform shadow-xl backdrop-blur-2xl">
                 <div class="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-theme-500 to-indigo-500 transition-all duration-500 shadow-[0_0_10px_rgba(var(--theme-color-500-rgb),0.5)]" style="width: ${percentageRead}%"></div>
                 
                 <button id="reader-back" class="p-2 rounded-xl glass hover:bg-theme-100 dark:hover:bg-theme-900/30 text-slate-600 dark:text-slate-200 flex items-center gap-2 transition-all active:scale-90 border border-white/10 shadow-sm group">
@@ -669,8 +643,8 @@ export const renderQuranReader = (container, cache, props) => {
                 </button>
             </div>
             
-            <div class="pt-16 pb-20 md:pt-24 md:pb-28 max-w-full mx-auto px-0 ${fontSizeClass} ${fontClass}" id="reader-scroll-container">
-                <div class="glass-card rounded-none md:rounded-xl p-1 md:p-2 lg:p-4 shadow-2xl page-texture border-x-0 md:border-x border-white/10 transition-all duration-500 relative overflow-hidden">
+            <div class="pt-14 pb-20 md:pt-16 md:pb-28 max-w-full mx-auto px-0 ${fontSizeClass} ${fontClass}" id="reader-scroll-container">
+                <div class="glass-card rounded-none md:rounded-xl p-0.5 md:p-1 shadow-2xl page-texture border-x-0 md:border-x border-white/5 transition-all duration-500 relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-theme-500/5 to-transparent pointer-events-none"></div>
                     
                     <div class="text-center mb-2 relative z-10">
@@ -700,7 +674,7 @@ export const renderQuranReader = (container, cache, props) => {
             </div>
 
             <div class="fixed bottom-4 md:bottom-8 inset-x-4 md:inset-x-8 z-[60] pointer-events-none">
-                <div class="max-w-[200px] mx-auto flex items-center justify-between glass shadow-[0_15px_40px_rgba(0,0,0,0.3)] rounded-full p-1.5 border border-white/10 pointer-events-auto transition-all backdrop-blur-2xl">
+                <div id="reader-bottom-nav" class="max-w-[200px] mx-auto flex items-center justify-between glass shadow-[0_15px_40px_rgba(0,0,0,0.3)] rounded-full p-1.5 border border-white/10 pointer-events-auto transition-all duration-500 backdrop-blur-2xl">
                     <button id="reader-prev-surah" class="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full text-slate-400 hover:text-theme-600 hover:bg-white/5 transition-all ${s.number === 1 ? 'opacity-10 cursor-not-allowed' : ''}" ${s.number === 1 ? 'disabled' : ''}>
                         ${SkipBackwardIcon({className: "w-5 h-5"})}
                     </button>
@@ -730,6 +704,11 @@ export const renderQuranReader = (container, cache, props) => {
             document.body.appendChild(btt);
         }
             
+        contentArea.querySelector('#reader-topbar-hover-zone').onmouseenter = () => {
+            const header = document.getElementById('reader-topbar');
+            if (header) header.style.transform = 'translateY(0)';
+        };
+        
         contentArea.querySelector('#reader-back').onclick = () => {
             setState({ view: 'list', pageData: null });
             if (setReaderMode) setReaderMode(false);
@@ -815,7 +794,7 @@ export const renderQuranReader = (container, cache, props) => {
                         <span class="hidden sm:inline">${t('surah')} ${s.number} • ${t('ayah')} ${state.activeAyah}</span>
                     `;
                 }
-                const progressBar = contentArea.querySelector('#reader-header > div:first-child');
+                const progressBar = contentArea.querySelector('#reader-topbar > div:first-child');
                 const percentage = (state.activeAyah / s.numberOfAyahs) * 100;
                 
                 if (progressBar) progressBar.style.width = `${percentage}%`;
@@ -1246,13 +1225,13 @@ export const renderQuranReader = (container, cache, props) => {
 
     let lastScrollY = 0;
     const handleScroll = (e) => {
-        const header = document.getElementById('reader-header');
+        const header = document.getElementById('reader-topbar');
         const btt = document.getElementById('back-to-top');
         if (!header) return;
         
         const scrollTop = window.scrollY || document.documentElement.scrollTop;
 
-        // Header logic
+        // Header logic: hide on scroll down, show on scroll up
         if (scrollTop > lastScrollY && scrollTop > 100) {
             header.style.transform = 'translateY(-100%)';
         } else {

@@ -245,6 +245,7 @@ const renderPrayerWidget = (container, state) => {
         const prayerOrder = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
         const timings = state.prayerTimes.timings;
         const now = new Date();
+        const location = JSON.parse(localStorage.getItem('prayerLocation'));
         let nextPrayerName = null;
         let nextPrayerTime = Infinity;
 
@@ -262,14 +263,17 @@ const renderPrayerWidget = (container, state) => {
         
         prayerContainer.innerHTML = `
             <div class="p-6 glass-card rounded-3xl h-full flex flex-col transition-all duration-500 hover:shadow-theme-500/5 border border-slate-200/50 dark:border-slate-700/50">
-                <div class="flex justify-between items-center mb-6">
-                    <div class="flex items-center gap-2">
-                        <div class="w-8 h-8 rounded-lg bg-theme-500/10 flex items-center justify-center text-theme-600 dark:text-theme-400">
-                            ${ClockIcon({className: 'w-5 h-5'})}
+                <div class="flex justify-between items-start mb-6">
+                    <div class="flex flex-col gap-1">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-lg bg-theme-500/10 flex items-center justify-center text-theme-600 dark:text-theme-400">
+                                ${ClockIcon({className: 'w-5 h-5'})}
+                            </div>
+                            <h3 class="font-bold font-display text-lg text-slate-900 dark:text-white">${t('prayerTimes')}</h3>
                         </div>
-                        <h3 class="font-bold font-display text-lg text-slate-900 dark:text-white">${t('prayerTimes')}</h3>
+                        ${location ? `<p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest pl-10">${location.city}</p>` : ''}
                     </div>
-                    <a href="#" data-nav="adhan" class="text-xs font-bold text-theme-600 dark:text-theme-400 hover:underline flex items-center gap-1">
+                    <a href="#" data-nav="adhan" class="text-xs font-bold text-theme-600 dark:text-theme-400 hover:underline flex items-center gap-1 mt-1">
                         ${t('viewAll')}
                     </a>
                 </div>
@@ -316,7 +320,7 @@ const renderQuickLinks = (container) => {
     const lastReadData = JSON.parse(localStorage.getItem('quran_last_read'));
 
     const linksContainer = document.createElement('div');
-    linksContainer.className = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-12";
+    linksContainer.className = "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-12";
     const linkItems = [
         { nav: "seerah", icon: BookOpenIcon({className: 'w-6 h-6'}), title: t('prophetSeerah') || "Prophet's Seerah", desc: t('seerahHeroDesc') || "Explore the life and legacy of the Prophet Muhammad (PBUH)", meta: 'Biography', color: 'indigo' },
         { nav: "stories", icon: SparklesIcon({className: 'w-6 h-6'}), title: t('prophetStories') || "Prophet Stories", desc: t('prophetStoriesDesc') || "Stories of the Prophets from Adam to Muhammad (PBUH)", meta: 'Stories', color: 'amber' },
@@ -331,17 +335,17 @@ const renderQuickLinks = (container) => {
         { nav: "qibla", icon: QiblaIcon({className: 'w-6 h-6'}), title: t('qiblaFinder') || 'Qibla Finder', desc: t('qiblaDesc') || 'Find the direction of the Kaaba', meta: 'Compass', color: 'cyan' },
     ];
     linksContainer.innerHTML = linkItems.map((link, i) => `
-        <a href="#" data-nav="${link.nav}" ${link.subNav ? `data-sub-nav="${link.subNav}"` : ''} ${link.surah ? `data-surah="${link.surah}"` : ''} ${link.ayah ? `data-ayah="${link.ayah}"` : ''} class="quick-link-card fade-in group p-4 glass-card rounded-2xl hover:-translate-y-1 transition-all duration-500 flex flex-col gap-3 hover:shadow-xl hover:shadow-${link.color}-500/10 border border-slate-200/50 dark:border-slate-700/50 hover:border-${link.color}-500/30 active:scale-[0.98] relative overflow-hidden" style="animation-delay: ${0.1 + (i * 0.05)}s">
+        <a href="#" data-nav="${link.nav}" ${link.subNav ? `data-sub-nav="${link.subNav}"` : ''} ${link.surah ? `data-surah="${link.surah}"` : ''} ${link.ayah ? `data-ayah="${link.ayah}"` : ''} class="quick-link-card fade-in group p-3 glass-card rounded-xl hover:-translate-y-1 transition-all duration-300 flex flex-col gap-2 hover:shadow-lg hover:shadow-${link.color}-500/10 border border-slate-200/50 dark:border-slate-700/50 hover:border-${link.color}-500/30 active:scale-[0.98] relative overflow-hidden" style="animation-delay: ${0.1 + (i * 0.05)}s">
             <div class="absolute -right-8 -top-8 w-24 h-24 bg-${link.color}-500/5 rounded-full blur-[30px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
             <div class="flex items-center justify-between relative z-10">
-                <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 group-hover:bg-${link.color}-500/10 group-hover:text-${link.color}-600 dark:group-hover:text-${link.color}-400 transition-all duration-500 shadow-sm">
-                    ${link.icon}
+                <div class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 group-hover:bg-${link.color}-500/10 group-hover:text-${link.color}-600 dark:group-hover:text-${link.color}-400 transition-all duration-300 shadow-sm">
+                    ${link.icon.toString().replace('w-6 h-6', 'w-4 h-4')}
                 </div>
-                <span class="text-[9px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md group-hover:bg-${link.color}-500/10 group-hover:text-${link.color}-600 dark:group-hover:text-${link.color}-400 transition-colors shadow-sm">${link.meta}</span>
+                <span class="text-[8px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded-md group-hover:bg-${link.color}-500/10 group-hover:text-${link.color}-600 dark:group-hover:text-${link.color}-400 transition-colors shadow-sm">${link.meta}</span>
             </div>
-            <div class="mt-1 relative z-10">
-                <h4 class="font-bold text-base text-slate-800 dark:text-slate-200 mb-0.5 group-hover:text-${link.color}-600 dark:group-hover:text-${link.color}-400 transition-colors">${link.title}</h4>
-                <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed font-medium line-clamp-2">${link.desc}</p>
+            <div class="mt-0.5 relative z-10">
+                <h4 class="font-bold text-sm text-slate-800 dark:text-slate-200 mb-0.5 group-hover:text-${link.color}-600 dark:group-hover:text-${link.color}-400 transition-colors">${link.title}</h4>
+                <p class="text-[10px] text-slate-500 dark:text-slate-400 leading-tight font-medium line-clamp-2">${link.desc}</p>
             </div>
         </a>
     `).join('');
