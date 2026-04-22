@@ -643,7 +643,7 @@ export const renderQuranReader = (container, cache, props) => {
                 </button>
             </div>
             
-            <div class="pt-14 pb-20 md:pt-16 md:pb-28 max-w-full mx-auto px-0 ${fontSizeClass} ${fontClass}" id="reader-scroll-container">
+            <div class="pt-14 pb-20 md:pt-16 md:pb-28 w-full mx-auto px-1 ${fontSizeClass} ${fontClass}" id="reader-scroll-container">
                 <div class="glass-card rounded-none p-0 shadow-none border-0 transition-all duration-500 relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-full h-12 bg-gradient-to-b from-theme-500/5 to-transparent pointer-events-none"></div>
                     

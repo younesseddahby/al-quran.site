@@ -271,7 +271,7 @@ const renderPrayerWidget = (container, state) => {
                             </div>
                             <h3 class="font-bold font-display text-lg text-slate-900 dark:text-white">${t('prayerTimes')}</h3>
                         </div>
-                        ${location ? `<p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest pl-10">${location.city}</p>` : ''}
+                        ${location ? `<p class="text-xs font-bold text-theme-600 dark:text-theme-400 uppercase tracking-[0.2em] pl-10">${location.city}</p>` : ''}
                     </div>
                     <a href="#" data-nav="adhan" class="text-xs font-bold text-theme-600 dark:text-theme-400 hover:underline flex items-center gap-1 mt-1">
                         ${t('viewAll')}
