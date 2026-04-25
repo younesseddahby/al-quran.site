@@ -381,6 +381,12 @@ export const SparklesIcon = ({className = 'w-6 h-6'} = {}) => `
   </svg>
 `;
 
+export const UsersIcon = ({className = 'w-6 h-6'} = {}) => `
+  <svg class="${className}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-2.533-4.656 9.358 9.358 0 0 0-4.213-.997m-2.625 6.633a9.38 9.38 0 0 1-2.625.372 9.337 9.337 0 0 1-4.121-.952 4.125 4.125 0 0 1 2.533-4.656 9.358 9.358 0 0 1 4.213-.997m2.625 6.633c1.286 0 2.48-.333 3.513-.918m-3.513.918c-1.286 0-2.433-.333-3.467-.918M10.5 7.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 9a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+  </svg>
+`;
+
 export const BotIcon = ({className = 'w-6 h-6'} = {}) => `
   <svg class="${className}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
     <path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25A2.25 2.25 0 0 1 5.25 3h13.5A2.25 2.25 0 0 1 21 5.25z" />

@@ -9,12 +9,13 @@ import { renderSeerah } from './components/Seerah.js';
 import { renderBookmarks } from './components/Bookmarks.js';
 import { renderQuiz } from './components/Quiz.js';
 import { renderProphetStories } from './components/ProphetStories.js';
+import { renderSahabaStories } from './components/SahabaStories.js';
 import { renderAsmaUlHusna } from './components/AsmaUlHusna.js';
 import { renderQiblaFinder } from './components/QiblaFinder.js';
 import { renderAIAssistant } from './components/AIAssistant.js';
 import { 
     HomeIcon, QuranIcon, HadithIcon, PrayerIcon, SettingsIcon, ShieldIcon, BeadsIcon, 
-    ArrowLeftIcon, ArrowRightIcon, BookOpenIcon, BookmarkIcon, QuizIcon, SparklesIcon
+    ArrowLeftIcon, ArrowRightIcon, BookOpenIcon, BookmarkIcon, QuizIcon, SparklesIcon, UsersIcon
 } from './components/Icons.js';
 import { THEME_COLORS } from './theme.js';
 import { initI18n, t, setLanguage as setI18nLanguage } from './i18n.js';
@@ -307,6 +308,7 @@ const App = (rootElement) => {
             case 'bookmarks': renderBookmarks(mainContent, props); break;
             case 'quiz': renderQuiz(mainContent, props); break;
             case 'stories': renderProphetStories(mainContent, props); break;
+            case 'sahaba': renderSahabaStories(mainContent, props); break;
             case 'asma': renderAsmaUlHusna(mainContent, props); break;
             case 'qibla': renderQiblaFinder(mainContent, props); break;
             case 'adhan': currentContentCleanup = renderAdhanTimes(mainContent, props); break;
@@ -428,6 +430,10 @@ const App = (rootElement) => {
                 title: 'Stories of the Prophets | From Adam to Muhammad (PBUH)',
                 description: 'Read inspiring stories of the Prophets mentioned in the Quran. Learn about their struggles, miracles, and the timeless lessons they brought to humanity.'
             },
+            sahaba: {
+                title: 'Stories of the Sahaba | Companions of the Prophet (PBUH)',
+                description: 'Discover the inspiring lives of the Sahaba (companions) of Prophet Muhammad (PBUH). Learn about their sacrifices, virtues, and their dedication to spreading Islam.'
+            },
             asma: {
                 title: '99 Names of Allah | Asma-ul-Husna with Meanings',
                 description: 'Explore the 99 Names of Allah (Asma-ul-Husna). Learn the beautiful meanings, benefits, and spiritual significance of each Divine Name in Islam.'
@@ -528,7 +534,7 @@ const App = (rootElement) => {
                 state.activeTab = 'quran';
             }
         } else {
-            const validTabs = getTabs().map(t => t.id).concat(['settings', 'bookmarks', 'quiz', 'stories', 'asma', 'qibla']);
+            const validTabs = getTabs().map(t => t.id).concat(['settings', 'bookmarks', 'quiz', 'stories', 'sahaba', 'asma', 'qibla']);
             if (validTabs.includes(parts[0])) {
                 state.activeTab = parts[0];
             }

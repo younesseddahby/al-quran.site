@@ -127,9 +127,9 @@ export const renderSeerah = (container, props) => {
                     <h1 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white font-display tracking-tight">${t(chapter.titleKey)}</h1>
                     <div class="w-20 h-1.5 bg-theme-500 rounded-full"></div>
                     <div class="prose prose-slate dark:prose-invert max-w-none">
-                        <p class="text-lg md:text-xl leading-relaxed text-slate-700 dark:text-slate-300 font-serif">
-                            ${content}
-                        </p>
+                        <div class="space-y-6 text-lg md:text-xl leading-relaxed text-slate-700 dark:text-slate-300 font-serif">
+                            ${content.split('\n\n').map(p => `<p>${p.trim()}</p>`).join('')}
+                        </div>
                     </div>
                 </div>
 

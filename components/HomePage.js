@@ -1,7 +1,7 @@
 
 import { t, getCurrentLanguage } from '../i18n.js';
 import { createSpinner } from './Spinner.js';
-import { BookOpenIcon, ListenIcon, HadithIcon, ClockIcon, CalendarIcon, ShieldIcon, BeadsIcon, ChevronRightIcon, QuizIcon, BookmarkIcon, EmailIcon, CheckCircleIcon, QuranIcon, QiblaIcon, SparklesIcon } from './Icons.js';
+import { BookOpenIcon, ListenIcon, HadithIcon, ClockIcon, CalendarIcon, ShieldIcon, BeadsIcon, ChevronRightIcon, QuizIcon, BookmarkIcon, EmailIcon, CheckCircleIcon, QuranIcon, QiblaIcon, SparklesIcon, UsersIcon, MoonIcon } from './Icons.js';
 import { fetchWithRetry } from '../utils/fetchUtils.js';
 
 // --- HELPER FUNCTIONS ---
@@ -323,7 +323,8 @@ const renderQuickLinks = (container) => {
     linksContainer.className = "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-12";
     const linkItems = [
         { nav: "seerah", icon: BookOpenIcon({className: 'w-6 h-6'}), title: t('prophetSeerah') || "Prophet's Seerah", desc: t('seerahHeroDesc') || "Explore the life and legacy of the Prophet Muhammad (PBUH)", meta: 'Biography', color: 'indigo' },
-        { nav: "stories", icon: SparklesIcon({className: 'w-6 h-6'}), title: t('prophetStories') || "Prophet Stories", desc: t('prophetStoriesDesc') || "Stories of the Prophets from Adam to Muhammad (PBUH)", meta: 'Stories', color: 'amber' },
+        { nav: "stories", icon: SparklesIcon({className: 'w-6 h-6'}), title: t('prophetStories') || "Prophet Stories", desc: t('prophetStoriesDesc') || "Stories of the Prophets from Adam to Muhammad (PBUH)", meta: 'Prophets', color: 'amber' },
+        { nav: "sahaba", icon: UsersIcon({className: 'w-6 h-6'}), title: t('sahabaStories') || "Sahaba Stories", desc: t('sahabaStoriesDesc') || "Life of the Companions of the Prophet (PBUH)", meta: 'Sahaba', color: 'teal' },
         { nav: "bookmarks", icon: BookmarkIcon({className: 'w-6 h-6'}), title: t('bookmarks') || 'Bookmarks', desc: t('bookmarksTab') || 'View your saved verses.', meta: 'Saved', color: 'pink' },
         { nav: "quiz", icon: QuizIcon({className: 'w-6 h-6'}), title: t('islamicQuiz'), desc: t('testYourKnowledge') || 'Test your Islamic knowledge.', meta: 'Learn', color: 'orange' },
         { nav: "asma", icon: BookOpenIcon({className: 'w-6 h-6'}), title: t('asmaUlHusna'), desc: t('asmaUlHusnaDesc') || 'The 99 Names of Allah', meta: '99 Names', color: 'violet' },
