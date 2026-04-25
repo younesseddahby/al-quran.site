@@ -116,6 +116,8 @@ export const renderProphetStories = (container, props) => {
         const isRtl = lang === 'ar';
         const BackIcon = isRtl ? ArrowRightIcon : ArrowLeftIcon;
 
+        const isBookmarked = (props.bookmarks?.stories || []).some(b => b.id === story.id);
+
         // Split content by double newlines to create paragraphs
         const paragraphs = story.content.split('\n\n');
 
@@ -125,7 +127,11 @@ export const renderProphetStories = (container, props) => {
                     ${BackIcon({className: "w-5 h-5"})}
                     <span class="text-xs font-bold uppercase tracking-wider">${t('back')}</span>
                 </button>
-                <div class="w-10"></div>
+                <button id="story-bookmark-btn" class="p-3 rounded-2xl glass border border-slate-200 dark:border-slate-800 transition-all active:scale-95 ${isBookmarked ? 'bg-theme-500/10 text-theme-600 dark:text-theme-400 border-theme-500/30' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'}">
+                    <svg class="w-6 h-6" fill="${isBookmarked ? 'currentColor' : 'none'}" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
+                    </svg>
+                </button>
             </div>
 
             <article class="glass-card rounded-[2.5rem] p-6 md:p-16 shadow-xl border border-slate-100 dark:border-slate-800 relative overflow-hidden">
@@ -165,6 +171,17 @@ export const renderProphetStories = (container, props) => {
         wrapper.querySelector('#story-back-btn').onclick = () => {
             state.view = 'list';
             localStorage.removeItem('last_prophet_story');
+            render();
+        };
+
+        wrapper.querySelector('#story-bookmark-btn').onclick = () => {
+            props.toggleBookmark('stories', {
+                id: story.id,
+                title: story.title,
+                subtitle: t('prophetStories'),
+                text: story.content.substring(0, 150) + '...',
+                lang: lang
+            });
             render();
         };
 

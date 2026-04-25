@@ -114,7 +114,7 @@ export const renderSeerah = (container, props) => {
                         <span class="text-xs font-bold uppercase tracking-wider">${t('back')}</span>
                     </button>
                     <div class="flex items-center gap-2">
-                        <button id="seerah-bookmark" class="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all ${props.bookmarks.seerah.some(b => b.id === state.selectedChapter) ? 'text-theme-500 bg-theme-50 dark:bg-theme-900/20' : 'text-slate-400'}">
+                        <button id="seerah-bookmark" class="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all ${(props.bookmarks?.seerah || []).some(b => b.id === state.selectedChapter) ? 'text-theme-500 bg-theme-50 dark:bg-theme-900/20' : 'text-slate-400'}">
                             ${BookmarkIcon({className: "w-5 h-5"})}
                         </button>
                         <button id="seerah-share" class="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-slate-400">
@@ -157,7 +157,7 @@ export const renderSeerah = (container, props) => {
         });
 
         wrapper.querySelector('#seerah-bookmark')?.addEventListener('click', () => {
-            const isBookmarked = props.bookmarks.seerah.some(b => b.id === state.selectedChapter);
+            const isBookmarked = (props.bookmarks?.seerah || []).some(b => b.id === state.selectedChapter);
             if (isBookmarked) {
                 props.toggleBookmark('seerah', { id: state.selectedChapter });
             } else {

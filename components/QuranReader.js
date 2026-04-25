@@ -298,7 +298,7 @@ export const renderQuranReader = (container, cache, props) => {
                 container.classList.add('space-y-1');
                 
                 html = batch.map((a, i) => {
-                    const isBookmarked = props.bookmarks.quran.some(b => b.id === `${state.pageData.number}:${a.numberInSurah}`);
+                    const isBookmarked = (props.bookmarks?.quran || []).some(b => b.id === `${state.pageData.number}:${a.numberInSurah}`);
                     return `
                     <div class="ayah-item group p-0 md:p-0.5 rounded-md border border-transparent hover:border-theme-500/20 hover:bg-theme-50/30 dark:hover:bg-theme-900/10 transition-all cursor-pointer fade-in ${state.activeAyah == a.numberInSurah ? 'bg-theme-50 dark:bg-theme-900/20 border-theme-500/30' : ''}" 
                          style="animation-delay: ${i * 30}ms"
@@ -839,7 +839,7 @@ export const renderQuranReader = (container, cache, props) => {
         const lang = getCurrentLanguage();
         const isAr = lang === 'ar';
 
-        const isBookmarked = props.bookmarks.quran.some(b => b.id === `${state.pageData.number}:${ayahNum}`);
+        const isBookmarked = (props.bookmarks?.quran || []).some(b => b.id === `${state.pageData.number}:${ayahNum}`);
 
         modal.innerHTML = `
             <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-md pointer-events-auto" id="tafsir-backdrop"></div>
@@ -871,10 +871,6 @@ export const renderQuranReader = (container, cache, props) => {
                 </div>
 
                 <div class="flex flex-col gap-4">
-                    <button id="save-progress-btn" class="w-full py-4 rounded-2xl bg-emerald-600 text-white font-bold flex items-center justify-center gap-3 hover:bg-emerald-700 transition-all active:scale-[0.98] shadow-lg shadow-emerald-500/20">
-                        ${CheckCircleIcon({className: "w-5 h-5"})}
-                        ${t('saveProgress') || 'Save Progress'}
-                    </button>
                     <button id="tafsir-ai-btn" class="w-full py-4 rounded-2xl bg-theme-500 text-white font-bold flex items-center justify-center gap-3 hover:bg-theme-600 transition-all active:scale-[0.98] shadow-lg shadow-theme-500/20">
                         ${SparklesIcon({className: "w-5 h-5"})}
                         ${t('askAiAboutVerse') || 'Ask AI about this verse'}
@@ -911,32 +907,6 @@ export const renderQuranReader = (container, cache, props) => {
                 } 
             }));
             setState({ isTafsirModal: false });
-        });
-
-        modal.querySelector('#save-progress-btn')?.addEventListener('click', () => {
-            const surahNum = state.pageData.number;
-            const ayahNum = state.activeTafsirAyah.ayah;
-            const surah = state.pageData;
-            
-            localStorage.setItem('quran_last_read', JSON.stringify({
-                surah: surahNum,
-                ayah: ayahNum,
-                surahName: surah.englishName,
-                totalAyahs: surah.numberOfAyahs
-            }));
-            
-            // Show feedback
-            const btn = modal.querySelector('#save-progress-btn');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = `
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-                ${t('saved') || 'Saved'}
-            `;
-            btn.classList.replace('bg-emerald-600', 'bg-emerald-500');
-            setTimeout(() => {
-                btn.innerHTML = originalText;
-                btn.classList.replace('bg-emerald-500', 'bg-emerald-600');
-            }, 2000);
         });
     };
 

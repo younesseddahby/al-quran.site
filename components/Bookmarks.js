@@ -1,5 +1,5 @@
 import { t, getCurrentLanguage } from '../i18n.js';
-import { QuranIcon, HadithIcon, BookmarkIcon, TrashIcon, ArrowLeftIcon, ArrowRightIcon, ChevronRightIcon, BookOpenIcon } from './Icons.js';
+import { QuranIcon, HadithIcon, BookmarkIcon, TrashIcon, ArrowLeftIcon, ArrowRightIcon, ChevronRightIcon, BookOpenIcon, UsersIcon, SparklesIcon } from './Icons.js';
 
 export const renderBookmarks = (container, props) => {
     const { bookmarks, toggleBookmark, setActiveTab, setReaderMode } = props;
@@ -16,10 +16,12 @@ export const renderBookmarks = (container, props) => {
         const wrapper = document.createElement('div');
         wrapper.className = 'max-w-5xl mx-auto px-4 py-8 space-y-8 fade-in';
 
-        const quranCount = bookmarks.quran.length;
-        const hadithCount = bookmarks.hadith.length;
+        const quranCount = bookmarks.quran?.length || 0;
+        const hadithCount = bookmarks.hadith?.length || 0;
         const seerahCount = bookmarks.seerah?.length || 0;
-        const totalCount = quranCount + hadithCount + seerahCount;
+        const sahabaCount = bookmarks.sahaba?.length || 0;
+        const storiesCount = bookmarks.stories?.length || 0;
+        const totalCount = quranCount + hadithCount + seerahCount + sahabaCount + storiesCount;
 
         wrapper.innerHTML = `
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
@@ -39,6 +41,8 @@ export const renderBookmarks = (container, props) => {
                     <button data-filter="quran" class="filter-btn px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap ${state.activeFilter === 'quran' ? 'bg-theme-500 text-white shadow-md' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}">${t('quran')} (${quranCount})</button>
                     <button data-filter="hadith" class="filter-btn px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap ${state.activeFilter === 'hadith' ? 'bg-theme-500 text-white shadow-md' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}">${t('hadith')} (${hadithCount})</button>
                     <button data-filter="seerah" class="filter-btn px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap ${state.activeFilter === 'seerah' ? 'bg-theme-500 text-white shadow-md' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}">${t('seerah')} (${seerahCount})</button>
+                    <button data-filter="sahaba" class="filter-btn px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap ${state.activeFilter === 'sahaba' ? 'bg-theme-500 text-white shadow-md' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}">${t('sahabaStories') || 'Sahaba'} (${sahabaCount})</button>
+                    <button data-filter="stories" class="filter-btn px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap ${state.activeFilter === 'stories' ? 'bg-theme-500 text-white shadow-md' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}">${t('prophetStories') || 'Stories'} (${storiesCount})</button>
                 </div>
             </div>
 
@@ -63,13 +67,19 @@ export const renderBookmarks = (container, props) => {
     const renderList = () => {
         let items = [];
         if (state.activeFilter === 'all' || state.activeFilter === 'quran') {
-            items = [...items, ...bookmarks.quran.map(b => ({ ...b, type: 'quran' }))];
+            items = [...items, ...(bookmarks.quran || []).map(b => ({ ...b, type: 'quran' }))];
         }
         if (state.activeFilter === 'all' || state.activeFilter === 'hadith') {
-            items = [...items, ...bookmarks.hadith.map(b => ({ ...b, type: 'hadith' }))];
+            items = [...items, ...(bookmarks.hadith || []).map(b => ({ ...b, type: 'hadith' }))];
         }
         if (state.activeFilter === 'all' || state.activeFilter === 'seerah') {
             items = [...items, ...(bookmarks.seerah || []).map(b => ({ ...b, type: 'seerah' }))];
+        }
+        if (state.activeFilter === 'all' || state.activeFilter === 'sahaba') {
+            items = [...items, ...(bookmarks.sahaba || []).map(b => ({ ...b, type: 'sahaba' }))];
+        }
+        if (state.activeFilter === 'all' || state.activeFilter === 'stories') {
+            items = [...items, ...(bookmarks.stories || []).map(b => ({ ...b, type: 'stories' }))];
         }
 
         // Sort by date added (assuming we added a timestamp, but for now just reverse)
@@ -94,7 +104,11 @@ export const renderBookmarks = (container, props) => {
                 <div class="flex justify-between items-start mb-4 relative z-10">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-all duration-500 shadow-sm">
-                            ${item.type === 'quran' ? QuranIcon({className: "w-5 h-5"}) : (item.type === 'hadith' ? HadithIcon({className: "w-5 h-5"}) : BookOpenIcon({className: "w-5 h-5"}))}
+                            ${item.type === 'quran' ? QuranIcon({className: "w-5 h-5"}) : 
+                              item.type === 'hadith' ? HadithIcon({className: "w-5 h-5"}) : 
+                              item.type === 'sahaba' ? UsersIcon({className: "w-5 h-5"}) : 
+                              item.type === 'stories' ? SparklesIcon({className: "w-5 h-5"}) : 
+                              BookOpenIcon({className: "w-5 h-5"})}
                         </div>
                         <div>
                             <h4 class="font-bold text-base text-slate-800 dark:text-slate-200 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-colors">${item.title}</h4>
@@ -145,6 +159,12 @@ export const renderBookmarks = (container, props) => {
                 } else if (type === 'seerah') {
                     localStorage.setItem('last_seerah_chapter', item.dataset.id);
                     setActiveTab('seerah');
+                } else if (type === 'sahaba') {
+                    localStorage.setItem('last_sahaba_story', item.dataset.id);
+                    setActiveTab('sahaba');
+                } else if (type === 'stories') {
+                    localStorage.setItem('last_prophet_story', item.dataset.id);
+                    setActiveTab('stories');
                 }
             });
         });

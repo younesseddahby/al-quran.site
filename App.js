@@ -42,7 +42,15 @@ const App = (rootElement) => {
         surahGridCols: localStorage.getItem('surahGridCols') || '3',
         readerDisplayMode: localStorage.getItem('readerDisplayMode') || 'both', // 'both', 'translation'
         debugMode: localStorage.getItem('debugMode') === 'true',
-        bookmarks: JSON.parse(localStorage.getItem('bookmarks') || '{"quran": [], "hadith": [], "seerah": []}'),
+        bookmarks: (() => {
+            const defaults = { quran: [], hadith: [], seerah: [], sahaba: [], stories: [] };
+            try {
+                const saved = JSON.parse(localStorage.getItem('bookmarks') || '{}');
+                return { ...defaults, ...saved };
+            } catch (e) {
+                return defaults;
+            }
+        })(),
         isReaderMode: false,
         readerConfig: null,
         quranMode: 'read',
@@ -273,6 +281,7 @@ const App = (rootElement) => {
             },
             toggleBookmark: (type, item) => {
                 const bookmarks = { ...state.bookmarks };
+                if (!bookmarks[type]) bookmarks[type] = [];
                 const list = bookmarks[type];
                 const index = list.findIndex(b => b.id === item.id);
                 if (index > -1) {

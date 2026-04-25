@@ -1,7 +1,7 @@
 
 import { t, getCurrentLanguage } from '../i18n.js';
 import { SAHABA_LIST, SAHABA_CONTENT } from '../src/data/sahabaData.js';
-import { BookOpenIcon, ArrowLeftIcon, ArrowRightIcon, ChevronRightIcon, SearchIcon, MoonIcon } from './Icons.js';
+import { BookOpenIcon, ArrowLeftIcon, ArrowRightIcon, ChevronRightIcon, SearchIcon, MoonIcon, UsersIcon } from './Icons.js';
 
 export const renderSahabaStories = (container, props) => {
     const { onBack } = props;
@@ -64,7 +64,7 @@ export const renderSahabaStories = (container, props) => {
                         <div class="absolute -right-8 -top-8 w-32 h-32 bg-theme-500/5 rounded-full blur-[40px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                         <div class="flex items-center gap-4 relative z-10">
                             <div class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-all duration-500 shadow-sm">
-                                ${BookOpenIcon({className: 'w-6 h-6'})}
+                                ${UsersIcon({className: 'w-6 h-6'})}
                             </div>
                             <div>
                                 <h3 class="font-bold text-lg text-slate-900 dark:text-white group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-colors">${isRtl ? sahaba.nameAr : t(sahaba.nameKey)}</h3>
@@ -118,6 +118,8 @@ export const renderSahabaStories = (container, props) => {
         const BackIcon = isRtl ? ArrowRightIcon : ArrowLeftIcon;
         const content = SAHABA_CONTENT[lang][sahaba.id] || SAHABA_CONTENT.en[sahaba.id];
 
+        const isBookmarked = (props.bookmarks?.sahaba || []).some(b => b.id === sahaba.id);
+
         // Split content by double newlines to create paragraphs
         const paragraphs = content.split('\n\n');
 
@@ -127,7 +129,11 @@ export const renderSahabaStories = (container, props) => {
                     ${BackIcon({className: "w-5 h-5"})}
                     <span class="text-xs font-bold uppercase tracking-wider">${t('back')}</span>
                 </button>
-                <div class="w-10"></div>
+                <button id="story-bookmark-btn" class="p-3 rounded-2xl glass border border-slate-200 dark:border-slate-800 transition-all active:scale-95 ${isBookmarked ? 'bg-theme-500/10 text-theme-600 dark:text-theme-400 border-theme-500/30' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'}">
+                    <svg class="w-6 h-6" fill="${isBookmarked ? 'currentColor' : 'none'}" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
+                    </svg>
+                </button>
             </div>
 
             <article class="glass-card rounded-[2.5rem] p-6 md:p-16 shadow-xl border border-slate-100 dark:border-slate-800 relative overflow-hidden">
@@ -136,7 +142,7 @@ export const renderSahabaStories = (container, props) => {
                 <div class="relative z-10 space-y-10">
                     <header class="text-center space-y-6">
                         <div class="w-24 h-24 glass rounded-[2rem] flex items-center justify-center text-theme-600 dark:text-theme-400 mx-auto shadow-inner">
-                            ${MoonIcon ? MoonIcon({className: 'w-12 h-12'}) : BookOpenIcon({className: 'w-12 h-12'})}
+                            ${UsersIcon({className: 'w-12 h-12'})}
                         </div>
                         <div class="space-y-2">
                              <h2 class="text-3xl md:text-5xl lg:text-6xl font-bold font-display text-slate-900 dark:text-white tracking-tight leading-tight">${isRtl ? sahaba.nameAr : t(sahaba.nameKey)}</h2>
@@ -170,6 +176,18 @@ export const renderSahabaStories = (container, props) => {
         wrapper.querySelector('#story-back-btn').onclick = () => {
             state.view = 'list';
             localStorage.removeItem('last_sahaba_story');
+            render();
+        };
+
+        wrapper.querySelector('#story-bookmark-btn').onclick = () => {
+            const isRtl = lang === 'ar';
+            props.toggleBookmark('sahaba', {
+                id: sahaba.id,
+                title: isRtl ? sahaba.nameAr : t(sahaba.nameKey),
+                subtitle: t(sahaba.titleKey),
+                text: content.substring(0, 150) + '...',
+                lang: lang
+            });
             render();
         };
 

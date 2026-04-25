@@ -32,6 +32,47 @@ export const renderHadithViewer = (container, props = {}) => {
     hasMore: true
   };
 
+  const initJump = async () => {
+    if (props.jumpToHadith) {
+      const { collection, hadithNumber } = props.jumpToHadith;
+      const col = COLLECTIONS.find(c => c.slug === collection);
+      if (col) {
+        state.selectedCollection = col;
+        state.loading = true;
+        render();
+        await fetchCollectionData();
+        
+        const section = state.sections.find(s => hadithNumber >= s.first && hadithNumber <= s.last);
+        if (section) {
+          state.selectedSection = section;
+          state.view = 'hadiths';
+          
+          const sectionHadiths = state.allHadiths.filter(h => {
+            const num = h.hadithNumber;
+            return num >= section.first && num <= section.last;
+          });
+          
+          const index = sectionHadiths.findIndex(h => h.hadithNumber == hadithNumber);
+          if (index !== -1) {
+            state.page = Math.floor(index / 10) + 1;
+            paginateHadiths(false);
+            
+            setTimeout(() => {
+              const target = container.querySelector(`[data-hadith-num="${hadithNumber}"]`);
+              if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                target.classList.add('ring-2', 'ring-theme-500', 'ring-offset-4', 'dark:ring-offset-slate-900');
+                setTimeout(() => target.classList.remove('ring-2', 'ring-theme-500', 'ring-offset-4'), 3000);
+              }
+            }, 800);
+          }
+        }
+        state.loading = false;
+        render();
+      }
+    }
+  };
+
   const render = () => {
     container.innerHTML = '';
     const wrapper = document.createElement('div');
@@ -233,6 +274,8 @@ export const renderHadithViewer = (container, props = {}) => {
 
   const createHadithCard = (hadith) => {
     const card = document.createElement('div');
+    const hadithNumber = hadith.hadithNumber;
+    card.dataset.hadithNum = hadithNumber;
     card.className = 'p-5 md:p-6 glass rounded-2xl border border-white/10 shadow-sm hover:shadow-xl hover:shadow-theme-500/5 transition-all duration-500 relative group overflow-hidden';
     
     const lang = getCurrentLanguage();
@@ -257,8 +300,7 @@ export const renderHadithViewer = (container, props = {}) => {
         }
     }
 
-    const hadithNumber = hadith.hadithNumber || hadith.hadithnumber || hadith.number || '';
-    const isBookmarked = props.bookmarks.hadith.some(b => b.id === `${state.selectedCollection.slug}:${hadithNumber}`);
+    const isBookmarked = (props.bookmarks?.hadith || []).some(b => b.id === `${state.selectedCollection.slug}:${hadithNumber}`);
 
     // Clean up HTML tags if any
     if (typeof hadithText === 'string') {
@@ -447,5 +489,6 @@ export const renderHadithViewer = (container, props = {}) => {
     if (wrapper && state.view === 'hadiths') updateHadithsList(wrapper);
   };
 
+  initJump();
   render();
 };
