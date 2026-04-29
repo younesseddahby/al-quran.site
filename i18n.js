@@ -292,6 +292,11 @@ const loadTranslations = () => {
       seerahCharacter: "الشمائل النبوية",
       seerahMiracles: "المعجزات",
       seerahYearOfDelegations: "عام الوفود وانتشار الإسلام",
+      seerahLineage: "النسب والنشأة",
+      seerahWives: "أمهات المؤمنين",
+      seerahChildren: "أبناء وبنات النبي",
+      seerahDailyLife: "يوميات النبي وحياته",
+      seerahMissionUniversality: "عالمية الرسالة",
       continueReadingSeerah: "متابعة قراءة السيرة",
       searchSeerah: "ابحث في السيرة...",
       // Reader Settings
@@ -721,6 +726,11 @@ const loadTranslations = () => {
       seerahCharacter: "Prophetic Character",
       seerahMiracles: "Miracles",
       seerahYearOfDelegations: "Year of Delegations",
+      seerahLineage: "Lineage and Early Life",
+      seerahWives: "Mothers of the Believers",
+      seerahChildren: "Children of the Prophet",
+      seerahDailyLife: "Daily Life and Habits",
+      seerahMissionUniversality: "Universality of the Message",
       continueReadingSeerah: "Continue Reading Seerah",
       searchSeerah: "Search in Seerah...",
       // Reader Settings
