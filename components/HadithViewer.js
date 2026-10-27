@@ -106,8 +106,8 @@ export const renderHadithViewer = (container, props = {}) => {
       
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         ${COLLECTIONS.map(col => `
-          <button data-collection="${col.slug}" class="group text-left ${isRtl ? 'text-right' : ''} p-4 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 shadow-sm hover:shadow-xl hover:shadow-theme-500/10 hover:border-theme-500/30 hover:-translate-y-1 transition-all duration-500 flex flex-col gap-3 relative overflow-hidden">
-            <div class="absolute -right-8 -top-8 w-24 h-24 bg-theme-500/10 rounded-full blur-[30px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+          <button data-collection="${col.slug}" class="group text-left ${isRtl ? 'text-right' : ''} p-4 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 shadow-sm hover:shadow-md hover: hover:border-theme-500/30 hover:-translate-y-1 transition-all duration-500 flex flex-col gap-3 relative overflow-hidden">
+            
             <div class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 flex items-center justify-center relative z-10 shadow-sm group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-all duration-500">
               ${BookOpenIcon({className: "w-4.5 h-4.5"})}
             </div>
@@ -276,7 +276,7 @@ export const renderHadithViewer = (container, props = {}) => {
     const card = document.createElement('div');
     const hadithNumber = hadith.hadithNumber;
     card.dataset.hadithNum = hadithNumber;
-    card.className = 'p-5 md:p-6 glass rounded-2xl border border-white/10 shadow-sm hover:shadow-xl hover:shadow-theme-500/5 transition-all duration-500 relative group overflow-hidden';
+    card.className = 'p-5 md:p-6 glass rounded-2xl border border-white/10 shadow-sm hover:shadow-md hover: transition-all duration-500 relative group overflow-hidden';
     
     const lang = getCurrentLanguage();
     const isAr = lang === 'ar';

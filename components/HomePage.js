@@ -160,7 +160,7 @@ const getDailyHadith = async () => {
 // --- RENDER FUNCTIONS ---
 const renderHeroSection = (container, state) => {
     const heroContainer = document.createElement('div');
-    heroContainer.className = "p-4 md:p-6 rounded-3xl glass border border-white/20 dark:border-slate-800/50 shadow-sm relative overflow-hidden group transition-all duration-700 fade-in";
+    heroContainer.className = "p-4 md:p-6 rounded-2xl glass border border-white/20 dark:border-slate-800/50 shadow-sm relative overflow-hidden group transition-all duration-700 fade-in";
     
     const greetingText = getGreeting();
 
@@ -197,7 +197,7 @@ const renderHeroSection = (container, state) => {
         }
 
         heroContainer.innerHTML = `
-            <div class="absolute top-0 right-0 w-48 h-48 bg-theme-500/5 rounded-full blur-[60px] -mr-10 -mt-10 transition-transform group-hover:scale-110 duration-1000"></div>
+            
             
             <div class="flex flex-col md:flex-row justify-between items-center relative z-10 gap-4">
                 <div class="flex flex-col md:flex-row items-center gap-4 text-center md:text-left rtl:md:text-right">
@@ -262,7 +262,7 @@ const renderPrayerWidget = (container, state) => {
         if (!nextPrayerName) nextPrayerName = 'Fajr';
         
         prayerContainer.innerHTML = `
-            <div class="p-6 glass-card rounded-3xl h-full flex flex-col transition-all duration-500 hover:shadow-theme-500/5 border border-slate-200/50 dark:border-slate-700/50">
+            <div class="p-6 glass-card rounded-2xl h-full flex flex-col transition-all duration-500 hover: border border-slate-200/50 dark:border-slate-700/50">
                 <div class="flex justify-between items-start mb-6">
                     <div class="flex flex-col gap-1">
                         <div class="flex items-center gap-2">
@@ -281,7 +281,7 @@ const renderPrayerWidget = (container, state) => {
                     ${prayerOrder.map(name => {
                         const isActive = name === nextPrayerName;
                         return `
-                        <div class="p-3.5 rounded-2xl flex items-center justify-between transition-all duration-500 ${isActive ? 'bg-theme-600 text-white shadow-lg shadow-theme-500/20 scale-[1.02] z-10' : 'bg-slate-50 dark:bg-slate-800/40 text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 border border-transparent hover:border-slate-200 dark:hover:border-slate-700'}">
+                        <div class="p-3.5 rounded-2xl flex items-center justify-between transition-all duration-500 ${isActive ? 'bg-theme-600 text-white shadow-lg scale-[1.02] z-10' : 'bg-slate-50 dark:bg-slate-800/40 text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 border border-transparent hover:border-slate-200 dark:hover:border-slate-700'}">
                             <div class="flex items-center gap-3">
                                 <span class="text-[10px] font-black uppercase tracking-widest opacity-60">${t(`prayer_${name}`)}</span>
                             </div>
@@ -293,13 +293,13 @@ const renderPrayerWidget = (container, state) => {
         `;
     } else {
          prayerContainer.innerHTML = `
-            <div class="p-6 glass-card rounded-3xl text-center h-full flex flex-col justify-center items-center border border-slate-200/50 dark:border-slate-700/50">
+            <div class="p-6 glass-card rounded-2xl text-center h-full flex flex-col justify-center items-center border border-slate-200/50 dark:border-slate-700/50">
                  <div class="w-12 h-12 glass rounded-full flex items-center justify-center text-slate-400 dark:text-slate-500 mb-4">
                     ${ClockIcon({className: 'w-6 h-6'})}
                  </div>
                  <h4 class="text-lg font-bold text-slate-900 dark:text-white mb-1">${t('prayerTimes')}</h4>
                  <p class="text-slate-500 dark:text-slate-400 mb-6 text-xs max-w-[180px]">${t('setupPrayerTimes')}</p>
-                 <a href="#" data-nav="adhan" class="w-full py-3 bg-theme-600 text-white text-xs font-bold rounded-xl hover:bg-theme-700 shadow-lg shadow-theme-500/20 transition-all active:scale-95">${t('setupNow')}</a>
+                 <a href="#" data-nav="adhan" class="w-full py-3 bg-theme-600 text-white text-xs font-bold rounded-xl hover:bg-theme-700 shadow-lg transition-all active:scale-95">${t('setupNow')}</a>
             </div>
         `;
     }
@@ -319,38 +319,47 @@ const renderQuickLinks = (container) => {
 
     const lastReadData = JSON.parse(localStorage.getItem('quran_last_read'));
 
-    const linksContainer = document.createElement('div');
-    linksContainer.className = "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-12";
-    const linkItems = [
-        { nav: "seerah", icon: BookOpenIcon({className: 'w-6 h-6'}), title: t('prophetSeerah') || "Prophet's Seerah", desc: t('seerahHeroDesc') || "Explore the life and legacy of the Prophet Muhammad (PBUH)", meta: 'Biography', color: 'indigo' },
-        { nav: "stories", icon: SparklesIcon({className: 'w-6 h-6'}), title: t('prophetStories') || "Prophet Stories", desc: t('prophetStoriesDesc') || "Stories of the Prophets from Adam to Muhammad (PBUH)", meta: 'Prophets', color: 'amber' },
-        { nav: "sahaba", icon: UsersIcon({className: 'w-6 h-6'}), title: t('sahabaStories') || "Sahaba Stories", desc: t('sahabaStoriesDesc') || "Life of the Companions of the Prophet (PBUH)", meta: 'Sahaba', color: 'teal' },
-        { nav: "bookmarks", icon: BookmarkIcon({className: 'w-6 h-6'}), title: t('bookmarks') || 'Bookmarks', desc: t('bookmarksTab') || 'View your saved verses.', meta: 'Saved', color: 'pink' },
-        { nav: "quiz", icon: QuizIcon({className: 'w-6 h-6'}), title: t('islamicQuiz'), desc: t('testYourKnowledge') || 'Test your Islamic knowledge.', meta: 'Learn', color: 'orange' },
-        { nav: "asma", icon: BookOpenIcon({className: 'w-6 h-6'}), title: t('asmaUlHusna'), desc: t('asmaUlHusnaDesc') || 'The 99 Names of Allah', meta: '99 Names', color: 'violet' },
-        { nav: "quran", subNav: "read", icon: BookOpenIcon({className: 'w-6 h-6'}), title: t('readQuran'), desc: t('readQuranDesc') || 'Read the Holy Quran', meta: '114 Surahs', color: 'theme' },
-        { nav: "quran", subNav: "listen", icon: ListenIcon({className: 'w-6 h-6'}), title: t('exploreRecitations'), desc: t('exploreRecitationsDesc'), meta: 'Audio', color: 'indigo' },
-        { nav: "hadith", icon: HadithIcon({className: 'w-6 h-6'}), title: t('discoverHadith'), desc: t('discoverHadithDesc'), meta: '9 Collections', color: 'emerald' },
-        { nav: "hisn", icon: ShieldIcon({className: 'w-6 h-6'}), title: t('readHisn'), desc: t('readHisnDesc'), meta: '132 Chapters', color: 'amber' },
-        { nav: "tasbih", icon: BeadsIcon({className: 'w-6 h-6'}), title: t('tasbih'), desc: t('tasbihDesc'), meta: 'Dhikr', color: 'rose' },
-        { nav: "qibla", icon: QiblaIcon({className: 'w-6 h-6'}), title: t('qiblaFinder') || 'Qibla Finder', desc: t('qiblaDesc') || 'Find the direction of the Kaaba', meta: 'Compass', color: 'cyan' },
+    const linkGroups = [
+        { title: t('sectionReadListen') || 'Read & Listen', items: [
+            { nav: "quran", subNav: "read", icon: BookOpenIcon({className: 'w-6 h-6'}), title: t('readQuran'), desc: t('readQuranDesc') || 'Read the Holy Quran', meta: '114 Surahs' },
+            { nav: "quran", subNav: "listen", icon: ListenIcon({className: 'w-6 h-6'}), title: t('exploreRecitations'), desc: t('exploreRecitationsDesc'), meta: 'Audio' },
+        ]},
+        { title: t('sectionLearn') || 'Learn', items: [
+            { nav: "seerah", icon: BookOpenIcon({className: 'w-6 h-6'}), title: t('prophetSeerah') || "Prophet's Seerah", desc: t('seerahHeroDesc') || "Explore the life and legacy of the Prophet Muhammad (PBUH)", meta: 'Biography' },
+            { nav: "stories", icon: SparklesIcon({className: 'w-6 h-6'}), title: t('prophetStories') || "Prophet Stories", desc: t('prophetStoriesDesc') || "Stories of the Prophets from Adam to Muhammad (PBUH)", meta: 'Prophets' },
+            { nav: "sahaba", icon: UsersIcon({className: 'w-6 h-6'}), title: t('sahabaStories') || "Sahaba Stories", desc: t('sahabaStoriesDesc') || "Life of the Companions of the Prophet (PBUH)", meta: 'Sahaba' },
+            { nav: "hadith", icon: HadithIcon({className: 'w-6 h-6'}), title: t('discoverHadith'), desc: t('discoverHadithDesc'), meta: '9 Collections' },
+            { nav: "asma", icon: BookOpenIcon({className: 'w-6 h-6'}), title: t('asmaUlHusna'), desc: t('asmaUlHusnaDesc') || 'The 99 Names of Allah', meta: '99 Names' },
+            { nav: "quiz", icon: QuizIcon({className: 'w-6 h-6'}), title: t('islamicQuiz'), desc: t('testYourKnowledge') || 'Test your Islamic knowledge.', meta: 'Learn' },
+        ]},
+        { title: t('sectionPractice') || 'Practice', items: [
+            { nav: "bookmarks", icon: BookmarkIcon({className: 'w-6 h-6'}), title: t('bookmarks') || 'Bookmarks', desc: t('bookmarksTab') || 'View your saved verses.', meta: 'Saved' },
+            { nav: "hisn", icon: ShieldIcon({className: 'w-6 h-6'}), title: t('readHisn'), desc: t('readHisnDesc'), meta: '132 Chapters' },
+            { nav: "tasbih", icon: BeadsIcon({className: 'w-6 h-6'}), title: t('tasbih'), desc: t('tasbihDesc'), meta: 'Dhikr' },
+            { nav: "qibla", icon: QiblaIcon({className: 'w-6 h-6'}), title: t('qiblaFinder') || 'Qibla Finder', desc: t('qiblaDesc') || 'Find the direction of the Kaaba', meta: 'Compass' },
+        ]},
     ];
-    linksContainer.innerHTML = linkItems.map((link, i) => `
-        <a href="#" data-nav="${link.nav}" ${link.subNav ? `data-sub-nav="${link.subNav}"` : ''} ${link.surah ? `data-surah="${link.surah}"` : ''} ${link.ayah ? `data-ayah="${link.ayah}"` : ''} class="quick-link-card fade-in group p-3 glass-card rounded-xl hover:-translate-y-1 transition-all duration-300 flex flex-col gap-2 hover:shadow-lg hover:shadow-${link.color}-500/10 border border-slate-200/50 dark:border-slate-700/50 hover:border-${link.color}-500/30 active:scale-[0.98] relative overflow-hidden" style="animation-delay: ${0.1 + (i * 0.05)}s">
-            <div class="absolute -right-8 -top-8 w-24 h-24 bg-${link.color}-500/5 rounded-full blur-[30px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+    linkGroups.forEach((group) => {
+        const groupHeader = document.createElement('h4');
+        groupHeader.className = "text-sm font-bold text-slate-700 dark:text-slate-300 mb-3";
+        groupHeader.textContent = group.title;
+        container.appendChild(groupHeader);
+        const groupGrid = document.createElement('div');
+        groupGrid.className = "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-8";
+        groupGrid.innerHTML = group.items.map((link, i) => `<a href="#" data-nav="${link.nav}" ${link.subNav ? `data-sub-nav="${link.subNav}"` : ''} ${link.surah ? `data-surah="${link.surah}"` : ''} ${link.ayah ? `data-ayah="${link.ayah}"` : ''} class="quick-link-card fade-in group p-3 glass-card rounded-xl hover:-translate-y-1 transition-all duration-300 flex flex-col gap-2 hover:shadow-lg hover:border-theme-500/30 border border-slate-200/50 dark:border-slate-700/50 active:scale-[0.98] relative overflow-hidden" style="animation-delay: ${0.1 + (i * 0.05)}s">
             <div class="flex items-center justify-between relative z-10">
-                <div class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 group-hover:bg-${link.color}-500/10 group-hover:text-${link.color}-600 dark:group-hover:text-${link.color}-400 transition-all duration-300 shadow-sm">
+                <div class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-all duration-300 shadow-sm">
                     ${link.icon.toString().replace('w-6 h-6', 'w-4 h-4')}
                 </div>
-                <span class="text-[8px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded-md group-hover:bg-${link.color}-500/10 group-hover:text-${link.color}-600 dark:group-hover:text-${link.color}-400 transition-colors shadow-sm">${link.meta}</span>
+                <span class="text-[8px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded-md group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-colors shadow-sm">${link.meta}</span>
             </div>
             <div class="mt-0.5 relative z-10">
-                <h4 class="font-bold text-sm text-slate-800 dark:text-slate-200 mb-0.5 group-hover:text-${link.color}-600 dark:group-hover:text-${link.color}-400 transition-colors">${link.title}</h4>
+                <h4 class="font-bold text-sm text-slate-800 dark:text-slate-200 mb-0.5 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-colors">${link.title}</h4>
                 <p class="text-[10px] text-slate-500 dark:text-slate-400 leading-tight font-medium line-clamp-2">${link.desc}</p>
             </div>
-        </a>
-    `).join('');
-    container.appendChild(linksContainer);
+        </a>`).join('');
+        container.appendChild(groupGrid);
+    });
 };
 
 const renderProphetStoriesSection = (container, state) => {
@@ -409,10 +418,10 @@ export const renderHomePage = (container, props) => {
         mainGrid.className = 'grid grid-cols-1 lg:grid-cols-3 gap-6';
         
         const prayerTimesContainer = document.createElement('div');
-        prayerTimesContainer.className = 'lg:col-span-1 h-full';
+        prayerTimesContainer.className = 'lg:col-span-1 h-full order-2 lg:order-1';
         
         const quickLinksContainer = document.createElement('div');
-        quickLinksContainer.className = 'lg:col-span-2 space-y-6';
+        quickLinksContainer.className = 'lg:col-span-2 space-y-6 order-1 lg:order-2';
 
         mainGrid.append(prayerTimesContainer, quickLinksContainer);
         

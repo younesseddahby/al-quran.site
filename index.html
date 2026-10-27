@@ -98,11 +98,11 @@
 
     <!-- PWA Manifest -->
     <link rel="manifest" href="/manifest.json" />
-    <meta name="theme-color" content="#b58900" />
+    <meta name="theme-color" content="#065f46" />
 
     <style>
       :root {
-        --bg-light: 248 250 252; /* Slate 50 */
+        --bg-light: 250 247 242; /* Slate 50 */
         --bg-dark: 15 23 42;    /* Slate 900 */
         --text-light: 15 23 42;   /* Slate 900 */
         --text-dark: 248 250 252; /* Slate 50 */
@@ -111,7 +111,7 @@
 
       /* Base Themes */
       .theme-classic {
-        --bg-light: 248 250 252;
+        --bg-light: 250 247 242;
         --bg-dark: 15 23 42;
         --text-light: 15 23 42;
         --text-dark: 248 250 252;
@@ -137,35 +137,29 @@
 
       /* Glassmorphism */
       .glass {
-        background: rgba(255, 255, 255, 0.7);
-        backdrop-filter: blur(12px) saturate(180%);
-        -webkit-backdrop-filter: blur(12px) saturate(180%);
-        border: 1px solid rgba(255, 255, 255, 0.4);
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+        background: #ffffff;
+        border: 1px solid #e7e5e4;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
       }
       html.dark .glass {
-        background: rgba(15, 23, 42, 0.7);
-        backdrop-filter: blur(12px) saturate(180%);
-        -webkit-backdrop-filter: blur(12px) saturate(180%);
+        background: #1c1917;
         border: 1px solid rgba(255, 255, 255, 0.08);
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
       }
 
       .glass-card {
-        background: rgba(255, 255, 255, 0.5);
-        backdrop-filter: blur(10px) saturate(150%);
-        -webkit-backdrop-filter: blur(10px) saturate(150%);
-        border: 1px solid rgba(255, 255, 255, 0.6);
-        box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
+        background: #ffffff;
+        border: 1px solid #e7e5e4;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
       }
       html.dark .glass-card {
-        background: rgba(30, 41, 59, 0.5);
+        background: #1c1917;
         border: 1px solid rgba(255, 255, 255, 0.08);
-        box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
       }
 
       body {
-        font-family: 'Lora', serif;
+        font-family: ui-sans-system, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         background-color: rgb(var(--bg-light));
         color: rgb(var(--text-light));
         transition: background-color 0.6s cubic-bezier(0.4, 0, 0.2, 1), color 0.6s cubic-bezier(0.4, 0, 0.2, 1);

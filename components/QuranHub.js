@@ -62,7 +62,7 @@ export const renderQuranHub = (container, cache, props) => {
         container.querySelectorAll('.mode-btn').forEach(btn => {
             const isActive = btn.dataset.mode === mode;
             btn.className = `mode-btn px-4 sm:px-8 py-2 md:py-3 text-xs md:text-sm font-bold rounded-[1.5rem] flex items-center gap-2 md:gap-2.5 transition-all duration-500 transform active:scale-95 ${
-                isActive ? 'glass text-theme-700 dark:text-theme-300 shadow-xl shadow-slate-200/50 dark:shadow-none' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
+                isActive ? 'glass text-theme-700 dark:text-theme-300 shadow-md shadow-slate-200/50 dark:shadow-none' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
             }`;
         });
 

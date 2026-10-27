@@ -5,17 +5,10 @@ import {
 import { t, getCurrentLanguage } from '../i18n.js';
 
 const colors = [
-    { name: 'amber', bgClass: 'bg-amber-500', ringClass: 'ring-amber-500' },
-    { name: 'ruby', bgClass: 'bg-rose-500', ringClass: 'ring-rose-500' },
-    { name: 'sapphire', bgClass: 'bg-blue-500', ringClass: 'ring-blue-500' },
     { name: 'jade', bgClass: 'bg-emerald-500', ringClass: 'ring-emerald-500' },
-    { name: 'violet', bgClass: 'bg-violet-500', ringClass: 'ring-violet-500' },
-    { name: 'orange', bgClass: 'bg-orange-500', ringClass: 'ring-orange-500' },
-    { name: 'emerald', bgClass: 'bg-emerald-600', ringClass: 'ring-emerald-600' },
-    { name: 'cyan', bgClass: 'bg-cyan-500', ringClass: 'ring-cyan-500' },
-    { name: 'fuchsia', bgClass: 'bg-fuchsia-500', ringClass: 'ring-fuchsia-500' },
-    { name: 'indigo', bgClass: 'bg-indigo-500', ringClass: 'ring-indigo-500' },
     { name: 'gold', bgClass: 'bg-yellow-500', ringClass: 'ring-yellow-500' },
+    { name: 'amber', bgClass: 'bg-amber-500', ringClass: 'ring-amber-500' },
+    { name: 'slate', bgClass: 'bg-slate-500', ringClass: 'ring-slate-500' },
 ];
 
 const socialLinks = [
@@ -68,7 +61,7 @@ export const renderSettingsPage = (container, props) => {
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
                         <!-- Left Column: Navigation/Sections -->
                         <div class="lg:col-span-4 space-y-4">
-                                <div class="glass-card rounded-3xl p-6 shadow-xl border border-slate-200 dark:border-slate-800">
+                                <div class="glass-card rounded-2xl p-6 shadow-md border border-slate-200 dark:border-slate-800">
                                     <h2 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6 px-2">${t('sections') || 'Sections'}</h2>
                                     <nav class="space-y-1.5">
                                         ${renderNavButton('appearance', t('appearance'), SunIcon({className: "w-4 h-4"}))}
@@ -95,7 +88,7 @@ export const renderSettingsPage = (container, props) => {
                                     </div>
                                     <h2 class="text-lg font-bold text-slate-900 dark:text-white tracking-tight">${t('appearance')}</h2>
                                 </div>
-                                <div class="glass-card rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800/50">
+                                <div class="glass-card rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800/50">
                                     ${renderSettingItem(t('theme'), t('themeSettingsSubtitle'), renderThemeSelector())}
                                     ${renderSettingItem(t('accentColor'), t('accentColorSubtitle') || 'Choose your favorite highlight color', renderAccentColorSelector())}
                                     ${renderSettingItem(t('interfaceAnimations'), t('interfaceAnimationsSubtitle'), renderAnimationsToggle())}
@@ -110,7 +103,7 @@ export const renderSettingsPage = (container, props) => {
                                     </div>
                                     <h2 class="text-lg font-bold text-slate-900 dark:text-white tracking-tight">${t('languageAndText')}</h2>
                                 </div>
-                                <div class="glass-card rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800/50">
+                                <div class="glass-card rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800/50">
                                     ${renderSettingItem(t('language'), t('appLanguageSubtitle') || 'Select your preferred app language', renderLanguageSelector())}
                                     ${language !== 'ar' ? renderSettingItem(t('readerSettings'), t('readerSettingsSubtitle') || 'Configure how the Quran is displayed', renderReaderSettingsSelector()) : ''}
                                 </div>
@@ -124,7 +117,7 @@ export const renderSettingsPage = (container, props) => {
                                     </div>
                                     <h2 class="text-lg font-bold text-slate-900 dark:text-white tracking-tight">${t('uiSettings')}</h2>
                                 </div>
-                                <div class="glass-card rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800/50">
+                                <div class="glass-card rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800/50">
                                     <div class="p-5 md:p-6">
                                         <h4 class="font-bold text-slate-900 dark:text-white mb-4 text-sm">${t('surahListLayout')}</h4>
                                         ${renderSurahLayoutSelector()}
@@ -141,7 +134,7 @@ export const renderSettingsPage = (container, props) => {
                                     </div>
                                     <h2 class="text-lg font-bold text-slate-900 dark:text-white tracking-tight">${t('about')}</h2>
                                 </div>
-                                <div class="glass-card rounded-3xl p-6 md:p-8 border border-slate-200 dark:border-slate-800">
+                                <div class="glass-card rounded-2xl p-6 md:p-8 border border-slate-200 dark:border-slate-800">
                                     ${renderAboutInfo()}
                                 </div>
                             </section>
@@ -203,20 +196,20 @@ export const renderSettingsPage = (container, props) => {
         return `
             <div class="flex flex-wrap items-center justify-end gap-3 max-w-[240px]">
                 ${colors.map(c => `
-                    <button data-color="${c.name}" class="color-btn w-10 h-10 rounded-full ${c.bgClass} ring-offset-4 dark:ring-offset-slate-900 ${themeColor === c.name ? 'ring-2 ring-theme-500 scale-110 shadow-lg shadow-theme-500/30' : 'hover:scale-110 hover:shadow-lg'} transition-all active:scale-90 border-2 border-white/20"></button>
+                    <button data-color="${c.name}" class="color-btn w-10 h-10 rounded-full ${c.bgClass} ring-offset-4 dark:ring-offset-slate-900 ${themeColor === c.name ? 'ring-2 ring-theme-500 scale-110 shadow-lg' : 'hover:scale-110 hover:shadow-lg'} transition-all active:scale-90 border-2 border-white/20"></button>
                 `).join('')}
             </div>
         `;
     };
 
     const renderAnimationsToggle = () => `
-        <button id="animations-toggle" class="w-14 h-8 rounded-full transition-all relative ${animationsEnabled ? 'bg-theme-600 shadow-lg shadow-theme-500/20' : 'bg-slate-300 dark:bg-slate-700'}">
+        <button id="animations-toggle" class="w-14 h-8 rounded-full transition-all relative ${animationsEnabled ? 'bg-theme-600 shadow-lg' : 'bg-slate-300 dark:bg-slate-700'}">
             <div class="absolute top-1 start-1 w-6 h-6 rounded-full bg-white transition-transform ${animationsEnabled ? 'ltr:translate-x-6 rtl:-translate-x-6' : ''} shadow-sm"></div>
         </button>
     `;
 
     const renderDebugToggle = () => `
-        <button id="debug-toggle" class="w-14 h-8 rounded-full transition-all relative ${debugMode ? 'bg-theme-600 shadow-lg shadow-theme-500/20' : 'bg-slate-300 dark:bg-slate-700'}">
+        <button id="debug-toggle" class="w-14 h-8 rounded-full transition-all relative ${debugMode ? 'bg-theme-600 shadow-lg' : 'bg-slate-300 dark:bg-slate-700'}">
             <div class="absolute top-1 start-1 w-6 h-6 rounded-full bg-white transition-transform ${debugMode ? 'ltr:translate-x-6 rtl:-translate-x-6' : ''} shadow-sm"></div>
         </button>
     `;
@@ -240,7 +233,7 @@ export const renderSettingsPage = (container, props) => {
 
     const renderSurahLayoutSelector = () => `
         <div class="space-y-6">
-            <div class="flex items-center justify-between p-4 glass rounded-3xl border border-slate-100 dark:border-slate-800">
+            <div class="flex items-center justify-between p-4 glass rounded-2xl border border-slate-100 dark:border-slate-800">
                 <div class="flex items-center gap-3">
                     <button data-layout="grid" class="layout-btn flex items-center gap-2 px-6 py-3 rounded-2xl transition-all ${surahListLayout === 'grid' ? 'glass text-theme-600 shadow-lg' : 'text-slate-500'}">
                         ${GridViewIcon({className: "w-5 h-5"})} <span class="text-sm font-bold">${t('grid') || 'Grid'}</span>
@@ -263,7 +256,7 @@ export const renderSettingsPage = (container, props) => {
     const renderAboutInfo = () => `
         <div class="space-y-6">
             <div class="flex items-center gap-4">
-                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-theme-500 to-indigo-600 flex items-center justify-center text-white font-bold text-2xl shadow-xl shadow-theme-500/20">Y</div>
+                <div class="w-16 h-16 rounded-2xl bg-theme-700 flex items-center justify-center text-white font-bold text-2xl shadow-md">Y</div>
                 <div>
                     <h4 class="text-lg font-bold text-slate-900 dark:text-white">Youness Eddahby</h4>
                     <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Full Stack Developer & Designer</p>

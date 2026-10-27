@@ -45,7 +45,7 @@ export const renderSeerah = (container, props) => {
                 </div>
 
                 ${state.bookmark ? `
-                    <button id="continue-reading-seerah" class="w-full p-4 bg-theme-500 text-white rounded-2xl shadow-lg shadow-theme-500/20 flex items-center justify-between group hover:bg-theme-600 transition-all active:scale-[0.98]">
+                    <button id="continue-reading-seerah" class="w-full p-4 bg-theme-500 text-white rounded-2xl shadow-lg flex items-center justify-between group hover:bg-theme-600 transition-all active:scale-[0.98]">
                         <div class="flex items-center gap-4">
                             <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
                                 ${BookOpenIcon({className: "w-6 h-6"})}
@@ -61,8 +61,8 @@ export const renderSeerah = (container, props) => {
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                     ${SEERAH_CHAPTERS.filter(c => t(c.titleKey).toLowerCase().includes(state.searchQuery.toLowerCase())).map((chapter, index) => `
-                        <button data-chapter-id="${chapter.id}" class="p-6 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 shadow-sm hover:shadow-xl hover:shadow-theme-500/10 hover:border-theme-500/30 hover:-translate-y-1 transition-all duration-500 flex items-center justify-between group relative overflow-hidden">
-                            <div class="absolute -right-8 -top-8 w-32 h-32 bg-theme-500/5 rounded-full blur-[40px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                        <button data-chapter-id="${chapter.id}" class="p-6 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 shadow-sm hover:shadow-md hover: hover:border-theme-500/30 hover:-translate-y-1 transition-all duration-500 flex items-center justify-between group relative overflow-hidden">
+                            
                             <div class="flex items-center gap-5 relative z-10">
                                 <div class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-all duration-500 shadow-sm font-display font-bold text-xl">
                                     ${(index + 1).toString().padStart(2, '0')}
@@ -123,7 +123,7 @@ export const renderSeerah = (container, props) => {
                     </div>
                 </div>
 
-                <div class="glass-card rounded-3xl p-6 md:p-10 shadow-xl border border-slate-100 dark:border-slate-800 space-y-6">
+                <div class="glass-card rounded-2xl p-6 md:p-10 shadow-md border border-slate-100 dark:border-slate-800 space-y-6">
                     <h1 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white font-display tracking-tight">${t(chapter.titleKey)}</h1>
                     <div class="w-20 h-1.5 bg-theme-500 rounded-full"></div>
                     <div class="prose prose-slate dark:prose-invert max-w-none">

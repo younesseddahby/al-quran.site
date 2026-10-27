@@ -399,8 +399,8 @@ export const renderHisnMuslim = (container) => {
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     ${HISN_DATA.map(category => `
-                        <div data-category-id="${category.id}" class="category-card p-4 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 cursor-pointer hover:-translate-y-1 hover:shadow-xl hover:shadow-theme-500/10 hover:border-theme-500/30 transition-all duration-500 group relative overflow-hidden">
-                            <div class="absolute top-0 right-0 w-24 h-24 bg-theme-500/5 rounded-full blur-[30px] -mr-8 -mt-8 transition-transform group-hover:scale-150 duration-700"></div>
+                        <div data-category-id="${category.id}" class="category-card p-4 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 cursor-pointer hover:-translate-y-1 hover:shadow-md hover: hover:border-theme-500/30 transition-all duration-500 group relative overflow-hidden">
+                            
                             <div class="flex justify-between items-start mb-2 relative z-10">
                                 <div class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-all duration-500 shadow-sm">
                                     ${ShieldIcon({className: 'w-4.5 h-4.5'})}

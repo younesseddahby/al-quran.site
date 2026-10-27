@@ -32,7 +32,7 @@ const App = (rootElement) => {
     let state = {
         activeTab: 'home',
         theme: localStorage.getItem('theme') || 'system',
-        themeColor: localStorage.getItem('themeColor') || 'sapphire',
+        themeColor: localStorage.getItem('themeColor') || 'jade',
         baseTheme: localStorage.getItem('baseTheme') || 'classic',
         language: localStorage.getItem('language') || 'en',
         fontSize: localStorage.getItem('fontSize') || 'small',
@@ -85,7 +85,7 @@ const App = (rootElement) => {
         root.className = `${effectiveTheme} theme-${state.baseTheme} ${state.arabicFont}`;
         if (!state.animationsEnabled) root.classList.add('animations-disabled');
         
-        const colors = THEME_COLORS[state.themeColor] || THEME_COLORS.sapphire;
+        const colors = THEME_COLORS[state.themeColor] || THEME_COLORS.jade;
         Object.entries(colors).forEach(([shade, hex]) => {
             const rgb = hexToRgb(hex);
             if (rgb) root.style.setProperty(`--theme-color-${shade}-rgb`, rgb);
@@ -340,7 +340,7 @@ const App = (rootElement) => {
         overlay.className = "fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 animate-fade";
         overlay.innerHTML = `
             <div class="absolute inset-0 bg-slate-950/60 backdrop-blur-sm" id="ai-modal-backdrop"></div>
-            <div class="relative w-full max-w-2xl glass rounded-[2.5rem] shadow-2xl border border-white/20 overflow-hidden flex flex-col h-[85vh] animate-scale-in">
+            <div class="relative w-full max-w-2xl glass rounded-[2.5rem] shadow-lg border border-white/20 overflow-hidden flex flex-col h-[85vh] animate-scale-in">
                 <div id="ai-modal-content" class="flex-1 overflow-hidden"></div>
             </div>
         `;
@@ -380,9 +380,9 @@ const App = (rootElement) => {
 
         const btn = document.createElement('button');
         btn.id = 'floating-ai-btn';
-        btn.className = "fixed bottom-20 right-4 lg:bottom-8 lg:right-8 w-14 h-14 rounded-2xl bg-theme-500 text-white shadow-2xl shadow-theme-500/40 flex items-center justify-center z-50 transition-all duration-300 hover:scale-110 active:scale-95 animate-bounce-subtle group";
+        btn.className = "fixed bottom-20 right-4 lg:bottom-8 lg:right-8 w-14 h-14 rounded-2xl bg-theme-500 text-white shadow-lg flex items-center justify-center z-50 transition-all duration-300 hover:scale-110 active:scale-95 animate-bounce-subtle group";
         btn.innerHTML = `
-            <div class="absolute -top-12 right-0 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+            <div class="absolute -top-12 right-0 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-md border border-slate-100 dark:border-slate-700 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
                 ${t('aiAssistant') || 'AI Assistant'}
             </div>
             ${SparklesIcon({className: "w-7 h-7"})}

@@ -60,8 +60,8 @@ export const renderSahabaStories = (container, props) => {
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
                 ${filteredSahaba.map(sahaba => `
-                    <button data-sahaba-id="${sahaba.id}" class="story-card group p-6 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 shadow-sm hover:shadow-xl hover:shadow-theme-500/10 hover:border-theme-500/30 hover:-translate-y-1 transition-all duration-500 text-left rtl:text-right flex items-center justify-between relative overflow-hidden">
-                        <div class="absolute -right-8 -top-8 w-32 h-32 bg-theme-500/5 rounded-full blur-[40px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                    <button data-sahaba-id="${sahaba.id}" class="story-card group p-6 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 shadow-sm hover:shadow-md hover: hover:border-theme-500/30 hover:-translate-y-1 transition-all duration-500 text-left rtl:text-right flex items-center justify-between relative overflow-hidden">
+                        
                         <div class="flex items-center gap-4 relative z-10">
                             <div class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-all duration-500 shadow-sm">
                                 ${UsersIcon({className: 'w-6 h-6'})}
@@ -136,7 +136,7 @@ export const renderSahabaStories = (container, props) => {
                 </button>
             </div>
 
-            <article class="glass-card rounded-[2.5rem] p-6 md:p-16 shadow-xl border border-slate-100 dark:border-slate-800 relative overflow-hidden">
+            <article class="glass-card rounded-[2.5rem] p-6 md:p-16 shadow-md border border-slate-100 dark:border-slate-800 relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-96 h-96 bg-theme-500/5 rounded-bl-[15rem] -mr-32 -mt-32"></div>
                 
                 <div class="relative z-10 space-y-10">
@@ -166,7 +166,7 @@ export const renderSahabaStories = (container, props) => {
             </article>
 
             <div class="flex justify-center pt-12">
-                <button id="story-finish-btn" class="px-10 py-5 bg-theme-600 text-white rounded-3xl font-bold shadow-xl shadow-theme-500/30 hover:bg-theme-700 transition-all active:scale-95 flex items-center gap-3">
+                <button id="story-finish-btn" class="px-10 py-5 bg-theme-600 text-white rounded-2xl font-bold shadow-md hover:bg-theme-700 transition-all active:scale-95 flex items-center gap-3">
                     ${t('done') || 'Done'}
                     ${ChevronRightIcon({className: 'w-5 h-5 rtl:rotate-180'})}
                 </button>

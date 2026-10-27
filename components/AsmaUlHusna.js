@@ -115,7 +115,7 @@ export const renderAsmaUlHusna = (container, { navigateTo }) => {
     const render = () => {
         container.innerHTML = `
             <div class="space-y-6">
-                <h2 class="text-3xl font-bold text-theme-700 dark:text-theme-400 font-amiri">${t('asmaUlHusna')}</h2>
+                <h2 class="text-3xl font-bold text-slate-900 dark:text-white font-amiri">${t('asmaUlHusna')}</h2>
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                     ${ASMA_UL_HUSNA.map(renderNameCard).join('')}
                 </div>
@@ -174,7 +174,7 @@ export const renderAsmaUlHusna = (container, { navigateTo }) => {
         
         modalContainer.innerHTML = `
             <div id="asma-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 opacity-0 transition-opacity duration-300"></div>
-            <div id="asma-panel" class="fixed bottom-0 left-0 right-0 z-50 glass-card rounded-t-2xl shadow-2xl max-h-[85vh] flex flex-col translate-y-full transition-transform duration-300 ease-out">
+            <div id="asma-panel" class="fixed bottom-0 left-0 right-0 z-50 glass-card rounded-t-2xl shadow-lg max-h-[85vh] flex flex-col translate-y-full transition-transform duration-300 ease-out">
                 <header class="p-4 border-b dark:border-slate-700 flex-shrink-0 text-center relative">
                     <h3 class="text-2xl font-bold text-slate-800 dark:text-slate-100 font-amiri">${name_ar}</h3>
                     <p class="text-slate-600 dark:text-slate-400">${transliteration} - ${translation_en}</p>

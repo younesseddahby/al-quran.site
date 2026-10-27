@@ -122,20 +122,20 @@ export const renderQiblaFinder = (container, props = {}) => {
                 ` : ''}
 
                 ${!state.permissionGranted && !state.error ? `
-                    <div class="glass-card p-8 rounded-3xl text-center border border-slate-200/50 dark:border-slate-700/50 shadow-sm animate-scale">
+                    <div class="glass-card p-8 rounded-2xl text-center border border-slate-200/50 dark:border-slate-700/50 shadow-sm animate-scale">
                         <div class="w-20 h-20 mx-auto bg-theme-50 dark:bg-theme-900/20 text-theme-600 dark:text-theme-400 rounded-full flex items-center justify-center mb-6">
                             ${QiblaIcon({className: 'w-10 h-10'})}
                         </div>
                         <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">${t('compassPermission') || 'Compass & Location Access'}</h3>
                         <p class="text-slate-500 dark:text-slate-400 mb-8 max-w-md mx-auto">${t('compassPermissionDesc') || 'We need access to your device\'s compass and location to accurately determine the Qibla direction.'}</p>
-                        <button id="grant-permission-btn" class="px-8 py-3 bg-theme-600 hover:bg-theme-700 text-white rounded-full font-bold shadow-lg shadow-theme-500/30 transition-all active:scale-95">
+                        <button id="grant-permission-btn" class="px-8 py-3 bg-theme-600 hover:bg-theme-700 text-white rounded-full font-bold shadow-lg transition-all active:scale-95">
                             ${t('grantPermission') || 'Grant Permission'}
                         </button>
                     </div>
                 ` : ''}
 
                 ${state.permissionGranted ? `
-                    <div class="glass-card p-8 rounded-3xl border border-slate-200/50 dark:border-slate-700/50 shadow-sm flex flex-col items-center justify-center min-h-[400px] relative overflow-hidden animate-scale">
+                    <div class="glass-card p-8 rounded-2xl border border-slate-200/50 dark:border-slate-700/50 shadow-sm flex flex-col items-center justify-center min-h-[400px] relative overflow-hidden animate-scale">
                         
                         <div class="absolute top-4 right-4 text-center">
                             <div class="text-xs text-slate-400 uppercase tracking-widest font-bold mb-1">${t('heading') || 'Heading'}</div>
@@ -167,7 +167,7 @@ export const renderQiblaFinder = (container, props = {}) => {
                                     <div id="qibla-pointer" class="absolute inset-0 transition-transform duration-500 ease-out" style="transform: rotate(${state.qiblaAngle}deg)">
                                         <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-4 flex flex-col items-center">
                                             <div class="w-4 h-4 bg-theme-500 rotate-45"></div>
-                                            <div class="w-1 h-32 bg-gradient-to-b from-theme-500 to-transparent"></div>
+                                            <div class="w-1 h-32 bg-theme-500/20"></div>
                                         </div>
                                     </div>
                                 ` : ''}

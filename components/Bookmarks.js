@@ -100,7 +100,7 @@ export const renderBookmarks = (container, props) => {
         }
 
         return items.map(item => `
-            <div class="group p-5 md:p-6 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 hover:shadow-xl hover:shadow-theme-500/10 hover:border-theme-500/30 hover:-translate-y-1 transition-all duration-500 relative overflow-hidden">
+            <div class="group p-5 md:p-6 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 hover:shadow-md hover: hover:border-theme-500/30 hover:-translate-y-1 transition-all duration-500 relative overflow-hidden">
                 <div class="flex justify-between items-start mb-4 relative z-10">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-all duration-500 shadow-sm">

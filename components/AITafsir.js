@@ -30,7 +30,7 @@ export const renderAITafsir = (container, { onClose, initialPrompt }) => {
 
         container.innerHTML = `
             <div id="ai-overlay" class="fixed inset-0 bg-slate-950/40 backdrop-blur-md z-40 transition-opacity duration-500 opacity-0"></div>
-            <div id="ai-panel" class="fixed bottom-0 right-0 md:bottom-6 md:right-6 z-50 w-full md:max-w-lg h-full md:h-[80vh] bg-white dark:bg-slate-900 md:rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden translate-y-full md:translate-y-10 md:opacity-0 transition-all duration-500 ease-out">
+            <div id="ai-panel" class="fixed bottom-0 right-0 md:bottom-6 md:right-6 z-50 w-full md:max-w-lg h-full md:h-[80vh] bg-white dark:bg-slate-900 md:rounded-[2.5rem] shadow-lg flex flex-col overflow-hidden translate-y-full md:translate-y-10 md:opacity-0 transition-all duration-500 ease-out">
                 
                 <!-- Header -->
                 <header class="px-6 py-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl sticky top-0 z-10">

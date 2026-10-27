@@ -56,7 +56,7 @@ export const renderAdhanTimes = (container, props = {}) => {
                     </div>
                 </div>
 
-                <div class="glass rounded-3xl p-5 md:p-6 shadow-xl border border-slate-200 dark:border-slate-800 space-y-5">
+                <div class="glass rounded-2xl p-5 md:p-6 shadow-md border border-slate-200 dark:border-slate-800 space-y-5">
                     <div class="flex items-center justify-between p-3.5 glass rounded-xl border border-slate-200 dark:border-slate-800">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-xl glass border border-slate-200 dark:border-slate-800 flex items-center justify-center text-theme-600 dark:text-theme-400 shadow-sm">
@@ -67,7 +67,7 @@ export const renderAdhanTimes = (container, props = {}) => {
                                 <p class="text-[9px] text-slate-500 dark:text-slate-400 uppercase tracking-widest font-bold mt-0.5">${state.isAutoLocation ? t('currentLocation') : t('manualLocation')}</p>
                             </div>
                         </div>
-                        <button id="auto-location-toggle" class="w-12 h-6 rounded-full transition-all relative active:scale-95 ${state.isAutoLocation ? 'bg-theme-600 shadow-lg shadow-theme-500/20' : 'bg-slate-200 dark:bg-slate-700'}">
+                        <button id="auto-location-toggle" class="w-12 h-6 rounded-full transition-all relative active:scale-95 ${state.isAutoLocation ? 'bg-theme-600 shadow-lg' : 'bg-slate-200 dark:bg-slate-700'}">
                             <div class="absolute top-1 start-1 w-4 h-4 bg-white rounded-full shadow-sm transition-transform ${state.isAutoLocation ? 'ltr:translate-x-6 rtl:-translate-x-6' : ''}"></div>
                         </button>
                     </div>
@@ -77,7 +77,7 @@ export const renderAdhanTimes = (container, props = {}) => {
                             <div class="relative sm:col-span-2">
                                 <label for="city" class="block text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1.5 ml-1">${t('city')}</label>
                                 <input type="text" id="city" value="${state.location ? state.location.city : ''}" placeholder="${t('cityExample')}" class="w-full px-4 py-3 glass border border-slate-200 dark:border-slate-800 rounded-xl outline-none focus:ring-2 focus:ring-theme-500/20 focus:border-theme-500/50 transition-all dark:text-white text-sm font-medium">
-                                <div id="city-suggestions" class="absolute z-20 w-full mt-1 glass rounded-xl shadow-2xl border border-slate-200 dark:border-slate-800 hidden max-h-60 overflow-auto custom-scrollbar"></div>
+                                <div id="city-suggestions" class="absolute z-20 w-full mt-1 glass rounded-xl shadow-lg border border-slate-200 dark:border-slate-800 hidden max-h-60 overflow-auto custom-scrollbar"></div>
                             </div>
                             <div>
                                 <label for="country" class="block text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1.5 ml-1">${t('country')}</label>
@@ -88,7 +88,7 @@ export const renderAdhanTimes = (container, props = {}) => {
                                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                                     ${t('useMyLocation') || 'Use My Location'}
                                 </button>
-                                <button type="submit" class="flex-1 px-5 py-3 bg-theme-600 text-white rounded-xl font-bold hover:bg-theme-700 transition-all active:scale-95 uppercase tracking-widest text-[10px] shadow-lg shadow-theme-500/20">${t('showTimes')}</button>
+                                <button type="submit" class="flex-1 px-5 py-3 bg-theme-600 text-white rounded-xl font-bold hover:bg-theme-700 transition-all active:scale-95 uppercase tracking-widest text-[10px] shadow-lg">${t('showTimes')}</button>
                             </div>
                         </form>
                     `}
@@ -289,7 +289,7 @@ export const renderAdhanTimes = (container, props = {}) => {
         if (state.highlightedPrayer) {
             const previousCard = container.querySelector(`#prayer-${state.highlightedPrayer}`);
             if (previousCard) {
-                previousCard.classList.remove('bg-gradient-to-br', 'from-theme-600', 'to-indigo-600', 'transform', 'scale-105', '-translate-y-2', 'shadow-2xl', 'shadow-theme-500/40', 'border-theme-500/50');
+                previousCard.classList.remove('bg-theme-100', 'dark:bg-theme-900/30', 'border-theme-500/50');
                 previousCard.classList.add('glass', 'border-white/10');
                 previousCard.querySelectorAll('p').forEach(p => p.classList.remove('text-white'));
             }
@@ -297,9 +297,9 @@ export const renderAdhanTimes = (container, props = {}) => {
 
         const highlightedCard = container.querySelector(`#prayer-${nextPrayerName}`);
         if (highlightedCard) {
-            highlightedCard.classList.add('bg-gradient-to-br', 'from-theme-600', 'to-indigo-600', 'transform', 'scale-105', '-translate-y-2', 'shadow-2xl', 'shadow-theme-500/40', 'border-theme-500/50');
+            highlightedCard.classList.add('bg-theme-100', 'dark:bg-theme-900/30', 'border-theme-500/50');
             highlightedCard.classList.remove('glass', 'border-white/10');
-            highlightedCard.querySelectorAll('p').forEach(p => p.classList.add('text-white'));
+            
         }
         
         state.highlightedPrayer = nextPrayerName;
@@ -327,8 +327,8 @@ export const renderAdhanTimes = (container, props = {}) => {
 
         contentContainer.innerHTML = `
             <div class="fade-in space-y-6">
-                <div class="text-center p-6 md:p-8 glass rounded-3xl shadow-xl border border-slate-200 dark:border-slate-800 relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-theme-500/30 to-transparent"></div>
+                <div class="text-center p-6 md:p-8 glass rounded-2xl shadow-md border border-slate-200 dark:border-slate-800 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-0.5 bg-theme-500/20"></div>
                     <h3 class="text-xl md:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">${t('prayerTimesFor', { location: locationString })}</h3>
                     <p class="text-[9px] text-slate-500 dark:text-slate-400 mt-1 uppercase tracking-widest font-bold">${t('calculationMethod', { method: meta.method.name })}</p>
                     <div id="countdown-container" class="mt-6 p-4 glass rounded-2xl border border-slate-200 dark:border-slate-800 inline-block"></div>

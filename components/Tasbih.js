@@ -98,7 +98,7 @@ export const renderTasbih = (container, props = {}) => {
                         </div>
 
                         <!-- Phrase Dropdown -->
-                        <div id="phrase-dropdown" class="absolute top-full left-0 right-0 mt-2 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 shadow-2xl z-50 ${state.showPhraseDropdown ? 'block' : 'hidden'} max-h-[280px] overflow-y-auto custom-scrollbar">
+                        <div id="phrase-dropdown" class="absolute top-full left-0 right-0 mt-2 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 shadow-lg z-50 ${state.showPhraseDropdown ? 'block' : 'hidden'} max-h-[280px] overflow-y-auto custom-scrollbar">
                             <div class="p-1.5 space-y-1">
                                 ${allPhrases.map((p, i) => `
                                     <button data-index="${i}" class="phrase-option w-full p-2.5 rounded-xl text-left transition-all ${state.selectedPhraseIndex === i ? 'bg-theme-500/10 border border-theme-500/20' : 'hover:bg-slate-50 dark:hover:bg-slate-800/50'}">
@@ -139,6 +139,7 @@ export const renderTasbih = (container, props = {}) => {
                         <div id="ripple-container" class="absolute inset-0 pointer-events-none overflow-hidden rounded-full"></div>
                     </div>
 
+                    <p class="mt-4 text-xs font-medium text-slate-400 dark:text-slate-500">${t('tapToCount')}</p>
                     <!-- Total Stats -->
                     <div class="mt-10 flex items-center gap-8">
                         <div class="text-center">
@@ -155,7 +156,7 @@ export const renderTasbih = (container, props = {}) => {
 
                 <!-- Settings Overlay -->
                 <div id="tasbih-settings-overlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[60] flex items-end sm:items-center justify-center p-4 ${state.showSettings ? 'flex' : 'hidden'}">
-                    <div class="w-full max-w-md glass-card rounded-3xl border border-white/20 shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-300">
+                    <div class="w-full max-w-md glass-card rounded-2xl border border-white/20 shadow-lg overflow-hidden animate-in slide-in-from-bottom duration-300">
                         <div class="p-6">
                             <div class="flex items-center justify-between mb-6">
                                 <h3 class="text-xl font-bold text-slate-800 dark:text-white">${t('tasbihSettings')}</h3>
@@ -170,7 +171,7 @@ export const renderTasbih = (container, props = {}) => {
                                     <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-3">${t('targetCount')}</label>
                                     <div class="grid grid-cols-5 gap-2 mb-3">
                                         ${[33, 99, 100, 1000, 0].map(val => `
-                                            <button data-target="${val}" class="target-option py-2 rounded-xl border transition-all font-bold text-xs ${state.target === val ? 'bg-theme-500 border-theme-500 text-white shadow-lg shadow-theme-500/30' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-theme-500/50'}">
+                                            <button data-target="${val}" class="target-option py-2 rounded-xl border transition-all font-bold text-xs ${state.target === val ? 'bg-theme-500 border-theme-500 text-white shadow-lg' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-theme-500/50'}">
                                                 ${val === 0 ? t('unlimited') : val}
                                             </button>
                                         `).join('')}
@@ -239,7 +240,7 @@ export const renderTasbih = (container, props = {}) => {
                                 </div>
                             </div>
 
-                            <button id="settings-done-btn" class="w-full mt-8 py-3 bg-theme-600 hover:bg-theme-700 text-white font-bold rounded-2xl shadow-lg shadow-theme-500/30 transition-all active:scale-95">
+                            <button id="settings-done-btn" class="w-full mt-8 py-3 bg-theme-600 hover:bg-theme-700 text-white font-bold rounded-2xl shadow-lg transition-all active:scale-95">
                                 ${t('done')}
                             </button>
                         </div>
@@ -248,7 +249,7 @@ export const renderTasbih = (container, props = {}) => {
 
                 <!-- Add Phrase Overlay -->
                 <div id="add-phrase-overlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[70] flex items-end sm:items-center justify-center p-4 ${state.showAddPhrase ? 'flex' : 'hidden'}">
-                    <div class="w-full max-w-md glass-card rounded-3xl border border-white/20 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
+                    <div class="w-full max-w-md glass-card rounded-2xl border border-white/20 shadow-lg overflow-hidden animate-in zoom-in-95 duration-300">
                         <div class="p-6">
                             <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-6">${t('addCustomPhrase')}</h3>
                             <div class="space-y-4">
@@ -265,7 +266,7 @@ export const renderTasbih = (container, props = {}) => {
                                 <button id="cancel-add-phrase-btn" class="flex-1 py-3 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-bold rounded-2xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">
                                     ${t('cancel')}
                                 </button>
-                                <button id="save-phrase-btn" class="flex-1 py-3 bg-theme-600 hover:bg-theme-700 text-white font-bold rounded-2xl shadow-lg shadow-theme-500/30 transition-all">
+                                <button id="save-phrase-btn" class="flex-1 py-3 bg-theme-600 hover:bg-theme-700 text-white font-bold rounded-2xl shadow-lg transition-all">
                                     ${t('save')}
                                 </button>
                             </div>

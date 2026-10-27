@@ -143,11 +143,11 @@ export const renderQuranListener = (container, cache, props) => {
                             <span class="w-8 h-[1px] bg-slate-200 dark:bg-slate-800"></span>
                             ${t('continueListening') || 'Continue Listening'}
                         </h2>
-                        <div id="continue-listening-card" class="group relative overflow-hidden glass rounded-3xl border border-theme-500/20 p-5 md:p-6 cursor-pointer hover:shadow-2xl hover:shadow-theme-500/20 transition-all duration-500">
+                        <div id="continue-listening-card" class="group relative overflow-hidden glass rounded-2xl border border-theme-500/20 p-5 md:p-6 cursor-pointer hover:shadow-lg hover: transition-all duration-500">
                             <div class="absolute -right-10 -top-10 w-40 h-40 bg-theme-500/10 rounded-full blur-3xl group-hover:bg-theme-500/20 transition-all duration-700"></div>
                             <div class="flex items-center justify-between relative z-10">
                                 <div class="flex items-center gap-4">
-                                    <div class="w-12 h-12 rounded-2xl bg-theme-500 flex items-center justify-center text-white shadow-lg shadow-theme-500/30 group-hover:scale-110 transition-transform duration-500">
+                                    <div class="w-12 h-12 rounded-2xl bg-theme-500 flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-500">
                                         ${PlayIcon({className: "w-6 h-6"})}
                                     </div>
                                     <div>
@@ -198,8 +198,8 @@ export const renderQuranListener = (container, cache, props) => {
         const gridContainer = contentContainer.querySelector('#reciter-list-grid');
         if (filteredReciters.length > 0) {
             gridContainer.innerHTML = filteredReciters.map(r => `
-                <div data-reciter-id="${r.id}" class="reciter-card group cursor-pointer p-3.5 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 shadow-sm hover:shadow-xl hover:shadow-theme-500/10 hover:border-theme-500/30 hover:-translate-y-1 transition-all duration-500 relative overflow-hidden">
-                    <div class="absolute -right-8 -top-8 w-24 h-24 bg-theme-500/5 rounded-full blur-[30px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                <div data-reciter-id="${r.id}" class="reciter-card group cursor-pointer p-3.5 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 shadow-sm hover:shadow-md hover: hover:border-theme-500/30 hover:-translate-y-1 transition-all duration-500 relative overflow-hidden">
+                    
                     <div class="flex items-center gap-3 relative z-10">
                         <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-all duration-500 shadow-sm font-display font-bold text-base relative">
                             <span class="relative z-10">${(lang === 'ar' ? r.name_ar : r.name_en).charAt(0)}</span>
@@ -324,8 +324,8 @@ export const renderQuranListener = (container, cache, props) => {
                 }
 
                 return `
-                    <div data-surah-id="${s.number}" class="surah-row group flex items-center justify-between p-2.5 md:p-3 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 shadow-sm hover:shadow-xl hover:shadow-theme-500/10 hover:border-theme-500/30 hover:-translate-y-1 transition-all duration-500 relative overflow-hidden">
-                         <div class="absolute -right-8 -top-8 w-24 h-24 bg-theme-500/5 rounded-full blur-[30px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                    <div data-surah-id="${s.number}" class="surah-row group flex items-center justify-between p-2.5 md:p-3 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 shadow-sm hover:shadow-md hover: hover:border-theme-500/30 hover:-translate-y-1 transition-all duration-500 relative overflow-hidden">
+                         
                          <div class="flex items-center gap-3 md:gap-3.5 flex-grow cursor-pointer play-area min-w-0 relative z-10">
                             <div class="w-9 h-9 md:w-10 md:h-10 flex-shrink-0 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-xl font-bold text-sm text-slate-500 dark:text-slate-400 group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-all duration-500 shadow-sm font-display relative">
                                 <span class="relative z-10">${s.number}</span>
@@ -421,9 +421,9 @@ export const renderQuranListener = (container, cache, props) => {
             <div class="fade-in min-h-[80vh] flex flex-col items-center justify-center p-4 md:p-8 relative overflow-hidden">
                 <!-- Immersive Background -->
                 <div class="absolute inset-0 z-0">
-                    <div class="absolute inset-0 bg-gradient-to-br from-theme-900/40 via-slate-950 to-slate-950"></div>
-                    <div class="absolute top-1/4 left-1/4 w-64 md:w-[30rem] h-64 md:h-[30rem] bg-theme-600/20 rounded-full blur-[80px] md:blur-[150px] animate-pulse"></div>
-                    <div class="absolute bottom-1/4 right-1/4 w-64 md:w-[30rem] h-64 md:h-[30rem] bg-indigo-600/20 rounded-full blur-[80px] md:blur-[150px] animate-pulse" style="animation-delay: 2s"></div>
+                    <div class="absolute inset-0 bg-slate-950/80"></div>
+                    
+                    
                     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03] pointer-events-none"></div>
                 </div>
 
@@ -437,7 +437,7 @@ export const renderQuranListener = (container, cache, props) => {
                             <span class="text-[8px] md:text-[9px] font-bold text-theme-400 uppercase tracking-[0.3em] block mb-0.5 animate-pulse">${t('nowPlaying') || 'NOW PLAYING'}</span>
                             <h3 class="text-white font-bold text-xs md:text-sm tracking-tight truncate max-w-[150px] md:max-w-xs mx-auto">${lang === 'ar' ? selectedReciter.name_ar : selectedReciter.name_en}</h3>
                         </div>
-                        <button id="mem-mode-toggle" class="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-xl transition-all ${state.isMemorizationMode ? 'bg-theme-600 text-white shadow-xl shadow-theme-500/40 border-theme-500' : 'glass text-white/40 hover:bg-white/10 border border-white/10'}" title="${t('memorizationMode')}">
+                        <button id="mem-mode-toggle" class="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-xl transition-all ${state.isMemorizationMode ? 'bg-theme-600 text-white shadow-md border-theme-500' : 'glass text-white/40 hover:bg-white/10 border border-white/10'}" title="${t('memorizationMode')}">
                             <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
                         </button>
                     </div>
@@ -445,7 +445,7 @@ export const renderQuranListener = (container, cache, props) => {
                     <!-- Visualizer/Art Area -->
                     <div class="text-center space-y-4 md:space-y-6">
                         <div class="relative inline-block">
-                            <div class="w-36 h-36 md:w-60 md:h-60 rounded-[3rem] md:rounded-[4rem] bg-gradient-to-br from-theme-600 to-indigo-700 flex items-center justify-center shadow-[0_20px_60px_rgba(var(--theme-500-rgb),0.3)] relative z-10 overflow-hidden group">
+                            <div class="w-36 h-36 md:w-60 md:h-60 rounded-2xl bg-theme-700 flex items-center justify-center shadow-lg relative z-10 overflow-hidden group">
                                 <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-700"></div>
                                 <span class="text-6xl md:text-[8rem] font-bold text-white/10 select-none tracking-tighter">${currentSurah.number}</span>
                                 <div class="absolute inset-0 flex items-center justify-center">
@@ -471,7 +471,7 @@ export const renderQuranListener = (container, cache, props) => {
 
                     <!-- Memorization Controls -->
                     ${state.isMemorizationMode ? `
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 p-5 glass rounded-[2rem] border border-white/10 shadow-xl fade-in mx-2">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 p-5 glass rounded-[2rem] border border-white/10 shadow-md fade-in mx-2">
                         <div class="space-y-1.5 text-left">
                             <label class="text-[8px] font-bold text-white/40 uppercase tracking-[0.2em] ml-1">${t('autoRepeat')}</label>
                             <select id="repeat-select" class="w-full bg-white/5 text-white rounded-xl px-3 py-2 text-[11px] border border-white/10 focus:ring-2 focus:ring-theme-500 outline-none appearance-none cursor-pointer">
@@ -484,23 +484,23 @@ export const renderQuranListener = (container, cache, props) => {
                                 ${[0, 1, 2, 3, 5].map(n => `<option value="${n}" ${state.verseDelay == n ? 'selected' : ''} class="bg-slate-900">${n}s</option>`).join('')}
                             </select>
                         </div>
-                        <button id="hide-arabic-btn" class="flex flex-col items-center justify-center gap-1 p-2 rounded-xl transition-all active:scale-95 ${state.hideArabic ? 'bg-theme-600 text-white shadow-lg shadow-theme-500/30' : 'bg-white/5 text-white/40 hover:bg-white/10 border border-white/10'}">
+                        <button id="hide-arabic-btn" class="flex flex-col items-center justify-center gap-1 p-2 rounded-xl transition-all active:scale-95 ${state.hideArabic ? 'bg-theme-600 text-white shadow-lg' : 'bg-white/5 text-white/40 hover:bg-white/10 border border-white/10'}">
                             <span class="text-[8px] font-bold uppercase tracking-widest">${t('hideArabic')}</span>
                         </button>
-                        <button id="hide-trans-btn" class="flex flex-col items-center justify-center gap-1 p-2 rounded-xl transition-all active:scale-95 ${state.hideTranslation ? 'bg-theme-600 text-white shadow-lg shadow-theme-500/30' : 'bg-white/5 text-white/40 hover:bg-white/10 border border-white/10'}">
+                        <button id="hide-trans-btn" class="flex flex-col items-center justify-center gap-1 p-2 rounded-xl transition-all active:scale-95 ${state.hideTranslation ? 'bg-theme-600 text-white shadow-lg' : 'bg-white/5 text-white/40 hover:bg-white/10 border border-white/10'}">
                             <span class="text-[8px] font-bold uppercase tracking-widest">${t('hideTranslation')}</span>
                         </button>
                     </div>
                     ` : ''}
                     
                     <!-- Main Player Controls -->
-                    <div class="space-y-8 md:space-y-12 glass rounded-[3rem] md:rounded-[4rem] p-8 md:p-14 border border-white/10 shadow-[0_30px_100px_rgba(0,0,0,0.5)] mx-2 relative overflow-hidden">
-                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-theme-500/50 to-transparent"></div>
+                    <div class="space-y-8 md:space-y-12 glass rounded-2xl md:rounded-2xl p-8 md:p-14 border border-white/10 shadow-[0_30px_100px_rgba(0,0,0,0.5)] mx-2 relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-theme-500/20"></div>
                         
                         <!-- Progress Bar -->
                         <div class="space-y-4 md:space-y-6">
                             <div class="relative h-2 rounded-full bg-white/5 group cursor-pointer" id="progress-container">
-                                <div id="progress-fill" class="absolute h-full rounded-full bg-gradient-to-r from-theme-500 to-indigo-500 shadow-[0_0_20px_rgba(var(--theme-500-rgb),0.6)]" style="${progressFillStyle}"></div>
+                                <div id="progress-fill" class="absolute h-full rounded-full bg-theme-600" style="${progressFillStyle}"></div>
                                 <input type="range" id="progress-bar" class="absolute w-full h-10 -top-4 appearance-none bg-transparent cursor-pointer z-10 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow-[0_0_15px_rgba(255,255,255,0.5)] [&::-webkit-slider-thumb]:border-4 [&::-webkit-slider-thumb]:border-theme-600 transition-all active:[&::-webkit-slider-thumb]:scale-125" min="0" max="${duration || 100}" value="${currentTime}" step="0.1" />
                             </div>
                             <div class="flex justify-between text-[10px] md:text-sm font-bold font-mono text-white/40 uppercase tracking-[0.2em]">

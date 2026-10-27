@@ -45,7 +45,7 @@ export const renderAIAssistant = (container, props) => {
 
     // Suggestions Area
     const suggestionsArea = document.createElement('div');
-    suggestionsArea.className = "flex gap-2 overflow-x-auto pb-2 mb-2 scrollbar-hide px-2";
+    suggestionsArea.className = "flex flex-wrap gap-2 pb-2 mb-2 px-2";
     const suggestions = [
         t('aiSuggestion1') || "How to perform wudu?",
         t('aiSuggestion2') || "What breaks fasting?",
@@ -67,7 +67,7 @@ export const renderAIAssistant = (container, props) => {
     inputArea.innerHTML = `
         <div class="relative flex items-center gap-2">
             <input type="text" id="ai-input" placeholder="${t('askPlaceholder') || 'Ask about a verse or a topic...'}" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-theme-500/20 dark:text-white transition-all pr-12 shadow-sm">
-            <button id="ai-send-btn" class="absolute right-2 p-2 rounded-xl bg-theme-500 text-white hover:bg-theme-600 transition-all active:scale-90 shadow-lg shadow-theme-500/20">
+            <button id="ai-send-btn" class="absolute right-2 p-2 rounded-xl bg-theme-500 text-white hover:bg-theme-600 transition-all active:scale-90 shadow-lg">
                 ${SendIcon({className: "w-5 h-5"})}
             </button>
         </div>
@@ -83,7 +83,7 @@ export const renderAIAssistant = (container, props) => {
             const welcome = document.createElement('div');
             welcome.className = "flex-1 flex flex-col items-center justify-center text-center p-8 opacity-60";
             welcome.innerHTML = `
-                <div class="w-16 h-16 rounded-3xl bg-theme-500/10 flex items-center justify-center text-theme-500 mb-4">
+                <div class="w-16 h-16 rounded-2xl bg-theme-500/10 flex items-center justify-center text-theme-500 mb-4">
                     ${SparklesIcon({className: "w-8 h-8"})}
                 </div>
                 <h3 class="font-bold text-slate-900 dark:text-white mb-2">${t('welcome') || 'Welcome'}!</h3>

@@ -447,7 +447,7 @@ export const renderQuranReader = (container, cache, props) => {
                         <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-theme-500 transition-colors">
                             ${SearchIcon({className: "w-5 h-5"})}
                         </div>
-                        <input id="surah-search" type="text" value="${state.listTab === 'verses' ? state.verseSearchQuery : state.searchQuery}" placeholder="${searchPlaceholder}" class="w-full pl-12 pr-5 py-4 glass rounded-2xl border border-white/20 outline-none focus:ring-4 focus:ring-theme-500/20 focus:border-theme-500/50 transition-all dark:text-white shadow-xl placeholder:text-slate-400 font-medium">
+                        <input id="surah-search" type="text" value="${state.listTab === 'verses' ? state.verseSearchQuery : state.searchQuery}" placeholder="${searchPlaceholder}" class="w-full pl-12 pr-5 py-4 glass rounded-2xl border border-white/20 outline-none focus:ring-4 focus:ring-theme-500/20 focus:border-theme-500/50 transition-all dark:text-white shadow-md placeholder:text-slate-400 font-medium">
                         ${state.searchingVerses ? `
                             <div class="absolute right-4 top-1/2 -translate-y-1/2">
                                 <div class="w-5 h-5 border-2 border-theme-500 border-t-transparent rounded-full animate-spin"></div>
@@ -464,8 +464,8 @@ export const renderQuranReader = (container, cache, props) => {
 
                 <div id="surah-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
                     ${state.listTab === 'surah' ? filtered.map(s => `
-                        <div data-num="${s.number}" class="surah-card p-3.5 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 shadow-sm hover:shadow-xl hover:shadow-theme-500/10 hover:border-theme-500/30 hover:-translate-y-1 transition-all duration-500 cursor-pointer group relative overflow-hidden">
-                            <div class="absolute -right-8 -top-8 w-24 h-24 bg-theme-500/5 rounded-full blur-[30px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                        <div data-num="${s.number}" class="surah-card p-3.5 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 shadow-sm hover:shadow-md hover: hover:border-theme-500/30 hover:-translate-y-1 transition-all duration-500 cursor-pointer group relative overflow-hidden">
+                            
                             <div class="flex items-center justify-between mb-2 relative z-10">
                                 <div class="flex items-center gap-2.5">
                                     <div class="w-9 h-9 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-xl font-bold text-slate-500 dark:text-slate-400 group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-all duration-500 shadow-sm font-display relative">
@@ -493,8 +493,8 @@ export const renderQuranReader = (container, cache, props) => {
                             const mapping = JUZ_MAPPING.find(m => m.juz === j);
                             const surah = state.surahs.find(s => s.number === mapping.surah);
                             return `
-                            <div data-juz="${j}" class="juz-card p-3.5 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 shadow-sm hover:shadow-xl hover:shadow-theme-500/10 hover:border-theme-500/30 hover:-translate-y-1 transition-all duration-500 cursor-pointer group relative overflow-hidden">
-                                <div class="absolute -right-8 -top-8 w-24 h-24 bg-theme-500/5 rounded-full blur-[30px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                            <div data-juz="${j}" class="juz-card p-3.5 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 shadow-sm hover:shadow-md hover: hover:border-theme-500/30 hover:-translate-y-1 transition-all duration-500 cursor-pointer group relative overflow-hidden">
+                                
                                 <div class="flex items-center gap-3 relative z-10">
                                     <div class="w-10 h-10 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-xl font-bold text-slate-500 dark:text-slate-400 group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-all duration-500 shadow-sm font-display relative">
                                         <span class="text-sm relative z-10">${j}</span>
@@ -616,8 +616,8 @@ export const renderQuranReader = (container, cache, props) => {
         const percentageRead = (state.activeAyah / s.numberOfAyahs) * 100;
         contentArea.innerHTML = `
             <div id="reader-topbar-hover-zone" class="fixed top-0 inset-x-0 h-4 z-[70] pointer-events-auto"></div>
-            <div id="reader-topbar" class="fixed top-0 inset-x-0 h-14 md:h-16 glass z-[60] border-b border-white/10 flex items-center px-2 md:px-4 justify-between transition-all duration-500 transform shadow-xl backdrop-blur-2xl">
-                <div class="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-theme-500 to-indigo-500 transition-all duration-500 shadow-[0_0_10px_rgba(var(--theme-color-500-rgb),0.5)]" style="width: ${percentageRead}%"></div>
+            <div id="reader-topbar" class="fixed top-0 inset-x-0 h-14 md:h-16 glass z-[60] border-b border-white/10 flex items-center px-2 md:px-4 justify-between transition-all duration-500 transform shadow-md backdrop-blur-2xl">
+                <div class="absolute bottom-0 left-0 h-0.5 bg-theme-600 transition-all duration-500" style="width: ${percentageRead}%"></div>
                 
                 <button id="reader-back" class="p-2 rounded-xl glass hover:bg-theme-100 dark:hover:bg-theme-900/30 text-slate-600 dark:text-slate-200 flex items-center gap-2 transition-all active:scale-90 border border-white/10 shadow-sm group">
                     ${BackIcon({className: "w-4 h-4 md:w-5 md:h-5 group-hover:-translate-x-1 rtl:group-hover:translate-x-1 transition-transform"})}
@@ -627,7 +627,7 @@ export const renderQuranReader = (container, cache, props) => {
                 <div class="text-center flex flex-col items-center">
                     <div class="flex items-center gap-3">
                         <h2 class="font-amiri text-xl md:text-2xl font-bold leading-none text-slate-900 dark:text-white drop-shadow-sm">${s.name}</h2>
-                        <button id="jump-trigger" class="px-3 py-1 bg-theme-600 text-white rounded-full font-bold shadow-lg shadow-theme-500/20 active:scale-95 hover:shadow-theme-500/40 transition-all text-[9px] uppercase tracking-widest border border-white/10">
+                        <button id="jump-trigger" class="px-3 py-1 bg-theme-600 text-white rounded-full font-bold shadow-lg active:scale-95 hover: transition-all text-[9px] uppercase tracking-widest border border-white/10">
                             ${s.number}:${state.activeAyah}
                         </button>
                     </div>
@@ -645,8 +645,7 @@ export const renderQuranReader = (container, cache, props) => {
             
             <div class="pt-14 pb-20 md:pt-16 md:pb-28 w-full mx-auto px-1 ${fontSizeClass} ${fontClass}" id="reader-scroll-container">
                 <div class="glass-card rounded-none p-0 shadow-none border-0 transition-all duration-500 relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-full h-12 bg-gradient-to-b from-theme-500/5 to-transparent pointer-events-none"></div>
-                    
+                                        
                     <div class="text-center mb-1 relative z-10">
                         <p class="text-[7px] font-bold text-theme-600/40 dark:text-theme-400/40 uppercase tracking-[0.2em]">
                             ${t('clickAyahForTafsir') || (getCurrentLanguage() === 'ar' ? 'انقر على الآية لعرض التفسير' : 'Click on any verse to view its Tafsir')}
@@ -673,14 +672,14 @@ export const renderQuranReader = (container, cache, props) => {
             </div>
 
             <div class="fixed bottom-4 md:bottom-8 inset-x-4 md:inset-x-8 z-[60] pointer-events-none">
-                <div id="reader-bottom-nav" class="max-w-[200px] mx-auto flex items-center justify-between glass shadow-[0_15px_40px_rgba(0,0,0,0.3)] rounded-full p-1.5 border border-white/10 pointer-events-auto transition-all duration-500 backdrop-blur-2xl">
-                    <button id="reader-prev-surah" class="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full text-slate-400 hover:text-theme-600 hover:bg-white/5 transition-all ${s.number === 1 ? 'opacity-10 cursor-not-allowed' : ''}" ${s.number === 1 ? 'disabled' : ''}>
+                <div id="reader-bottom-nav" class="max-w-[200px] mx-auto flex items-center justify-between bg-white dark:bg-slate-900 rounded-full p-1.5 border border-slate-200 dark:border-slate-700 shadow-lg pointer-events-auto transition-all duration-500">
+                    <button id="reader-prev-surah" class="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full text-slate-600 dark:text-slate-300 hover:text-theme-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all ${s.number === 1 ? 'opacity-10 cursor-not-allowed' : ''}" ${s.number === 1 ? 'disabled' : ''}>
                         ${SkipBackwardIcon({className: "w-5 h-5"})}
                     </button>
                     
-                    <div class="w-px h-6 bg-white/10 mx-1"></div>
+                    <div class="w-px h-6 bg-slate-200 dark:bg-slate-700 mx-1"></div>
                     
-                    <button id="reader-next-surah" class="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full text-slate-400 hover:text-theme-600 hover:bg-white/5 transition-all ${s.number === 114 ? 'opacity-10 cursor-not-allowed' : ''}" ${s.number === 114 ? 'disabled' : ''}>
+                    <button id="reader-next-surah" class="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full text-slate-600 dark:text-slate-300 hover:text-theme-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all ${s.number === 114 ? 'opacity-10 cursor-not-allowed' : ''}" ${s.number === 114 ? 'disabled' : ''}>
                         ${SkipForwardIcon({className: "w-5 h-5"})}
                     </button>
                 </div>
@@ -698,7 +697,7 @@ export const renderQuranReader = (container, cache, props) => {
         if (!btt) {
             btt = document.createElement('button');
             btt.id = 'back-to-top';
-            btt.className = 'fixed bottom-24 left-4 md:left-6 z-[9999] p-3 bg-theme-600 text-white rounded-full shadow-2xl transition-all duration-500 hover:scale-110 animate-float flex items-center justify-center pointer-events-auto opacity-0 translate-y-10';
+            btt.className = 'fixed bottom-24 left-4 md:left-6 z-[9999] p-3 bg-theme-600 text-white rounded-full shadow-lg transition-all duration-500 hover:scale-110 animate-float flex items-center justify-center pointer-events-auto opacity-0 translate-y-10';
             btt.innerHTML = ArrowUpIcon({className: "w-5 h-5"});
             document.body.appendChild(btt);
         }
@@ -871,7 +870,7 @@ export const renderQuranReader = (container, cache, props) => {
                 </div>
 
                 <div class="flex flex-col gap-4">
-                    <button id="tafsir-ai-btn" class="w-full py-4 rounded-2xl bg-theme-500 text-white font-bold flex items-center justify-center gap-3 hover:bg-theme-600 transition-all active:scale-[0.98] shadow-lg shadow-theme-500/20">
+                    <button id="tafsir-ai-btn" class="w-full py-4 rounded-2xl bg-theme-500 text-white font-bold flex items-center justify-center gap-3 hover:bg-theme-600 transition-all active:scale-[0.98] shadow-lg">
                         ${SparklesIcon({className: "w-5 h-5"})}
                         ${t('askAiAboutVerse') || 'Ask AI about this verse'}
                     </button>
@@ -955,9 +954,8 @@ export const renderQuranReader = (container, cache, props) => {
         const currentAyahNum = state.activeAyah || 1;
 
         modal.innerHTML = `
-            <div class="glass rounded-[2rem] md:rounded-[3rem] shadow-[0_20px_60px_rgba(0,0,0,0.5)] w-full max-w-sm p-6 md:p-8 fade-in border border-white/20 relative z-10 overflow-hidden">
-                <div class="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-theme-500/10 to-transparent pointer-events-none"></div>
-                
+            <div class="glass rounded-[2rem] md:rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.5)] w-full max-w-sm p-6 md:p-8 fade-in border border-white/20 relative z-10 overflow-hidden">
+                                
                 <div class="flex justify-between items-center mb-6 relative z-10">
                     <h3 class="text-xl font-bold text-slate-900 dark:text-white tracking-tight">${t('jumpTo')}</h3>
                     <button id="close-jump-modal" class="w-8 h-8 flex items-center justify-center rounded-full glass border border-white/10 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-all active:scale-90">
@@ -1017,7 +1015,7 @@ export const renderQuranReader = (container, cache, props) => {
                         </div>
                     `}
 
-                    <button id="jump-confirm-btn" class="w-full py-4 bg-gradient-to-r from-theme-600 to-indigo-600 text-white font-bold rounded-xl shadow-xl shadow-theme-500/20 hover:shadow-theme-500/40 active:scale-95 transition-all uppercase tracking-[0.2em] text-[10px] border border-white/10">
+                    <button id="jump-confirm-btn" class="w-full py-4 bg-theme-700 text-white font-bold rounded-xl shadow-md hover: active:scale-95 transition-all uppercase tracking-[0.2em] text-[10px] border border-white/10">
                         ${t('goTo')}
                     </button>
                 </div>
@@ -1110,7 +1108,7 @@ export const renderQuranReader = (container, cache, props) => {
 
         modal.innerHTML = `
             <div class="absolute inset-0" id="reader-settings-backdrop"></div>
-            <div class="glass rounded-t-[3rem] sm:rounded-[3rem] shadow-[0_20px_60px_rgba(0,0,0,0.5)] w-full max-w-md p-8 md:p-10 fade-in border-t sm:border border-white/20 relative z-10 max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <div class="glass rounded-t-[3rem] sm:rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.5)] w-full max-w-md p-8 md:p-10 fade-in border-t sm:border border-white/20 relative z-10 max-h-[90vh] overflow-y-auto custom-scrollbar">
                 <div class="w-12 h-1.5 bg-slate-200/20 rounded-full mx-auto mb-8 sm:hidden"></div>
                 
                 <div class="flex justify-between items-center mb-8">
@@ -1125,7 +1123,7 @@ export const renderQuranReader = (container, cache, props) => {
                         <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em] ml-1">${t('fontSize')}</label>
                         <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
                             ${sizeOptions.map(opt => `
-                                <button data-size="${opt.id}" class="size-btn px-4 py-3 text-[10px] font-bold rounded-2xl border transition-all active:scale-95 ${props.fontSize === opt.id ? 'bg-theme-600 border-theme-600 text-white shadow-xl shadow-theme-500/20' : 'glass border-white/10 text-slate-600 dark:text-slate-400 hover:bg-white/10'}">
+                                <button data-size="${opt.id}" class="size-btn px-4 py-3 text-[10px] font-bold rounded-2xl border transition-all active:scale-95 ${props.fontSize === opt.id ? 'bg-theme-600 border-theme-600 text-white shadow-md' : 'glass border-white/10 text-slate-600 dark:text-slate-400 hover:bg-white/10'}">
                                     ${opt.name}
                                 </button>
                             `).join('')}
@@ -1136,7 +1134,7 @@ export const renderQuranReader = (container, cache, props) => {
                         <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em] ml-1">${t('arabicFont')}</label>
                         <div class="grid grid-cols-1 gap-3">
                             ${fontOptions.map(opt => `
-                                <button data-font="${opt.id}" class="font-btn w-full px-5 py-4 text-sm font-bold rounded-2xl border flex justify-between items-center transition-all active:scale-[0.98] ${props.arabicFont === opt.id ? 'bg-theme-600 border-theme-600 text-white shadow-xl shadow-theme-500/20' : 'glass border-white/10 text-slate-600 dark:text-slate-400 hover:bg-white/10'}">
+                                <button data-font="${opt.id}" class="font-btn w-full px-5 py-4 text-sm font-bold rounded-2xl border flex justify-between items-center transition-all active:scale-[0.98] ${props.arabicFont === opt.id ? 'bg-theme-600 border-theme-600 text-white shadow-md' : 'glass border-white/10 text-slate-600 dark:text-slate-400 hover:bg-white/10'}">
                                     <span class="preview-${opt.id} text-2xl md:text-3xl">${opt.id === 'noto_naskh_arabic' ? 'بِسْمِ اللهِ' : 'بِسْمِ اللهِ'}</span>
                                     <span class="text-[10px] opacity-60 uppercase tracking-widest">${opt.name}</span>
                                 </button>
@@ -1144,7 +1142,7 @@ export const renderQuranReader = (container, cache, props) => {
                         </div>
                     </div>
 
-                    <button id="done-reader-settings" class="w-full py-5 bg-gradient-to-r from-theme-600 to-indigo-600 text-white font-bold rounded-2xl shadow-xl shadow-theme-500/20 hover:shadow-theme-500/40 active:scale-95 transition-all uppercase tracking-[0.2em] text-xs border border-white/10">
+                    <button id="done-reader-settings" class="w-full py-5 bg-theme-700 text-white font-bold rounded-2xl shadow-md hover: active:scale-95 transition-all uppercase tracking-[0.2em] text-xs border border-white/10">
                         ${t('done') || (getCurrentLanguage() === 'ar' ? 'تم' : 'Done')}
                     </button>
                 </div>
@@ -1157,7 +1155,7 @@ export const renderQuranReader = (container, cache, props) => {
         const updateActiveClasses = (container, selector, activeValue, dataAttr) => {
             container.querySelectorAll(selector).forEach(btn => {
                 const isActive = btn.getAttribute(dataAttr) === activeValue;
-                const activeClasses = ['bg-theme-600', 'border-theme-600', 'text-white', 'shadow-xl', 'shadow-theme-500/20'];
+                const activeClasses = ['bg-theme-600', 'border-theme-600', 'text-white', 'shadow-md', ''];
                 const inactiveClasses = ['glass', 'border-white/10', 'text-slate-600', 'dark:text-slate-400', 'hover:bg-white/10'];
                 
                 if (isActive) {
@@ -1206,9 +1204,9 @@ export const renderQuranReader = (container, cache, props) => {
         } else {
             header.style.transform = 'translateY(0)';
             if (scrollTop > 50) {
-                header.classList.add('shadow-xl');
+                header.classList.add('shadow-md');
             } else {
-                header.classList.remove('shadow-xl');
+                header.classList.remove('shadow-md');
             }
         }
 
