@@ -104,9 +104,9 @@ export const renderHadithViewer = (container, props = {}) => {
         </div>
       </div>
       
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div class="divide-y divide-slate-200/70 dark:divide-slate-800">
         ${COLLECTIONS.map(col => `
-          <button data-collection="${col.slug}" class="group text-left ${isRtl ? 'text-right' : ''} p-4 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 shadow-sm hover:shadow-md hover: hover:border-theme-500/30 hover:-translate-y-1 transition-all duration-500 flex flex-col gap-3 relative overflow-hidden">
+          <button data-collection="${col.slug}" class="group text-left ${isRtl ? 'text-right' : ''} py-3 flex items-center gap-3 relative overflow-hidden">
             
             <div class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 flex items-center justify-center relative z-10 shadow-sm group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-all duration-500">
               ${BookOpenIcon({className: "w-4.5 h-4.5"})}

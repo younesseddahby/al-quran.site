@@ -135,6 +135,12 @@ const App = (rootElement) => {
         }
     }, { passive: true });
 
+    let headerBuilt = false;
+    let lastHeaderLanguage = null;
+    let lastHeaderIsHome = null;
+    let mobileNavBuilt = false;
+    let lastNavLanguage = null;
+
     const renderHeader = () => {
         const isHidden = state.activeTab === 'settings' || (state.activeTab === 'quran' && state.isReaderMode);
         header.className = isHidden ? 'hidden' : 'glass sticky top-0 z-40 transition-all duration-500 ease-out border-b border-slate-200/50 dark:border-slate-800/50 animate-fade';
@@ -143,6 +149,21 @@ const App = (rootElement) => {
         const isHome = state.activeTab === 'home';
         const isRtl = state.language === 'ar';
         const BackIcon = isRtl ? ArrowRightIcon : ArrowLeftIcon;
+
+        // Shell-once: the header shell never changes except for the active tab
+        // pill and the back button (home vs inner tab). Rebuilding it on every
+        // navigation wasted work and reset its state, so only update those bits
+        // unless the language changed or we moved between home and an inner tab.
+        if (headerBuilt && lastHeaderLanguage === state.language && lastHeaderIsHome === isHome) {
+            const DESK_ACTIVE = ['text-theme-700', 'dark:text-theme-300', 'bg-theme-500/15', 'shadow-sm', 'font-bold', 'ring-1', 'ring-theme-500/20'];
+            const DESK_INACTIVE = ['text-slate-600', 'dark:text-slate-400', 'hover:bg-slate-100', 'dark:hover:bg-slate-800/50', 'hover:text-slate-900', 'dark:hover:text-slate-200'];
+            header.querySelectorAll('[data-tab]').forEach(b => {
+                const on = b.dataset.tab === state.activeTab;
+                b.classList.remove(...(on ? DESK_INACTIVE : DESK_ACTIVE));
+                b.classList.add(...(on ? DESK_ACTIVE : DESK_INACTIVE));
+            });
+            return;
+        }
 
         header.innerHTML = `
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -184,6 +205,9 @@ const App = (rootElement) => {
             state.activeTab = 'settings'; 
             render(); 
         });
+        headerBuilt = true;
+        lastHeaderLanguage = state.language;
+        lastHeaderIsHome = isHome;
     };
 
     const renderMobileNav = () => {
@@ -191,6 +215,22 @@ const App = (rootElement) => {
         mobileNav.className = isHidden ? 'hidden' : 'lg:hidden fixed bottom-0 left-0 right-0 glass z-50 transition-all duration-500 ease-out border-t border-slate-200/50 dark:border-slate-800/50 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.05)] dark:shadow-[0_-4px_20px_rgba(0,0,0,0.2)] animate-fade';
         mobileNavPlaceholder.className = isHidden ? 'hidden' : 'lg:hidden h-16';
         if (isHidden) return;
+
+        // Shell-once: same idea as the header — only the active tab pill moves.
+        if (mobileNavBuilt && lastNavLanguage === state.language) {
+            const MOB_ACTIVE = ['text-theme-600', 'dark:text-theme-400'];
+            const MOB_INACTIVE = ['text-slate-500', 'dark:text-slate-400', 'hover:text-slate-700', 'dark:hover:text-slate-300'];
+            mobileNav.querySelectorAll('button').forEach(b => {
+                const on = b.dataset.tab === state.activeTab;
+                b.classList.remove(...(on ? MOB_INACTIVE : MOB_ACTIVE));
+                b.classList.add(...(on ? MOB_ACTIVE : MOB_INACTIVE));
+                const tile = b.querySelector('div');
+                tile?.classList.toggle('bg-theme-500/10', on);
+                const svg = b.querySelector('svg');
+                svg?.classList.toggle('scale-110', on);
+            });
+            return;
+        }
 
         mobileNav.innerHTML = `
             <div class="flex items-center justify-around h-16 px-2 overflow-x-auto hide-scrollbar relative">
@@ -207,6 +247,8 @@ const App = (rootElement) => {
             state.isReaderMode = false;
             render(); 
         }));
+        mobileNavBuilt = true;
+        lastNavLanguage = state.language;
     };
 
     let lastRenderedLanguage = state.language;
@@ -365,7 +407,12 @@ const App = (rootElement) => {
 
     const renderFloatingAI = () => {
         const existing = document.getElementById('floating-ai-btn');
-        if (existing) existing.remove();
+        // Shell-once: keep the button alive across navigation and only show/hide
+        // it (recreating it restarted its animation on every tab switch).
+        if (existing) {
+            existing.classList.toggle('hidden', state.isReaderMode && state.activeTab === 'quran');
+            return;
+        }
 
         // Hide if in reader mode
         if (state.isReaderMode && state.activeTab === 'quran') return;

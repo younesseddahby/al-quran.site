@@ -462,9 +462,9 @@ export const renderQuranReader = (container, cache, props) => {
                     <button data-tab="verses" class="list-tab-btn px-6 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-all ${state.listTab === 'verses' ? 'bg-white dark:bg-slate-800 text-theme-600 shadow-sm' : 'text-slate-500'}">${t('verses')}</button>
                 </div>
 
-                <div id="surah-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
+                <div id="surah-grid" class="divide-y divide-slate-200/70 dark:divide-slate-800">
                     ${state.listTab === 'surah' ? filtered.map(s => `
-                        <div data-num="${s.number}" class="surah-card p-3.5 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 shadow-sm hover:shadow-md hover: hover:border-theme-500/30 hover:-translate-y-1 transition-all duration-500 cursor-pointer group relative overflow-hidden">
+                        <div data-num="${s.number}" class="surah-card py-3 cursor-pointer group relative overflow-hidden">
                             
                             <div class="flex items-center justify-between mb-2 relative z-10">
                                 <div class="flex items-center gap-2.5">
@@ -493,7 +493,7 @@ export const renderQuranReader = (container, cache, props) => {
                             const mapping = JUZ_MAPPING.find(m => m.juz === j);
                             const surah = state.surahs.find(s => s.number === mapping.surah);
                             return `
-                            <div data-juz="${j}" class="juz-card p-3.5 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 shadow-sm hover:shadow-md hover: hover:border-theme-500/30 hover:-translate-y-1 transition-all duration-500 cursor-pointer group relative overflow-hidden">
+                            <div data-juz="${j}" class="juz-card py-3 cursor-pointer group relative overflow-hidden">
                                 
                                 <div class="flex items-center gap-3 relative z-10">
                                     <div class="w-10 h-10 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-xl font-bold text-slate-500 dark:text-slate-400 group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-all duration-500 shadow-sm font-display relative">
@@ -508,7 +508,7 @@ export const renderQuranReader = (container, cache, props) => {
                         }).join('') : `
                             <div class="col-span-full space-y-4">
                                 ${state.verseSearchResults.length > 0 ? state.verseSearchResults.map(res => `
-                                    <div data-surah="${res.surah.number}" data-ayah="${res.numberInSurah}" class="verse-search-result p-4 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 hover:border-theme-500/30 transition-all cursor-pointer group">
+                                    <div data-surah="${res.surah.number}" data-ayah="${res.numberInSurah}" class="verse-search-result py-3 cursor-pointer group">
                                         <div class="flex justify-between items-start mb-2">
                                             <span class="px-2 py-1 bg-theme-500/10 text-theme-600 dark:text-theme-400 rounded-lg text-[10px] font-bold uppercase tracking-wider">${res.surah.englishName} ${res.surah.number}:${res.numberInSurah}</span>
                                             <p class="font-amiri text-lg text-right text-slate-800 dark:text-slate-200 group-hover:text-theme-600 transition-colors">${res.text}</p>

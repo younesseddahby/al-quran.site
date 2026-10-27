@@ -116,7 +116,7 @@ export const renderAsmaUlHusna = (container, { navigateTo }) => {
         container.innerHTML = `
             <div class="space-y-6">
                 <h2 class="text-3xl font-bold text-slate-900 dark:text-white font-amiri">${t('asmaUlHusna')}</h2>
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                <div class="divide-y divide-slate-200/70 dark:divide-slate-800">
                     ${ASMA_UL_HUSNA.map(renderNameCard).join('')}
                 </div>
             </div>
@@ -131,8 +131,8 @@ export const renderAsmaUlHusna = (container, { navigateTo }) => {
     };
 
     const renderNameCard = (name) => `
-        <div data-name-id="${name.id}" class="name-card text-center p-4 glass-card rounded-xl shadow-sm cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-200">
-            <h3 class="font-amiri text-2xl font-bold text-slate-800 dark:text-slate-200">${name.name_ar}</h3>
+        <div data-name-id="${name.id}" class="name-card flex items-baseline gap-3 py-3 cursor-pointer transition-colors">
+            <h3 class="font-amiri text-xl font-bold text-slate-800 dark:text-slate-200">${name.name_ar}</h3>
             <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">${name.transliteration}</p>
             <p class="text-xs text-slate-500 dark:text-slate-500">${name.translation_en}</p>
         </div>

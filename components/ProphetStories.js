@@ -57,9 +57,9 @@ export const renderProphetStories = (container, props) => {
                 <input type="text" id="stories-search" placeholder="${t('searchStories') || 'Search stories...'}" value="${state.searchQuery}" class="w-full pl-12 pr-4 py-4 glass border border-slate-200/50 dark:border-slate-800/50 rounded-2xl outline-none focus:ring-4 focus:ring-theme-500/20 focus:border-theme-500 transition-all shadow-lg text-slate-800 dark:text-white placeholder:text-slate-400">
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
+            <div class="divide-y divide-slate-200/70 dark:divide-slate-800">
                 ${filteredStories.map(story => `
-                    <button data-story-id="${story.id}" class="story-card group p-6 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 shadow-sm hover:shadow-md hover: hover:border-theme-500/30 hover:-translate-y-1 transition-all duration-500 text-left rtl:text-right flex items-center justify-between relative overflow-hidden">
+                    <button data-story-id="${story.id}" class="story-card group py-3 text-left rtl:text-right flex items-center justify-between relative overflow-hidden">
                         
                         <div class="flex items-center gap-4 relative z-10">
                             <div class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-all duration-500 shadow-sm">

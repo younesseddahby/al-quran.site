@@ -45,7 +45,7 @@ export const renderSettingsPage = (container, props) => {
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
                         <!-- Left Column: Navigation/Sections -->
                         <div class="lg:col-span-4 space-y-4">
-                                <div class="glass-card rounded-2xl p-6 shadow-md border border-slate-200 dark:border-slate-800">
+                                <div>
                                     <h2 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6 px-2">${t('sections') || 'Sections'}</h2>
                                     <nav class="space-y-1.5">
                                         ${renderNavButton('language', t('languageAndText'), BookOpenIcon({className: "w-4 h-4"}))}
@@ -71,7 +71,7 @@ export const renderSettingsPage = (container, props) => {
                                     </div>
                                     <h2 class="text-lg font-bold text-slate-900 dark:text-white tracking-tight">${t('languageAndText')}</h2>
                                 </div>
-                                <div class="glass-card rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800/50">
+                                <div class="divide-y divide-slate-200 dark:divide-slate-800">
                                     ${renderSettingItem(t('language'), t('appLanguageSubtitle') || 'Select your preferred app language', renderLanguageSelector())}
                                     ${language !== 'ar' ? renderSettingItem(t('readerSettings'), t('readerSettingsSubtitle') || 'Configure how the Quran is displayed', renderReaderSettingsSelector()) : ''}
                                 </div>
@@ -85,7 +85,7 @@ export const renderSettingsPage = (container, props) => {
                                     </div>
                                     <h2 class="text-lg font-bold text-slate-900 dark:text-white tracking-tight">${t('uiSettings')}</h2>
                                 </div>
-                                <div class="glass-card rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800/50">
+                                <div class="divide-y divide-slate-200 dark:divide-slate-800">
                                     <div class="p-5 md:p-6">
                                         <h4 class="font-bold text-slate-900 dark:text-white mb-4 text-sm">${t('surahListLayout')}</h4>
                                         ${renderSurahLayoutSelector()}

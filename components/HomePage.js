@@ -345,8 +345,8 @@ const renderQuickLinks = (container) => {
         groupHeader.textContent = group.title;
         container.appendChild(groupHeader);
         const groupGrid = document.createElement('div');
-        groupGrid.className = "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-8";
-        groupGrid.innerHTML = group.items.map((link, i) => `<a href="#" data-nav="${link.nav}" ${link.subNav ? `data-sub-nav="${link.subNav}"` : ''} ${link.surah ? `data-surah="${link.surah}"` : ''} ${link.ayah ? `data-ayah="${link.ayah}"` : ''} class="quick-link-card fade-in group p-3 glass-card rounded-xl hover:-translate-y-1 transition-all duration-300 flex flex-col gap-2 hover:shadow-lg hover:border-theme-500/30 border border-slate-200/50 dark:border-slate-700/50 active:scale-[0.98] relative overflow-hidden" style="animation-delay: ${0.1 + (i * 0.05)}s">
+        groupGrid.className = "divide-y divide-slate-200/70 dark:divide-slate-800 mb-8";
+        groupGrid.innerHTML = group.items.map((link, i) => `<a href="#" data-nav="${link.nav}" ${link.subNav ? `data-sub-nav="${link.subNav}"` : ''} ${link.surah ? `data-surah="${link.surah}"` : ''} ${link.ayah ? `data-ayah="${link.ayah}"` : ''} class="quick-link-card fade-in group py-3 transition-colors flex flex-col gap-2 active:scale-[0.98] relative overflow-hidden" style="animation-delay: ${0.1 + (i * 0.05)}s">
             <div class="flex items-center justify-between relative z-10">
                 <div class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-all duration-300 shadow-sm">
                     ${link.icon.toString().replace('w-6 h-6', 'w-4 h-4')}
@@ -384,7 +384,7 @@ const renderProphetStoriesSection = (container, state) => {
     ];
 
     storiesContainer.innerHTML = prophets.map((p, i) => `
-        <a href="#" data-nav="stories" data-prophet-id="${p.id}" class="group p-3 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 hover:border-theme-500/30 hover:-translate-y-1 transition-all duration-300 text-center flex flex-col items-center gap-2 fade-in" style="animation-delay: ${0.2 + (i * 0.05)}s">
+        <a href="#" data-nav="stories" data-prophet-id="${p.id}" class="group py-2 transition-colors text-center flex flex-col items-center gap-2 fade-in" style="animation-delay: ${0.2 + (i * 0.05)}s">
             <div class="w-10 h-10 rounded-full bg-theme-500/10 flex items-center justify-center text-theme-600 dark:text-theme-400 group-hover:bg-theme-500 group-hover:text-white transition-all duration-500 shadow-sm font-amiri text-lg">
                 ${p.nameAr}
             </div>

@@ -290,7 +290,6 @@ export const renderAdhanTimes = (container, props = {}) => {
             const previousCard = container.querySelector(`#prayer-${state.highlightedPrayer}`);
             if (previousCard) {
                 previousCard.classList.remove('bg-theme-100', 'dark:bg-theme-900/30', 'border-theme-500/50');
-                previousCard.classList.add('glass', 'border-white/10');
                 previousCard.querySelectorAll('p').forEach(p => p.classList.remove('text-white'));
             }
         }
@@ -298,7 +297,6 @@ export const renderAdhanTimes = (container, props = {}) => {
         const highlightedCard = container.querySelector(`#prayer-${nextPrayerName}`);
         if (highlightedCard) {
             highlightedCard.classList.add('bg-theme-100', 'dark:bg-theme-900/30', 'border-theme-500/50');
-            highlightedCard.classList.remove('glass', 'border-white/10');
             
         }
         
@@ -333,9 +331,9 @@ export const renderAdhanTimes = (container, props = {}) => {
                     <p class="text-[9px] text-slate-500 dark:text-slate-400 mt-1 uppercase tracking-widest font-bold">${t('calculationMethod', { method: meta.method.name })}</p>
                     <div id="countdown-container" class="mt-6 p-4 glass rounded-2xl border border-slate-200 dark:border-slate-800 inline-block"></div>
                 </div>
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
+                <div class="divide-y divide-slate-200/70 dark:divide-slate-800">
                     ${prayerOrder.map(prayer => `
-                        <div id="prayer-${prayer}" class="prayer-card p-5 md:p-6 rounded-2xl text-center transition-all duration-500 ease-out glass border border-slate-200 dark:border-slate-800 shadow-sm group hover:scale-[1.02] active:scale-95">
+                        <div id="prayer-${prayer}" class="prayer-card py-4 text-center transition-all duration-500 ease-out group">
                             <p class="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3 group-hover:text-theme-500 transition-colors">${t(`prayer_${prayer}`)}</p>
                             <p class="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white font-mono tracking-tight">${timings[prayer]}</p>
                         </div>

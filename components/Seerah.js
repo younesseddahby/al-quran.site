@@ -59,9 +59,9 @@ export const renderSeerah = (container, props) => {
                     </button>
                 ` : ''}
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                <div class="divide-y divide-slate-200/70 dark:divide-slate-800">
                     ${SEERAH_CHAPTERS.filter(c => t(c.titleKey).toLowerCase().includes(state.searchQuery.toLowerCase())).map((chapter, index) => `
-                        <button data-chapter-id="${chapter.id}" class="p-6 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 shadow-sm hover:shadow-md hover: hover:border-theme-500/30 hover:-translate-y-1 transition-all duration-500 flex items-center justify-between group relative overflow-hidden">
+                        <button data-chapter-id="${chapter.id}" class="py-3 flex items-center justify-between group relative overflow-hidden">
                             
                             <div class="flex items-center gap-5 relative z-10">
                                 <div class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-all duration-500 shadow-sm font-display font-bold text-xl">
