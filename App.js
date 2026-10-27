@@ -31,9 +31,9 @@ const App = (rootElement) => {
     
     let state = {
         activeTab: 'home',
-        theme: localStorage.getItem('theme') || 'system',
-        themeColor: localStorage.getItem('themeColor') || 'jade',
-        baseTheme: localStorage.getItem('baseTheme') || 'classic',
+        theme: 'light',
+        themeColor: 'grey',
+        baseTheme: 'classic',
         language: localStorage.getItem('language') || 'en',
         fontSize: localStorage.getItem('fontSize') || 'small',
         arabicFont: localStorage.getItem('arabicFont') || 'noto_naskh_arabic',
@@ -75,17 +75,11 @@ const App = (rootElement) => {
 
     const applyStyles = () => {
         const root = document.documentElement;
-        let effectiveTheme = state.theme;
-        if (effectiveTheme === 'system') effectiveTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        
-        // Remove old base theme classes
-        root.classList.remove('theme-classic', 'theme-emerald', 'theme-midnight', 'theme-sepia');
-        root.classList.add(`theme-${state.baseTheme}`);
-        
-        root.className = `${effectiveTheme} theme-${state.baseTheme} ${state.arabicFont}`;
+        // One fixed theme: simple grey, light mode only. No theme switching.
+        root.className = `light theme-classic ${state.arabicFont}`;
         if (!state.animationsEnabled) root.classList.add('animations-disabled');
-        
-        const colors = THEME_COLORS[state.themeColor] || THEME_COLORS.jade;
+
+        const colors = THEME_COLORS.grey;
         Object.entries(colors).forEach(([shade, hex]) => {
             const rgb = hexToRgb(hex);
             if (rgb) root.style.setProperty(`--theme-color-${shade}-rgb`, rgb);
@@ -409,7 +403,7 @@ const App = (rootElement) => {
             },
             quran: {
                 title: 'Read & Listen to Holy Quran Online | Multi-Language',
-                description: 'Access the full Holy Quran with beautiful recitations and accurate translations. Read by Surah or Juz with customizable fonts and themes for a better experience.'
+                description: 'Access the full Holy Quran with beautiful recitations and accurate translations. Read by Surah or Juz with customizable fonts for a better experience.'
             },
             hadith: {
                 title: 'Explore Sahih Hadith Collections | Prophet\'s Sayings',
@@ -457,7 +451,7 @@ const App = (rootElement) => {
             },
             settings: {
                 title: 'Settings | Customize Your Islamic App Experience',
-                description: 'Personalize your app with custom themes, languages, and display modes. Configure prayer times and interface preferences to suit your needs.'
+                description: 'Personalize your app with languages and display options. Configure prayer times and interface preferences to suit your needs.'
             }
         };
 

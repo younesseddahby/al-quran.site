@@ -4,12 +4,6 @@ import {
 } from './Icons.js';
 import { t, getCurrentLanguage } from '../i18n.js';
 
-const colors = [
-    { name: 'jade', bgClass: 'bg-emerald-500', ringClass: 'ring-emerald-500' },
-    { name: 'gold', bgClass: 'bg-yellow-500', ringClass: 'ring-yellow-500' },
-    { name: 'amber', bgClass: 'bg-amber-500', ringClass: 'ring-amber-500' },
-    { name: 'slate', bgClass: 'bg-slate-500', ringClass: 'ring-slate-500' },
-];
 
 const socialLinks = [
     { href: 'https://www.facebook.com/yns.dhb', icon: FacebookIcon({className: "w-5 h-5"}), label: 'Facebook' },
@@ -64,7 +58,6 @@ export const renderSettingsPage = (container, props) => {
                                 <div class="glass-card rounded-2xl p-6 shadow-md border border-slate-200 dark:border-slate-800">
                                     <h2 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6 px-2">${t('sections') || 'Sections'}</h2>
                                     <nav class="space-y-1.5">
-                                        ${renderNavButton('appearance', t('appearance'), SunIcon({className: "w-4 h-4"}))}
                                         ${renderNavButton('language', t('languageAndText'), BookOpenIcon({className: "w-4 h-4"}))}
                                         ${renderNavButton('interface', t('uiSettings'), GridViewIcon({className: "w-4 h-4"}))}
                                         ${renderNavButton('about', t('about'), UserIcon({className: "w-4 h-4"}))}
@@ -80,20 +73,6 @@ export const renderSettingsPage = (container, props) => {
 
                         <!-- Right Column: Content -->
                         <div class="lg:col-span-8 space-y-8">
-                            <!-- Appearance Section -->
-                            <section id="section-appearance" class="scroll-mt-24 space-y-4">
-                                <div class="flex items-center gap-3 px-2">
-                                    <div class="w-8 h-8 rounded-xl bg-theme-500/10 flex items-center justify-center text-theme-600 dark:text-theme-400 shadow-sm border border-theme-500/10">
-                                        ${SunIcon({className: "w-4 h-4"})}
-                                    </div>
-                                    <h2 class="text-lg font-bold text-slate-900 dark:text-white tracking-tight">${t('appearance')}</h2>
-                                </div>
-                                <div class="glass-card rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800/50">
-                                    ${renderSettingItem(t('theme'), t('themeSettingsSubtitle'), renderThemeSelector())}
-                                    ${renderSettingItem(t('accentColor'), t('accentColorSubtitle') || 'Choose your favorite highlight color', renderAccentColorSelector())}
-                                    ${renderSettingItem(t('interfaceAnimations'), t('interfaceAnimationsSubtitle'), renderAnimationsToggle())}
-                                </div>
-                            </section>
 
                             <!-- Language & Text Section -->
                             <section id="section-language" class="scroll-mt-24 space-y-4">
@@ -122,6 +101,7 @@ export const renderSettingsPage = (container, props) => {
                                         <h4 class="font-bold text-slate-900 dark:text-white mb-4 text-sm">${t('surahListLayout')}</h4>
                                         ${renderSurahLayoutSelector()}
                                     </div>
+                                    ${renderSettingItem(t('interfaceAnimations'), t('interfaceAnimationsSubtitle'), renderAnimationsToggle())}
                                     ${renderSettingItem('Debug Mode', 'Show technical details for troubleshooting', renderDebugToggle())}
                                 </div>
                             </section>
@@ -169,38 +149,8 @@ export const renderSettingsPage = (container, props) => {
 
     // --- Component HTML Generators ---
     
-    const renderThemeSelector = () => `
-                <div class="flex glass p-1.5 rounded-[1.25rem] shadow-inner border border-slate-200/50 dark:border-slate-700/50">
-                    <button data-theme="light" class="theme-btn flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${theme === 'light' ? 'glass text-theme-600 shadow-md' : 'text-slate-500'}">
-                        ${SunIcon({className: "w-4 h-4"})} <span class="text-xs font-bold">${t('light')}</span>
-                    </button>
-                    <button data-theme="dark" class="theme-btn flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${theme === 'dark' ? 'glass text-theme-600 shadow-md' : 'text-slate-500'}">
-                        ${MoonIcon({className: "w-4 h-4"})} <span class="text-xs font-bold">${t('dark')}</span>
-                    </button>
-                    <button data-theme="system" class="theme-btn flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${theme === 'system' ? 'glass text-theme-600 shadow-md' : 'text-slate-500'}">
-                        ${SystemThemeIcon({className: "w-4 h-4"})} <span class="text-xs font-bold">${t('system')}</span>
-                    </button>
-                </div>
-    `;
 
-    const renderBaseThemeSelector = () => `
-        <select class="base-theme-select glass text-slate-900 dark:text-white text-sm font-bold py-3 px-5 rounded-2xl border-none focus:ring-2 focus:ring-theme-500 shadow-sm min-w-[160px]">
-            <option value="classic" ${baseTheme === 'classic' ? 'selected' : ''}>✨ ${t('themeClassic')}</option>
-            <option value="emerald" ${baseTheme === 'emerald' ? 'selected' : ''}>🌿 ${t('themeEmerald')}</option>
-            <option value="midnight" ${baseTheme === 'midnight' ? 'selected' : ''}>🌙 ${t('themeMidnight')}</option>
-            <option value="sepia" ${baseTheme === 'sepia' ? 'selected' : ''}>📜 ${t('themeSepia')}</option>
-        </select>
-    `;
     
-    const renderAccentColorSelector = () => {
-        return `
-            <div class="flex flex-wrap items-center justify-end gap-3 max-w-[240px]">
-                ${colors.map(c => `
-                    <button data-color="${c.name}" class="color-btn w-10 h-10 rounded-full ${c.bgClass} ring-offset-4 dark:ring-offset-slate-900 ${themeColor === c.name ? 'ring-2 ring-theme-500 scale-110 shadow-lg' : 'hover:scale-110 hover:shadow-lg'} transition-all active:scale-90 border-2 border-white/20"></button>
-                `).join('')}
-            </div>
-        `;
-    };
 
     const renderAnimationsToggle = () => `
         <button id="animations-toggle" class="w-14 h-8 rounded-full transition-all relative ${animationsEnabled ? 'bg-theme-600 shadow-lg' : 'bg-slate-300 dark:bg-slate-700'}">
@@ -293,9 +243,6 @@ export const renderSettingsPage = (container, props) => {
             });
         });
 
-        container.querySelectorAll('.theme-btn').forEach(btn => btn.addEventListener('click', () => setTheme(btn.dataset.theme)));
-        container.querySelector('.base-theme-select')?.addEventListener('change', (e) => setBaseTheme(e.target.value));
-        container.querySelectorAll('.color-btn').forEach(btn => btn.addEventListener('click', () => setThemeColor(btn.dataset.color)));
         container.querySelector('#animations-toggle')?.addEventListener('click', () => setAnimationsEnabled(!animationsEnabled));
         container.querySelector('#debug-toggle')?.addEventListener('click', () => setDebugMode(!debugMode));
         
