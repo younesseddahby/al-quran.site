@@ -5,17 +5,7 @@ import {
 import { t, getCurrentLanguage } from '../i18n.js';
 
 
-const socialLinks = [
-    { href: 'https://www.facebook.com/yns.dhb', icon: FacebookIcon({className: "w-5 h-5"}), label: 'Facebook' },
-    { href: 'https://www.instagram.com/youness_eddahby', icon: InstagramIcon({className: "w-5 h-5"}), label: 'Instagram' },
-    { href: 'https://t.me/youness_eddahby', icon: TelegramIcon({className: "w-5 h-5"}), label: 'Telegram' },
-    { href: 'https://x.com/YounessEddahby', icon: XIcon({className: "w-5 h-5"}), label: 'Twitter/X' },
-    { href: 'https://github.com/younesseddahby', icon: GithubIcon({className: "w-5 h-5"}), label: 'GitHub' },
-];
 
-const getContactInfo = () => [
-    { icon: UserIcon(), label: 'Youness Eddahby' },
-];
 
 let playerSearchQuery = '';
 
@@ -27,7 +17,7 @@ export const renderSettingsPage = (container, props) => {
     const { 
         theme, setTheme, themeColor, setThemeColor, baseTheme, setBaseTheme, language, setLanguage,
         surahListLayout, setSurahListLayout, surahGridCols, setSurahGridCols,
-        readerDisplayMode, setReaderDisplayMode, debugMode, setDebugMode,
+        readerDisplayMode, setReaderDisplayMode,
         animationsEnabled, setAnimationsEnabled, onBack 
     } = props;
 
@@ -60,7 +50,6 @@ export const renderSettingsPage = (container, props) => {
                                     <nav class="space-y-1.5">
                                         ${renderNavButton('language', t('languageAndText'), BookOpenIcon({className: "w-4 h-4"}))}
                                         ${renderNavButton('interface', t('uiSettings'), GridViewIcon({className: "w-4 h-4"}))}
-                                        ${renderNavButton('about', t('about'), UserIcon({className: "w-4 h-4"}))}
                                     </nav>
                                     <div class="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800">
                                         <button id="reset-settings-btn" class="w-full flex items-center justify-center gap-2 p-3 rounded-xl bg-slate-500/5 text-slate-600 dark:text-slate-400 font-bold text-[10px] uppercase tracking-wider hover:bg-slate-500/10 transition-all active:scale-95 border border-slate-500/10">
@@ -102,22 +91,21 @@ export const renderSettingsPage = (container, props) => {
                                         ${renderSurahLayoutSelector()}
                                     </div>
                                     ${renderSettingItem(t('interfaceAnimations'), t('interfaceAnimationsSubtitle'), renderAnimationsToggle())}
-                                    ${renderSettingItem('Debug Mode', 'Show technical details for troubleshooting', renderDebugToggle())}
                                 </div>
                             </section>
 
-                            <!-- About Section -->
-                            <section id="section-about" class="scroll-mt-24 space-y-4">
-                                <div class="flex items-center gap-3 px-2">
-                                    <div class="w-8 h-8 rounded-xl bg-theme-500/10 flex items-center justify-center text-theme-600 dark:text-theme-400 shadow-sm border border-theme-500/10">
-                                        ${UserIcon({className: "w-4 h-4"})}
-                                    </div>
-                                    <h2 class="text-lg font-bold text-slate-900 dark:text-white tracking-tight">${t('about')}</h2>
+                            <!-- Footer -->
+                            <div class="pt-4 pb-2 text-center space-y-3">
+                                <p class="text-sm font-medium text-slate-500">Made with love for the global Muslim community.</p>
+                                <div class="flex items-center justify-center gap-5">
+                                    <a href="https://github.com/younesseddahby" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-theme-600 transition-colors">
+                                        ${GithubIcon({className: "w-4 h-4"})} GitHub
+                                    </a>
+                                    <a href="mailto:youness@eddahby.dev" class="flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-theme-600 transition-colors">
+                                        ${EmailIcon({className: "w-4 h-4"})} youness@eddahby.dev
+                                    </a>
                                 </div>
-                                <div class="glass-card rounded-2xl p-6 md:p-8 border border-slate-200 dark:border-slate-800">
-                                    ${renderAboutInfo()}
-                                </div>
-                            </section>
+                            </div>
                         </div>
                     </div>
                 </main>
@@ -158,11 +146,6 @@ export const renderSettingsPage = (container, props) => {
         </button>
     `;
 
-    const renderDebugToggle = () => `
-        <button id="debug-toggle" class="w-14 h-8 rounded-full transition-all relative ${debugMode ? 'bg-theme-600 shadow-lg' : 'bg-slate-300 dark:bg-slate-700'}">
-            <div class="absolute top-1 start-1 w-6 h-6 rounded-full bg-white transition-transform ${debugMode ? 'ltr:translate-x-6 rtl:-translate-x-6' : ''} shadow-sm"></div>
-        </button>
-    `;
     
     const renderLanguageSelector = () => `
         <div class="grid grid-cols-2 gap-2 glass p-1.5 rounded-[1.25rem] border border-slate-200/50 dark:border-slate-700/50">
@@ -203,31 +186,6 @@ export const renderSettingsPage = (container, props) => {
         </div>
     `;
     
-    const renderAboutInfo = () => `
-        <div class="space-y-6">
-            <div class="flex items-center gap-4">
-                <div class="w-16 h-16 rounded-2xl bg-theme-700 flex items-center justify-center text-white font-bold text-2xl shadow-md">Y</div>
-                <div>
-                    <h4 class="text-lg font-bold text-slate-900 dark:text-white">Youness Eddahby</h4>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Full Stack Developer & Designer</p>
-                    <div class="flex items-center gap-2 mt-1">
-                        <span class="px-2 py-0.5 rounded-md bg-theme-50 dark:bg-theme-900/20 text-[9px] font-bold text-theme-600 dark:text-theme-400 uppercase tracking-wider border border-theme-100 dark:border-theme-900/30">v1.2.0</span>
-                    </div>
-                </div>
-            </div>
-            <div class="grid grid-cols-5 gap-2">
-                ${socialLinks.map(link => `
-                    <a href="${link.href}" target="_blank" class="flex items-center justify-center p-3 rounded-xl glass text-slate-600 dark:text-slate-400 hover:bg-theme-600 hover:text-white dark:hover:bg-theme-600 transition-all active:scale-90 shadow-sm border border-slate-200 dark:border-slate-800" title="${link.label}">
-                        ${link.icon}
-                    </a>
-                `).join('')}
-            </div>
-            <div class="pt-6 border-t border-slate-100 dark:border-slate-800 text-center">
-                <p class="text-[9px] text-slate-400 uppercase tracking-widest font-bold">${t('madeWithLove')}</p>
-                <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-1 font-medium">© 2024 The Holy Quran App. All rights reserved.</p>
-            </div>
-        </div>
-    `;
     
     // --- Event Listeners ---
     const attachEventListeners = () => {
@@ -244,7 +202,6 @@ export const renderSettingsPage = (container, props) => {
         });
 
         container.querySelector('#animations-toggle')?.addEventListener('click', () => setAnimationsEnabled(!animationsEnabled));
-        container.querySelector('#debug-toggle')?.addEventListener('click', () => setDebugMode(!debugMode));
         
         container.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => setLanguage(btn.dataset.lang)));
         

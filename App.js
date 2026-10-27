@@ -41,7 +41,6 @@ const App = (rootElement) => {
         surahListLayout: localStorage.getItem('surahListLayout') || 'grid',
         surahGridCols: localStorage.getItem('surahGridCols') || '3',
         readerDisplayMode: localStorage.getItem('readerDisplayMode') || 'both', // 'both', 'translation'
-        debugMode: localStorage.getItem('debugMode') === 'true',
         bookmarks: (() => {
             const defaults = { quran: [], hadith: [], seerah: [], sahaba: [], stories: [] };
             try {
@@ -262,7 +261,6 @@ const App = (rootElement) => {
             setSurahListLayout: (l) => { state.surahListLayout = l; localStorage.setItem('surahListLayout', l); render(); },
             setSurahGridCols: (c) => { state.surahGridCols = c; localStorage.setItem('surahGridCols', c); render(); },
             setReaderDisplayMode: (m) => { state.readerDisplayMode = m; localStorage.setItem('readerDisplayMode', m); render(); },
-            setDebugMode: (d) => { state.debugMode = d; localStorage.setItem('debugMode', d); render(); },
             setAnimationsEnabled: (e) => { state.animationsEnabled = e; applyStyles(); localStorage.setItem('animationsEnabled', e); render(); },
             navigateTo: ({ surahNumber, ayahNumber }) => {
                 state.activeTab = 'quran';
