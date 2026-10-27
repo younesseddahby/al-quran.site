@@ -32,7 +32,7 @@ const App = (rootElement) => {
     let state = {
         activeTab: 'home',
         theme: 'light',
-        themeColor: 'grey',
+        themeColor: 'blue',
         baseTheme: 'classic',
         language: localStorage.getItem('language') || 'en',
         fontSize: localStorage.getItem('fontSize') || 'small',
@@ -75,11 +75,11 @@ const App = (rootElement) => {
 
     const applyStyles = () => {
         const root = document.documentElement;
-        // One fixed theme: simple grey, light mode only. No theme switching.
+        // One fixed theme: light mode, royal blue accent. No theme switching.
         root.className = `light theme-classic ${state.arabicFont}`;
         if (!state.animationsEnabled) root.classList.add('animations-disabled');
 
-        const colors = THEME_COLORS.grey;
+        const colors = THEME_COLORS.blue;
         Object.entries(colors).forEach(([shade, hex]) => {
             const rgb = hexToRgb(hex);
             if (rgb) root.style.setProperty(`--theme-color-${shade}-rgb`, rgb);
