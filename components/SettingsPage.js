@@ -63,7 +63,7 @@ export const renderSettingsPage = (container, props) => {
                                         ${renderNavButton('about', t('about'), UserIcon({className: "w-4 h-4"}))}
                                     </nav>
                                     <div class="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800">
-                                        <button id="reset-settings-btn" class="w-full flex items-center justify-center gap-2 p-3 rounded-xl bg-rose-500/5 text-rose-600 dark:text-rose-400 font-bold text-[10px] uppercase tracking-wider hover:bg-rose-500/10 transition-all active:scale-95 border border-rose-500/10">
+                                        <button id="reset-settings-btn" class="w-full flex items-center justify-center gap-2 p-3 rounded-xl bg-slate-500/5 text-slate-600 dark:text-slate-400 font-bold text-[10px] uppercase tracking-wider hover:bg-slate-500/10 transition-all active:scale-95 border border-slate-500/10">
                                             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
                                             ${t('resetToDefaults') || 'Reset to Defaults'}
                                         </button>
