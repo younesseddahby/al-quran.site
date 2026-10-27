@@ -16,7 +16,6 @@ export const resetSettingsPageState = () => {
 export const renderSettingsPage = (container, props) => {
     const { 
         theme, setTheme, themeColor, setThemeColor, baseTheme, setBaseTheme, language, setLanguage,
-        surahListLayout, setSurahListLayout, surahGridCols, setSurahGridCols,
         readerDisplayMode, setReaderDisplayMode,
         animationsEnabled, setAnimationsEnabled, onBack 
     } = props;
@@ -86,10 +85,6 @@ export const renderSettingsPage = (container, props) => {
                                     <h2 class="text-lg font-bold text-slate-900 dark:text-white tracking-tight">${t('uiSettings')}</h2>
                                 </div>
                                 <div class="divide-y divide-slate-200 dark:divide-slate-800">
-                                    <div class="p-5 md:p-6">
-                                        <h4 class="font-bold text-slate-900 dark:text-white mb-4 text-sm">${t('surahListLayout')}</h4>
-                                        ${renderSurahLayoutSelector()}
-                                    </div>
                                     ${renderSettingItem(t('interfaceAnimations'), t('interfaceAnimationsSubtitle'), renderAnimationsToggle())}
                                 </div>
                             </section>
@@ -164,27 +159,6 @@ export const renderSettingsPage = (container, props) => {
         </div>
     `;
 
-    const renderSurahLayoutSelector = () => `
-        <div class="space-y-6">
-            <div class="flex items-center justify-between p-4 glass rounded-2xl border border-slate-100 dark:border-slate-800">
-                <div class="flex items-center gap-3">
-                    <button data-layout="grid" class="layout-btn flex items-center gap-2 px-6 py-3 rounded-2xl transition-all ${surahListLayout === 'grid' ? 'glass text-theme-600 shadow-lg' : 'text-slate-500'}">
-                        ${GridViewIcon({className: "w-5 h-5"})} <span class="text-sm font-bold">${t('grid') || 'Grid'}</span>
-                    </button>
-                    <button data-layout="list" class="layout-btn flex items-center gap-2 px-6 py-3 rounded-2xl transition-all ${surahListLayout === 'list' ? 'glass text-theme-600 shadow-lg' : 'text-slate-500'}">
-                        ${ListViewIcon({className: "w-5 h-5"})} <span class="text-sm font-bold">${t('list') || 'List'}</span>
-                    </button>
-                </div>
-                ${surahListLayout === 'grid' ? `
-                    <div class="flex items-center glass p-1 rounded-xl border border-slate-200/50 dark:border-slate-700/50">
-                        ${['2','3','4'].map(c => `
-                            <button data-cols="${c}" class="grid-cols-btn w-8 h-8 flex items-center justify-center rounded-lg text-xs font-bold transition-all ${surahGridCols === c ? 'glass text-theme-600 shadow-sm' : 'text-slate-500'}">${c}</button>
-                        `).join('')}
-                    </div>
-                ` : ''}
-            </div>
-        </div>
-    `;
     
     
     // --- Event Listeners ---
@@ -206,8 +180,6 @@ export const renderSettingsPage = (container, props) => {
         container.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => setLanguage(btn.dataset.lang)));
         
         container.querySelectorAll('.mode-btn').forEach(btn => btn.addEventListener('click', () => setReaderDisplayMode(btn.dataset.mode)));
-        container.querySelectorAll('.layout-btn').forEach(btn => btn.addEventListener('click', () => setSurahListLayout(btn.dataset.layout)));
-        container.querySelectorAll('.grid-cols-btn').forEach(btn => btn.addEventListener('click', () => setSurahGridCols(btn.dataset.cols)));
 
         container.querySelector('#reset-settings-btn')?.addEventListener('click', () => {
             if (confirm(t('confirmResetSettings') || 'Are you sure you want to reset all settings to default?')) {

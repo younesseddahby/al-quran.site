@@ -29,6 +29,10 @@ const App = (rootElement) => {
         return result ? `${parseInt(result[1], 16)} ${parseInt(result[2], 16)} ${parseInt(result[3], 16)}` : null;
     };
     
+    // Dead-setting cleanup: drop stored values left over from Surah List Layout.
+    localStorage.removeItem('surahListLayout');
+    localStorage.removeItem('surahGridCols');
+
     let state = {
         activeTab: 'home',
         theme: 'light',
@@ -38,8 +42,6 @@ const App = (rootElement) => {
         fontSize: localStorage.getItem('fontSize') || 'small',
         arabicFont: localStorage.getItem('arabicFont') || 'noto_naskh_arabic',
         animationsEnabled: localStorage.getItem('animationsEnabled') !== 'false',
-        surahListLayout: localStorage.getItem('surahListLayout') || 'grid',
-        surahGridCols: localStorage.getItem('surahGridCols') || '3',
         readerDisplayMode: localStorage.getItem('readerDisplayMode') || 'both', // 'both', 'translation'
         bookmarks: (() => {
             const defaults = { quran: [], hadith: [], seerah: [], sahaba: [], stories: [] };
@@ -300,8 +302,6 @@ const App = (rootElement) => {
             setLanguage: (l) => { state.language = l; setI18nLanguage(l); localStorage.setItem('language', l); render(); },
             setArabicFont: (f) => { state.arabicFont = f; applyStyles(); localStorage.setItem('arabicFont', f); render(); },
             setFontSize: (s) => { state.fontSize = s; applyStyles(); localStorage.setItem('fontSize', s); render(); },
-            setSurahListLayout: (l) => { state.surahListLayout = l; localStorage.setItem('surahListLayout', l); render(); },
-            setSurahGridCols: (c) => { state.surahGridCols = c; localStorage.setItem('surahGridCols', c); render(); },
             setReaderDisplayMode: (m) => { state.readerDisplayMode = m; localStorage.setItem('readerDisplayMode', m); render(); },
             setAnimationsEnabled: (e) => { state.animationsEnabled = e; applyStyles(); localStorage.setItem('animationsEnabled', e); render(); },
             navigateTo: ({ surahNumber, ayahNumber }) => {
