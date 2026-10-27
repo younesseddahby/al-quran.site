@@ -299,7 +299,7 @@ const renderPrayerWidget = (container, state) => {
                  </div>
                  <h4 class="text-lg font-bold text-slate-900 dark:text-white mb-1">${t('prayerTimes')}</h4>
                  <p class="text-slate-500 dark:text-slate-400 mb-6 text-xs max-w-[180px]">${t('setupPrayerTimes')}</p>
-                 <a href="#" data-nav="adhan" class="w-full py-3 bg-theme-600 text-white text-xs font-bold rounded-xl hover:bg-theme-700 shadow-lg transition-all active:scale-95">${t('setupNow')}</a>
+                 <a href="#" data-nav="adhan" class="w-full py-3 bg-theme-700 text-white text-xs font-bold rounded-xl hover:bg-theme-800 shadow-lg transition-all active:scale-95">${t('setupNow')}</a>
             </div>
         `;
     }
@@ -366,7 +366,7 @@ const renderProphetStoriesSection = (container, state) => {
     const sectionHeader = document.createElement('h3');
     sectionHeader.className = "font-bold font-display text-lg md:text-xl text-slate-900 dark:text-white mb-4 flex items-center gap-2";
     sectionHeader.innerHTML = `
-        <span class="w-1.5 h-6 bg-amber-500 rounded-full"></span>
+        <span class="w-1.5 h-6 bg-theme-500 rounded-full"></span>
         ${t('prophetStories') || 'Prophet Stories'}
     `;
     container.appendChild(sectionHeader);
@@ -384,11 +384,11 @@ const renderProphetStoriesSection = (container, state) => {
     ];
 
     storiesContainer.innerHTML = prophets.map((p, i) => `
-        <a href="#" data-nav="stories" data-prophet-id="${p.id}" class="group p-3 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 hover:border-amber-500/30 hover:-translate-y-1 transition-all duration-300 text-center flex flex-col items-center gap-2 fade-in" style="animation-delay: ${0.2 + (i * 0.05)}s">
-            <div class="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-600 dark:text-amber-400 group-hover:bg-amber-500 group-hover:text-white transition-all duration-500 shadow-sm font-amiri text-lg">
+        <a href="#" data-nav="stories" data-prophet-id="${p.id}" class="group p-3 glass-card rounded-2xl border border-slate-200/50 dark:border-slate-700/50 hover:border-theme-500/30 hover:-translate-y-1 transition-all duration-300 text-center flex flex-col items-center gap-2 fade-in" style="animation-delay: ${0.2 + (i * 0.05)}s">
+            <div class="w-10 h-10 rounded-full bg-theme-500/10 flex items-center justify-center text-theme-600 dark:text-theme-400 group-hover:bg-theme-500 group-hover:text-white transition-all duration-500 shadow-sm font-amiri text-lg">
                 ${p.nameAr}
             </div>
-            <span class="text-[10px] font-bold text-slate-700 dark:text-slate-300 group-hover:text-amber-600 transition-colors">${getCurrentLanguage() === 'ar' ? p.nameAr : p.name}</span>
+            <span class="text-[10px] font-bold text-slate-700 dark:text-slate-300 group-hover:text-theme-600 transition-colors">${getCurrentLanguage() === 'ar' ? p.nameAr : p.name}</span>
         </a>
     `).join('');
     

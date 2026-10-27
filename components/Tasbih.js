@@ -139,7 +139,7 @@ export const renderTasbih = (container, props = {}) => {
                         <div id="ripple-container" class="absolute inset-0 pointer-events-none overflow-hidden rounded-full"></div>
                     </div>
 
-                    <p class="mt-4 text-xs font-medium text-slate-400 dark:text-slate-500">${t('tapToCount')}</p>
+                    <p class="mt-4 text-xs font-semibold text-theme-600 dark:text-theme-400">${t('tapToCount')}</p>
                     <!-- Total Stats -->
                     <div class="mt-10 flex items-center gap-8">
                         <div class="text-center">
