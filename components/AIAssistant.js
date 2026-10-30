@@ -11,6 +11,21 @@ export const renderAIAssistant = (container, props) => {
     const { onBack, navigateTo } = props;
     const isRtl = getCurrentLanguage() === 'ar';
 
+    // The modal shell itself lives in App.js (glass panel, giant radius,
+    // scale-in pop) and is NOT part of this file — but it is half of what
+    // the user sees, so normalize it here on every open: solid white,
+    // normal radius, no entrance animation. Guarded so a future App.js
+    // restructure fails silently instead of restyling the wrong element.
+    const overlay = document.getElementById('ai-modal-overlay');
+    if (overlay) {
+        overlay.classList.remove('animate-fade');
+        const panel = overlay.querySelector('#ai-modal-content')?.parentElement;
+        if (panel && panel.classList.contains('glass')) {
+            panel.classList.remove('glass', 'rounded-[2.5rem]', 'animate-scale-in', 'border-white/20');
+            panel.classList.add('bg-white', 'rounded-2xl', 'border-slate-200');
+        }
+    }
+
     let messages = JSON.parse(localStorage.getItem('ai_chat_history') || '[]');
     let isTyping = false;
 
