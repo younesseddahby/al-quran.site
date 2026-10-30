@@ -673,13 +673,13 @@ export const renderQuranReader = (container, cache, props) => {
 
             <div class="fixed bottom-4 md:bottom-8 inset-x-4 md:inset-x-8 z-[60] pointer-events-none">
                 <div id="reader-bottom-nav" class="max-w-[200px] mx-auto flex items-center justify-between bg-white dark:bg-slate-900 rounded-full p-1.5 border border-slate-200 dark:border-slate-700 shadow-lg pointer-events-auto transition-all duration-500">
-                    <button id="reader-prev-surah" class="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full text-slate-600 dark:text-slate-300 hover:text-theme-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all ${s.number === 1 ? 'opacity-10 cursor-not-allowed' : ''}" ${s.number === 1 ? 'disabled' : ''}>
+                    <button id="reader-prev-surah" class="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full text-slate-800 dark:text-slate-300 hover:text-theme-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all ${s.number === 1 ? 'opacity-40 cursor-not-allowed' : ''}" ${s.number === 1 ? 'disabled' : ''}>
                         ${SkipBackwardIcon({className: "w-5 h-5"})}
                     </button>
                     
                     <div class="w-px h-6 bg-slate-200 dark:bg-slate-700 mx-1"></div>
                     
-                    <button id="reader-next-surah" class="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full text-slate-600 dark:text-slate-300 hover:text-theme-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all ${s.number === 114 ? 'opacity-10 cursor-not-allowed' : ''}" ${s.number === 114 ? 'disabled' : ''}>
+                    <button id="reader-next-surah" class="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full text-slate-800 dark:text-slate-300 hover:text-theme-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all ${s.number === 114 ? 'opacity-40 cursor-not-allowed' : ''}" ${s.number === 114 ? 'disabled' : ''}>
                         ${SkipForwardIcon({className: "w-5 h-5"})}
                     </button>
                 </div>

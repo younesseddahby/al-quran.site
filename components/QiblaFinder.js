@@ -10,7 +10,12 @@ export const renderQiblaFinder = (container, props = {}) => {
         qiblaAngle: null,
         error: null,
         permissionGranted: false,
-        location: null
+        location: null,
+        manualAngle: null,
+        manualCity: null,
+        cityQuery: '',
+        cityLoading: false,
+        cityError: null
     };
 
     const MAKKAH_LAT = 21.422487;
@@ -80,6 +85,34 @@ export const renderQiblaFinder = (container, props = {}) => {
         }
     };
 
+    const searchCityQibla = async (query) => {
+        const q = (query || '').trim();
+        state.cityQuery = q;
+        if (q.length < 3) {
+            state.cityError = 'Enter at least 3 letters of a city name.';
+            render();
+            return;
+        }
+        state.cityLoading = true;
+        state.cityError = null;
+        render();
+        try {
+            const res = await fetch(`https://nominatim.openstreetmap.org/search?city=${encodeURIComponent(q)}&format=json&accept-language=en&limit=1`);
+            const data = await res.json();
+            if (!data || !data.length) {
+                state.cityError = 'City not found. Try another name.';
+            } else {
+                const parts = data[0].display_name.split(', ');
+                state.manualCity = parts[0] + (parts.length > 1 ? ', ' + parts[parts.length - 1] : '');
+                state.manualAngle = calculateQibla(parseFloat(data[0].lat), parseFloat(data[0].lon));
+            }
+        } catch (err) {
+            state.cityError = 'Could not look up that city. Check your connection and try again.';
+        }
+        state.cityLoading = false;
+        render();
+    };
+
     const updateCompass = () => {
         const compassEl = container.querySelector('#compass-dial');
         const qiblaPointer = container.querySelector('#qibla-pointer');
@@ -121,7 +154,7 @@ export const renderQiblaFinder = (container, props = {}) => {
                     </div>
                 ` : ''}
 
-                ${!state.permissionGranted && !state.error ? `
+                ${!state.permissionGranted && !state.error && state.manualAngle === null ? `
                     <div class="glass-card p-8 rounded-2xl text-center border border-slate-200/50 dark:border-slate-700/50 shadow-sm animate-scale">
                         <div class="w-20 h-20 mx-auto bg-theme-50 dark:bg-theme-900/20 text-theme-600 dark:text-theme-400 rounded-full flex items-center justify-center mb-6">
                             ${QiblaIcon({className: 'w-10 h-10'})}
@@ -131,6 +164,41 @@ export const renderQiblaFinder = (container, props = {}) => {
                         <button id="grant-permission-btn" class="px-8 py-3 bg-theme-600 hover:bg-theme-700 text-white rounded-full font-bold shadow-lg transition-all active:scale-95">
                             ${t('grantPermission') || 'Grant Permission'}
                         </button>
+                        <div class="mt-8 pt-6 border-t border-slate-200 text-start">
+                            <p class="font-bold text-slate-900 mb-1">No compass? Find your Qibla by city</p>
+                            <p class="text-sm text-slate-500 mb-3">On a desktop there is no compass sensor. Enter your city and we will show the exact Qibla angle for it.</p>
+                            <div class="flex gap-2">
+                                <input id="qibla-city-input" type="text" value="${state.cityQuery}" placeholder="Enter your city…" class="flex-1 min-w-0 bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-theme-600">
+                                <button id="qibla-city-btn" class="shrink-0 px-4 py-2.5 bg-slate-900 text-white rounded-xl text-sm font-bold hover:bg-slate-700 transition-colors" ${state.cityLoading ? 'disabled' : ''}>
+                                    ${state.cityLoading ? 'Searching…' : 'Calculate'}
+                                </button>
+                            </div>
+                            ${state.cityError ? `<p class="text-sm text-red-600 mt-2">${state.cityError}</p>` : ''}
+                        </div>
+                    </div>
+                ` : ''}
+
+                ${!state.permissionGranted && !state.error && state.manualAngle !== null ? `
+                    <div class="bg-white p-8 rounded-2xl text-center border border-slate-200 shadow-sm">
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">${state.manualCity}</p>
+                        <div class="text-5xl font-bold text-theme-600 mb-2">${Math.round(state.manualAngle)}°</div>
+                        <p class="text-slate-500 text-sm mb-8 max-w-xs mx-auto">Face North, then turn ${Math.round(state.manualAngle)}° clockwise. That is your Qibla direction.</p>
+                        <div class="relative w-64 h-64 mx-auto mb-8">
+                            <div class="absolute inset-0 rounded-full border-4 border-slate-200 flex items-center justify-center">
+                                <div class="absolute top-2 text-red-500 font-bold text-lg">N</div>
+                                <div class="absolute bottom-2 text-slate-400 font-bold text-lg">S</div>
+                                <div class="absolute right-2 text-slate-400 font-bold text-lg">E</div>
+                                <div class="absolute left-2 text-slate-400 font-bold text-lg">W</div>
+                                <div class="absolute inset-0" style="transform: rotate(${state.manualAngle}deg)">
+                                    <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-4 flex flex-col items-center">
+                                        <div class="w-4 h-4 bg-theme-500 rotate-45"></div>
+                                        <div class="w-1 h-32 bg-theme-500/20"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-slate-800 rounded-full border-2 border-white z-10"></div>
+                        </div>
+                        <button id="qibla-manual-back-btn" class="text-sm font-bold text-theme-600 hover:underline">Back to compass</button>
                     </div>
                 ` : ''}
 
@@ -198,6 +266,17 @@ export const renderQiblaFinder = (container, props = {}) => {
         });
 
         container.querySelector('#grant-permission-btn')?.addEventListener('click', requestPermission);
+        const cityBtn = container.querySelector('#qibla-city-btn');
+        const cityInput = container.querySelector('#qibla-city-input');
+        cityBtn?.addEventListener('click', () => searchCityQibla(cityInput?.value || ''));
+        cityInput?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') searchCityQibla(cityInput.value);
+        });
+        container.querySelector('#qibla-manual-back-btn')?.addEventListener('click', () => {
+            state.manualAngle = null;
+            state.manualCity = null;
+            render();
+        });
         
         if (state.permissionGranted) {
             updateCompass();
