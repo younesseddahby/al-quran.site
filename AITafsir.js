@@ -233,7 +233,7 @@ export const renderAITafsir = (container, { onClose, initialPrompt }) => {
 
                 const ai = new GoogleGenAI({ apiKey });
                 const responseStream = await ai.models.generateContentStream({
-                    model: 'gemini-3-flash-preview',
+                    model: 'gemini-3.6-flash',
                     contents: history,
                     config: { systemInstruction: system }
                 });

@@ -419,7 +419,7 @@ const App = (rootElement) => {
 
         const btn = document.createElement('button');
         btn.id = 'floating-ai-btn';
-        btn.className = "fixed bottom-20 right-4 lg:bottom-8 lg:right-8 w-14 h-14 rounded-2xl bg-theme-500 text-white shadow-lg flex items-center justify-center z-50 transition-all duration-300 hover:scale-110 active:scale-95 animate-bounce-subtle group";
+        btn.className = "fixed bottom-20 right-4 lg:bottom-8 lg:right-8 w-14 h-14 rounded-2xl bg-theme-500 text-white shadow-lg flex items-center justify-center z-50 transition-all duration-300 hover:scale-110 active:scale-95 group";
         btn.innerHTML = `
             <div class="absolute -top-12 right-0 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-md border border-slate-100 dark:border-slate-700 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
                 ${t('aiAssistant') || 'AI Assistant'}

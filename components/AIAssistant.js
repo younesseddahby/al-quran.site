@@ -171,16 +171,21 @@ export const renderAIAssistant = (container, props) => {
                 throw new Error("GEMINI_API_KEY is not configured. Please add it in the settings.");
             }
 
-            // 1. Search Quran.com API for relevant verses
-            const quranSearchUrl = `https://api.quran.com/api/v4/search?q=${encodeURIComponent(text.trim())}&size=5&language=en`;
-            const searchResponse = await fetch(quranSearchUrl);
-            const searchData = await searchResponse.json();
-
+            // 1. Search Quran.com API for relevant verses. Non-fatal: if the
+            // search is down, the assistant still answers from its own
+            // knowledge (the prompt already covers the no-context case).
             let context = "";
-            if (searchData.search && searchData.search.results) {
-                context = searchData.search.results.map((result) => {
-                    return `[Surah ${result.surah}, Verse ${result.verse}]: ${result.text}`;
-                }).join("\n\n");
+            try {
+                const quranSearchUrl = `https://api.quran.com/api/v4/search?q=${encodeURIComponent(text.trim())}&size=5&language=en`;
+                const searchResponse = await fetch(quranSearchUrl);
+                const searchData = await searchResponse.json();
+                if (searchData.search && searchData.search.results) {
+                    context = searchData.search.results.map((result) => {
+                        return `[Surah ${result.surah}, Verse ${result.verse}]: ${result.text}`;
+                    }).join("\n\n");
+                }
+            } catch (searchError) {
+                console.warn('Quran search unavailable, answering without context:', searchError);
             }
 
             // 2. Call Gemini API with context
@@ -197,7 +202,9 @@ export const renderAIAssistant = (container, props) => {
 
             const ai = new GoogleGenAI({ apiKey });
             const response = await ai.models.generateContent({
-                model: "gemini-3-flash-preview",
+                // gemini-3.6-flash: Google's documented replacement for the
+                // retired preview model name used here before.
+                model: "gemini-3.6-flash",
                 contents: text.trim(),
                 config: {
                     systemInstruction: `You are a powerful AI Islamic Assistant. Your goal is to provide reliable, authentic Islamic information based on the Quran and Sunnah.
@@ -234,11 +241,17 @@ export const renderAIAssistant = (container, props) => {
             localStorage.setItem('ai_chat_history', JSON.stringify(messages));
         } catch (error) {
             console.error('AI Error:', error);
+            const errMsg = error?.message ?? '';
+            const errStatus = error?.status;
             let errorMsg = "I'm sorry, I encountered an error. Please try again later.";
-            if (error.message.includes("API key not valid")) {
+            if (errMsg.includes("API key not valid") || errStatus === 400) {
                 errorMsg = "The API key configured is invalid. Please check your GEMINI_API_KEY in the settings.";
-            } else if (error.message.includes("not configured")) {
-                errorMsg = error.message;
+            } else if (errMsg.includes("not configured")) {
+                errorMsg = errMsg;
+            } else if (errMsg.includes("429") || errStatus === 429) {
+                errorMsg = "The AI service is busy right now — please try again in a minute.";
+            } else if (errMsg.includes("404") || errStatus === 404) {
+                errorMsg = "The AI model is temporarily unavailable — please try again later.";
             }
             messages.push({ role: 'assistant', text: errorMsg });
         } finally {
