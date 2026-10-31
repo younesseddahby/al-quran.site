@@ -603,10 +603,15 @@ export const renderQuranReader = (container, cache, props) => {
                         <div id="reader-topbar" class="fixed top-0 inset-x-0 h-14 md:h-16 bg-white z-[60] border-b border-slate-200 flex items-center px-2 md:px-4 justify-between shadow-sm">
                 <div class="absolute bottom-0 left-0 h-0.5 bg-theme-600" style="width: ${percentageRead}%"></div>
                 
-                <button id="reader-back" class="p-2 rounded-xl hover:bg-slate-100 text-slate-600 flex items-center gap-2 transition-colors border border-slate-200 shadow-sm group">
-                    ${BackIcon({className: "w-4 h-4 md:w-5 md:h-5"})}
-                    <span class="hidden sm:inline text-[11px] font-bold uppercase tracking-wider pr-1">${t('back')}</span>
-                </button>
+                <div class="flex items-center gap-1">
+                    <button id="reader-back" class="p-2 rounded-xl hover:bg-slate-100 text-slate-600 flex items-center gap-2 transition-colors border border-slate-200 shadow-sm group">
+                        ${BackIcon({className: "w-4 h-4 md:w-5 md:h-5"})}
+                        <span class="hidden sm:inline text-[11px] font-bold uppercase tracking-wider pr-1">${t('back')}</span>
+                    </button>
+                    <button id="reader-prev-surah" class="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full text-slate-700 hover:text-theme-600 hover:bg-slate-100 transition-colors ${s.number === 1 ? 'opacity-40 cursor-not-allowed' : ''}" ${s.number === 1 ? 'disabled' : ''}>
+                        ${SkipBackwardIcon({className: "w-5 h-5"})}
+                    </button>
+                </div>
 
                 <div class="text-center flex flex-col items-center">
                     <div class="flex items-center gap-3">
@@ -622,12 +627,17 @@ export const renderQuranReader = (container, cache, props) => {
                     </div>
                 </div>
 
-                <button id="settings-trigger" class="p-2 rounded-xl hover:bg-slate-100 text-slate-600 transition-colors border border-slate-200 shadow-sm group">
-                    ${SettingsIcon({className: "w-4 h-4 md:w-5 md:h-5"})}
-                </button>
+                <div class="flex items-center gap-1">
+                    <button id="reader-next-surah" class="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full text-slate-700 hover:text-theme-600 hover:bg-slate-100 transition-colors ${s.number === 114 ? 'opacity-40 cursor-not-allowed' : ''}" ${s.number === 114 ? 'disabled' : ''}>
+                        ${SkipForwardIcon({className: "w-5 h-5"})}
+                    </button>
+                    <button id="settings-trigger" class="p-2 rounded-xl hover:bg-slate-100 text-slate-600 transition-colors border border-slate-200 shadow-sm group">
+                        ${SettingsIcon({className: "w-4 h-4 md:w-5 md:h-5"})}
+                    </button>
+                </div>
             </div>
             
-            <div class="pt-14 pb-20 md:pt-16 md:pb-28 w-full mx-auto px-1 ${fontSizeClass} ${fontClass}" id="reader-scroll-container">
+            <div class="pt-14 pb-10 md:pt-16 md:pb-12 w-full mx-auto px-1 ${fontSizeClass} ${fontClass}" id="reader-scroll-container">
                 <div class="rounded-none p-0 relative overflow-hidden">
                                         
                     <div class="text-center mb-1 relative z-10">
@@ -655,18 +665,6 @@ export const renderQuranReader = (container, cache, props) => {
                 </div>
             </div>
 
-            <div class="fixed bottom-4 md:bottom-8 inset-x-4 md:inset-x-8 z-[60] pointer-events-none">
-                <div id="reader-bottom-nav" class="max-w-[200px] mx-auto flex items-center justify-between bg-white rounded-2xl p-1.5 border border-slate-200 shadow-md pointer-events-auto">
-                    <button id="reader-prev-surah" class="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full text-slate-800 dark:text-slate-300 hover:text-theme-600 hover:bg-slate-100 transition-colors ${s.number === 1 ? 'opacity-40 cursor-not-allowed' : ''}" ${s.number === 1 ? 'disabled' : ''}>
-                        ${SkipBackwardIcon({className: "w-5 h-5"})}
-                    </button>
-                    
-                    <div class="w-px h-6 bg-slate-200 dark:bg-slate-700 mx-1"></div>
-                    
-                    <button id="reader-next-surah" class="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full text-slate-800 dark:text-slate-300 hover:text-theme-600 hover:bg-slate-100 transition-colors ${s.number === 114 ? 'opacity-40 cursor-not-allowed' : ''}" ${s.number === 114 ? 'disabled' : ''}>
-                        ${SkipForwardIcon({className: "w-5 h-5"})}
-                    </button>
-                </div>
             </div>`;
 
         // If not already processing, trigger the batch render for the ayahs
@@ -1170,49 +1168,10 @@ export const renderQuranReader = (container, cache, props) => {
         }
     });
 
-    let lastScrollY = 0;
-    const handleScroll = (e) => {
-        const header = document.getElementById('reader-topbar');
-        const btt = document.getElementById('back-to-top');
-        if (!header) return;
-        
-        const scrollTop = window.scrollY || document.documentElement.scrollTop;
-
-        // Header logic: hide on scroll down, show on scroll up
-        if (scrollTop > lastScrollY && scrollTop > 100) {
-            header.style.transform = 'translateY(-100%)';
-        } else {
-            header.style.transform = 'translateY(0)';
-            if (scrollTop > 50) {
-                header.classList.add('shadow-md');
-            } else {
-                header.classList.remove('shadow-md');
-            }
-        }
-
-        // Back to top logic
-        if (btt) {
-            if (scrollTop > 150) {
-                btt.style.opacity = '1';
-                btt.style.transform = 'translateY(0) scale(1)';
-                btt.style.pointerEvents = 'auto';
-            } else {
-                btt.style.opacity = '0';
-                btt.style.transform = 'translateY(20px) scale(0.8)';
-                btt.style.pointerEvents = 'none';
-            }
-        }
-
-        lastScrollY = scrollTop;
-    };
-    
-    // We attach to window as fallback, but also to the container if it exists
-    window.addEventListener('scroll', handleScroll, { passive: true, capture: true });
 
     return () => { 
         document.getElementById('tafsir-panel')?.remove(); 
         document.getElementById('jump-modal')?.remove(); 
         document.getElementById('back-to-top')?.remove();
-        window.removeEventListener('scroll', handleScroll, { capture: true });
     };
 };

@@ -310,7 +310,7 @@ const renderPrayerWidget = (container, state) => {
 const renderQuickLinks = (container) => {
     // Quick Links Section - Now at the top
     const linksHeader = document.createElement('h3');
-    linksHeader.className = "font-bold font-display text-lg md:text-xl text-slate-900 dark:text-white mb-4 flex items-center gap-2 capitalize";
+    linksHeader.className = "font-bold font-display text-lg md:text-xl text-slate-900 dark:text-white mb-4 flex items-center gap-2";
     linksHeader.innerHTML = `
         <span class="w-1.5 h-6 bg-theme-500 rounded-full"></span>
         ${t('explore') || 'Explore'}
