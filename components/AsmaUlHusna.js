@@ -114,9 +114,10 @@ export const renderAsmaUlHusna = (container, { navigateTo }) => {
 
     const render = () => {
         container.innerHTML = `
-            <div class="space-y-6">
-                <h2 class="text-3xl font-bold text-slate-900 dark:text-white font-amiri">${t('asmaUlHusna')}</h2>
-                <div class="divide-y divide-slate-200/70 dark:divide-slate-800">
+            <div class="space-y-4 pt-1">
+                <h2 class="text-2xl md:text-3xl font-bold text-slate-900 font-amiri">${t('asmaUlHusna')}</h2>
+                <input id="asma-search" type="text" placeholder="${t('searchSurahPlaceholder')}" class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-sm placeholder:text-slate-500 focus:outline-none focus:border-theme-600">
+                <div class="divide-y divide-slate-200/70">
                     ${ASMA_UL_HUSNA.map(renderNameCard).join('')}
                 </div>
             </div>
@@ -131,10 +132,11 @@ export const renderAsmaUlHusna = (container, { navigateTo }) => {
     };
 
     const renderNameCard = (name) => `
-        <div data-name-id="${name.id}" class="name-card flex items-baseline gap-3 py-3 cursor-pointer transition-colors">
-            <h3 class="font-amiri text-xl font-bold text-slate-800 dark:text-slate-200">${name.name_ar}</h3>
-            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">${name.transliteration}</p>
-            <p class="text-xs text-slate-500 dark:text-slate-500">${name.translation_en}</p>
+        <div data-name-id="${name.id}" class="name-card flex items-baseline gap-3 py-2.5 cursor-pointer transition-colors">
+            <span class="w-6 shrink-0 text-xs font-bold text-slate-500">${name.id}</span>
+            <h3 class="font-amiri text-xl font-bold text-slate-800">${name.name_ar}</h3>
+            <p class="text-sm text-slate-600 mt-1">${name.transliteration}</p>
+            <p class="text-sm text-slate-600">${name.translation_en}</p>
         </div>
     `;
 
@@ -144,6 +146,13 @@ export const renderAsmaUlHusna = (container, { navigateTo }) => {
                 const nameId = parseInt(card.dataset.nameId, 10);
                 const selected = ASMA_UL_HUSNA.find(n => n.id === nameId);
                 setState({ selectedName: selected, isModalOpen: true });
+            });
+        });
+        // Filter in place (no re-render, so the search field keeps focus).
+        container.querySelector('#asma-search')?.addEventListener('input', (e) => {
+            const q = e.target.value.trim().toLowerCase();
+            container.querySelectorAll('.name-card').forEach(card => {
+                card.style.display = !q || card.innerText.toLowerCase().includes(q) ? '' : 'none';
             });
         });
     };
@@ -173,7 +182,7 @@ export const renderAsmaUlHusna = (container, { navigateTo }) => {
         const { name_ar, transliteration, translation_en, description_en, verses } = state.selectedName;
         
         modalContainer.innerHTML = `
-            <div id="asma-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 opacity-0 transition-opacity duration-300"></div>
+            <div id="asma-overlay" class="fixed inset-0 bg-black/60 z-40 opacity-0 transition-opacity duration-300"></div>
             <div id="asma-panel" class="fixed bottom-0 left-0 right-0 z-50 glass-card rounded-t-2xl shadow-lg max-h-[85vh] flex flex-col translate-y-full transition-transform duration-300 ease-out">
                 <header class="p-4 border-b dark:border-slate-700 flex-shrink-0 text-center relative">
                     <h3 class="text-2xl font-bold text-slate-800 dark:text-slate-100 font-amiri">${name_ar}</h3>

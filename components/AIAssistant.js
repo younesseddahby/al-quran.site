@@ -11,20 +11,8 @@ export const renderAIAssistant = (container, props) => {
     const { onBack, navigateTo } = props;
     const isRtl = getCurrentLanguage() === 'ar';
 
-    // The modal shell itself lives in App.js (glass panel, giant radius,
-    // scale-in pop) and is NOT part of this file — but it is half of what
-    // the user sees, so normalize it here on every open: solid white,
-    // normal radius, no entrance animation. Guarded so a future App.js
-    // restructure fails silently instead of restyling the wrong element.
-    const overlay = document.getElementById('ai-modal-overlay');
-    if (overlay) {
-        overlay.classList.remove('animate-fade');
-        const panel = overlay.querySelector('#ai-modal-content')?.parentElement;
-        if (panel && panel.classList.contains('glass')) {
-            panel.classList.remove('glass', 'rounded-[2.5rem]', 'animate-scale-in', 'border-white/20');
-            panel.classList.add('bg-white', 'rounded-2xl', 'border-slate-200');
-        }
-    }
+    // Modal shell (overlay, backdrop, panel) lives in App.js and is
+    // fixed at the source — no runtime normalization needed here anymore.
 
     let messages = JSON.parse(localStorage.getItem('ai_chat_history') || '[]');
     let isTyping = false;
@@ -46,10 +34,10 @@ export const renderAIAssistant = (container, props) => {
                     ${SparklesIcon({className: "w-5 h-5 text-theme-600"})}
                     ${t('aiAssistant')}
                 </h2>
-                <p class="text-xs text-slate-400 mt-0.5">${t('poweredBy')}</p>
+                <p class="text-xs text-slate-500 mt-0.5">${t('poweredBy')}</p>
             </div>
         </div>
-        <button id="clear-chat-btn" class="p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors" title="${t('clearChat')}">
+        <button id="clear-chat-btn" class="p-2 rounded-full hover:bg-slate-100 text-slate-500 hover:text-slate-700 transition-colors" title="${t('clearChat')}">
             ${TrashIcon({className: "w-5 h-5"})}
         </button>
     `;
@@ -76,7 +64,7 @@ export const renderAIAssistant = (container, props) => {
     inputArea.className = "pt-3";
     inputArea.innerHTML = `
         <div class="flex items-center gap-2 bg-white border border-slate-200 rounded-2xl pl-4 pr-2 py-2 focus-within:border-theme-600 transition-colors">
-            <input type="text" id="ai-input" placeholder="${t('askPlaceholder') || 'Ask about a verse or a topic...'}" class="flex-1 min-w-0 bg-transparent text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none">
+            <input type="text" id="ai-input" placeholder="${t('askPlaceholder') || 'Ask about a verse or a topic...'}" class="flex-1 min-w-0 bg-transparent text-sm text-slate-900 placeholder:text-slate-500 focus:outline-none">
             <button id="ai-send-btn" class="shrink-0 w-10 h-10 rounded-xl bg-theme-600 text-white hover:bg-theme-700 transition-colors flex items-center justify-center" aria-label="Send">
                 ${SendIcon({className: "w-5 h-5"})}
             </button>
@@ -104,7 +92,7 @@ export const renderAIAssistant = (container, props) => {
                     ${suggestions.map(s => `
                         <button class="suggestion-btn w-full flex items-center justify-between gap-3 px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors text-start">
                             <span>${s}</span>
-                            ${isRtl ? ArrowLeftIcon({className: "w-4 h-4 shrink-0 text-slate-300"}) : ArrowRightIcon({className: "w-4 h-4 shrink-0 text-slate-300"})}
+                            ${isRtl ? ArrowLeftIcon({className: "w-4 h-4 shrink-0 text-slate-400"}) : ArrowRightIcon({className: "w-4 h-4 shrink-0 text-slate-400"})}
                         </button>
                     `).join('')}
                 </div>

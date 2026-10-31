@@ -30,14 +30,13 @@ export const renderAdhanTimes = (container, props = {}) => {
 
     const render = () => {
         const locationInfo = state.location ? `
-            <div class="mt-4 p-4 glass rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm animate-in relative overflow-hidden group">
-                <div class="absolute top-0 right-0 w-16 h-16 bg-theme-500/5 rounded-bl-[2rem] -mr-4 -mt-4 transition-transform group-hover:scale-150 duration-700"></div>
-                <div class="flex items-center gap-3 relative z-10">
+            <div class="mt-4 p-4 bg-white rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden">
+                                <div class="flex items-center gap-3 relative z-10">
                     <div class="w-10 h-10 rounded-xl glass border border-slate-200 dark:border-slate-800 text-theme-600 dark:text-theme-400 flex items-center justify-center shadow-sm">
                         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                     </div>
                     <div>
-                        <p class="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">${t('yourLocation')}</p>
+                        <p class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">${t('yourLocation')}</p>
                         <p class="text-base font-bold text-slate-900 dark:text-white tracking-tight">${state.location.city}${state.location.country ? ', ' + state.location.country : ''}</p>
                     </div>
                 </div>
@@ -45,50 +44,46 @@ export const renderAdhanTimes = (container, props = {}) => {
         ` : '';
 
         container.innerHTML = `
-            <div class="space-y-6 fade-in p-4 max-w-5xl mx-auto">
+            <div class="space-y-6 p-4 max-w-5xl mx-auto">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-3">
-                        <button id="adhan-back-btn" class="p-2 -ml-1 rounded-xl glass hover:bg-theme-100 dark:hover:bg-theme-900/30 text-slate-600 dark:text-slate-300 transition-all active:scale-90 flex items-center gap-1 border border-slate-200 dark:border-slate-800">
-                            ${BackIcon({className: "w-5 h-5"})}
-                            <span class="hidden sm:inline text-[10px] font-bold uppercase tracking-wider">${t('back')}</span>
-                        </button>
                         <h2 class="text-xl font-bold text-slate-900 dark:text-white font-display tracking-tight">${t('adhanAndPrayerTimes')}</h2>
                     </div>
                 </div>
 
-                <div class="glass rounded-2xl p-5 md:p-6 shadow-md border border-slate-200 dark:border-slate-800 space-y-5">
-                    <div class="flex items-center justify-between p-3.5 glass rounded-xl border border-slate-200 dark:border-slate-800">
+                <div class="bg-white rounded-2xl p-5 md:p-6 shadow-sm border border-slate-200 space-y-5">
+                    <div class="flex items-center justify-between p-3.5 bg-slate-50 rounded-xl border border-slate-200">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-xl glass border border-slate-200 dark:border-slate-800 flex items-center justify-center text-theme-600 dark:text-theme-400 shadow-sm">
                                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                             </div>
                             <div>
-                                <p class="text-sm font-bold text-slate-900 dark:text-white tracking-tight">${t('autoLocation')}</p>
-                                <p class="text-[9px] text-slate-500 dark:text-slate-400 uppercase tracking-widest font-bold mt-0.5">${state.isAutoLocation ? t('currentLocation') : t('manualLocation')}</p>
+                                <p class="text-sm font-bold text-slate-900 tracking-tight">${state.isAutoLocation ? t('autoLocation') : t('manualLocation')}</p>
+                                <p class="text-[11px] text-slate-500 uppercase tracking-widest font-bold mt-0.5">${state.isAutoLocation ? t('currentLocation') : t('manualLocation')}</p>
                             </div>
                         </div>
-                        <button id="auto-location-toggle" class="w-12 h-6 rounded-full transition-all relative active:scale-95 ${state.isAutoLocation ? 'bg-theme-600 shadow-lg' : 'bg-slate-200 dark:bg-slate-700'}">
+                        <button id="auto-location-toggle" class="w-12 h-6 rounded-full transition-colors relative ${state.isAutoLocation ? 'bg-theme-600 shadow-sm' : 'bg-slate-200'}"
                             <div class="absolute top-1 start-1 w-4 h-4 bg-white rounded-full shadow-sm transition-transform ${state.isAutoLocation ? 'ltr:translate-x-6 rtl:-translate-x-6' : ''}"></div>
                         </button>
                     </div>
 
                     ${state.isAutoLocation ? locationInfo : `
-                        <form id="location-form" class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end animate-in">
-                            <div class="relative sm:col-span-2">
-                                <label for="city" class="block text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1.5 ml-1">${t('city')}</label>
-                                <input type="text" id="city" value="${state.location ? state.location.city : ''}" placeholder="${t('cityExample')}" class="w-full px-4 py-3 glass border border-slate-200 dark:border-slate-800 rounded-xl outline-none focus:ring-2 focus:ring-theme-500/20 focus:border-theme-500/50 transition-all dark:text-white text-sm font-medium">
-                                <div id="city-suggestions" class="absolute z-20 w-full mt-1 glass rounded-xl shadow-lg border border-slate-200 dark:border-slate-800 hidden max-h-60 overflow-auto custom-scrollbar"></div>
+                        <form id="location-form" class="grid grid-cols-1 gap-4">
+                            <div class="relative">
+                                <label for="city" class="block text-[11px] font-bold text-slate-600 uppercase tracking-widest mb-1.5 ml-1">${t('city')}</label>
+                                <input type="text" id="city" value="${state.location ? state.location.city : ''}" placeholder="${t('cityExample')}" class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-theme-500/20 focus:border-theme-500 transition-colors text-sm font-medium placeholder:text-slate-500">
+                                <div id="city-suggestions" class="absolute z-20 w-full mt-1 bg-white rounded-xl shadow-md border border-slate-200 hidden max-h-60 overflow-auto custom-scrollbar"></div>
                             </div>
                             <div>
-                                <label for="country" class="block text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1.5 ml-1">${t('country')}</label>
-                                <input type="text" id="country" value="${state.location ? state.location.country : ''}" placeholder="${t('countryExample')}" class="w-full px-4 py-3 glass border border-slate-200 dark:border-slate-800 rounded-xl outline-none focus:ring-2 focus:ring-theme-500/20 focus:border-theme-500/50 transition-all dark:text-white text-sm font-medium">
+                                <label for="country" class="block text-[11px] font-bold text-slate-600 uppercase tracking-widest mb-1.5 ml-1">${t('country')}</label>
+                                <input type="text" id="country" value="${state.location ? state.location.country : ''}" placeholder="${t('countryExample')}" class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-theme-500/20 focus:border-theme-500 transition-colors text-sm font-medium placeholder:text-slate-500">
                             </div>
                             <div class="flex gap-2">
-                                <button type="button" id="use-my-location-btn" class="flex-1 px-4 py-3 glass border border-theme-500/30 text-theme-600 dark:text-theme-400 rounded-xl font-bold hover:bg-theme-500/10 transition-all active:scale-95 uppercase tracking-widest text-[9px] flex items-center justify-center gap-2">
+                                <button type="button" id="use-my-location-btn" class="flex-1 px-4 py-3 bg-white border border-theme-500/30 text-theme-600 rounded-xl font-bold hover:bg-theme-500/10 transition-colors uppercase tracking-widest text-xs flex items-center justify-center gap-2">
                                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                                     ${t('useMyLocation') || 'Use My Location'}
                                 </button>
-                                <button type="submit" class="flex-1 px-5 py-3 bg-theme-600 text-white rounded-xl font-bold hover:bg-theme-700 transition-all active:scale-95 uppercase tracking-widest text-[10px] shadow-lg">${t('showTimes')}</button>
+                                <button type="submit" class="flex-1 px-5 py-3 bg-theme-600 text-white rounded-xl font-bold hover:bg-theme-700 transition-colors uppercase tracking-widest text-xs shadow-sm">${t('showTimes')}</button>
                             </div>
                         </form>
                     `}
@@ -103,10 +98,6 @@ export const renderAdhanTimes = (container, props = {}) => {
     };
 
     const attachEventListeners = () => {
-        container.querySelector('#adhan-back-btn')?.addEventListener('click', () => {
-            if (props.onBack) props.onBack();
-        });
-
         container.querySelector('#auto-location-toggle')?.addEventListener('click', () => {
             state.isAutoLocation = !state.isAutoLocation;
             localStorage.setItem('isAutoLocation', state.isAutoLocation);
@@ -325,15 +316,15 @@ export const renderAdhanTimes = (container, props = {}) => {
 
         contentContainer.innerHTML = `
             <div class="fade-in space-y-6">
-                <div class="text-center p-6 md:p-8 glass rounded-2xl shadow-md border border-slate-200 dark:border-slate-800 relative overflow-hidden">
+                <div class="text-center p-6 md:p-8 bg-white rounded-2xl shadow-sm border border-slate-200 relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-full h-0.5 bg-theme-500/20"></div>
                     <h3 class="text-xl md:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">${t('prayerTimesFor', { location: locationString })}</h3>
                     <p class="text-[9px] text-slate-500 dark:text-slate-400 mt-1 uppercase tracking-widest font-bold">${t('calculationMethod', { method: meta.method.name })}</p>
-                    <div id="countdown-container" class="mt-6 p-4 glass rounded-2xl border border-slate-200 dark:border-slate-800 inline-block"></div>
+                    <div id="countdown-container" class="mt-6 p-4 bg-white rounded-2xl border border-slate-200 inline-block"></div>
                 </div>
                 <div class="divide-y divide-slate-200/70 dark:divide-slate-800">
                     ${prayerOrder.map(prayer => `
-                        <div id="prayer-${prayer}" class="prayer-card py-4 text-center transition-all duration-500 ease-out group">
+                        <div id="prayer-${prayer}" class="prayer-card py-4 text-center transition-colors group">
                             <p class="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3 group-hover:text-theme-500 transition-colors">${t(`prayer_${prayer}`)}</p>
                             <p class="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white font-mono tracking-tight">${timings[prayer]}</p>
                         </div>

@@ -41,7 +41,7 @@ const App = (rootElement) => {
         language: localStorage.getItem('language') || 'en',
         fontSize: localStorage.getItem('fontSize') || 'small',
         arabicFont: localStorage.getItem('arabicFont') || 'noto_naskh_arabic',
-        animationsEnabled: localStorage.getItem('animationsEnabled') !== 'false',
+        animationsEnabled: localStorage.getItem('animationsEnabled') === 'true',
         readerDisplayMode: localStorage.getItem('readerDisplayMode') || 'both', // 'both', 'translation'
         bookmarks: (() => {
             const defaults = { quran: [], hadith: [], seerah: [], sahaba: [], stories: [] };
@@ -93,48 +93,14 @@ const App = (rootElement) => {
         }
     };
 
-    let lastScrollY = window.scrollY;
-    let isHeaderVisible = true;
-
+    // Back-to-top visibility only: the reader chrome itself never hides
+    // on scroll anymore (calm, static chrome — no sliding bars).
     window.addEventListener('scroll', () => {
-        if (state.isReaderMode && state.activeTab === 'quran') {
-            const currentScrollY = window.scrollY;
-            const readerTopbar = document.getElementById('reader-topbar');
-            const readerBottomNav = document.getElementById('reader-bottom-nav');
-            const backToTopBtn = document.getElementById('back-to-top');
-            
-            // Always show at the top or when scrolling up
-            if (currentScrollY < 50 || currentScrollY < lastScrollY) {
-                if (!isHeaderVisible) {
-                    header.style.transform = 'translateY(0)';
-                    if (readerTopbar) readerTopbar.style.transform = 'translateY(0)';
-                    if (readerBottomNav) readerBottomNav.style.transform = 'translateY(0)';
-                    if (backToTopBtn) {
-                        backToTopBtn.style.opacity = '1';
-                        backToTopBtn.style.transform = 'translateY(0)';
-                    }
-                    isHeaderVisible = true;
-                }
-            } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
-                // Scrolling down
-                if (isHeaderVisible) {
-                    header.style.transform = 'translateY(-100%)';
-                    if (readerTopbar) readerTopbar.style.transform = 'translateY(-100%)';
-                    if (readerBottomNav) readerBottomNav.style.transform = 'translateY(150%)';
-                    if (backToTopBtn) {
-                        backToTopBtn.style.opacity = '0';
-                        backToTopBtn.style.transform = 'translateY(50px)';
-                    }
-                    isHeaderVisible = false;
-                }
-            }
-            lastScrollY = currentScrollY;
-        } else {
-            header.style.transform = 'translateY(0)';
-            const readerTopbar = document.getElementById('reader-topbar');
-            if (readerTopbar) readerTopbar.style.transform = 'translateY(0)';
-            isHeaderVisible = true;
-        }
+        const btt = document.getElementById('back-to-top');
+        if (!btt) return;
+        const show = window.scrollY > 400;
+        btt.style.opacity = show ? '1' : '0';
+        btt.style.transform = show ? 'translateY(0)' : 'translateY(10px)';
     }, { passive: true });
 
     let headerBuilt = false;
@@ -145,7 +111,7 @@ const App = (rootElement) => {
 
     const renderHeader = () => {
         const isHidden = state.activeTab === 'settings' || (state.activeTab === 'quran' && state.isReaderMode);
-        header.className = isHidden ? 'hidden' : 'glass sticky top-0 z-40 transition-all duration-500 ease-out border-b border-slate-200/50 dark:border-slate-800/50 animate-fade';
+        header.className = isHidden ? 'hidden' : 'glass sticky top-0 z-40 border-b border-slate-200/50 dark:border-slate-800/50';
         if (isHidden) return;
 
         const isHome = state.activeTab === 'home';
@@ -172,7 +138,7 @@ const App = (rootElement) => {
                 <div class="flex justify-between items-center h-14 md:h-16">
                     <div class="flex items-center gap-2 md:gap-3">
                         ${!isHome ? `
-                            <button id="header-back-btn" class="p-2 -ml-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-all active:scale-90 flex items-center gap-1 text-slate-600 dark:text-slate-300">
+                            <button id="header-back-btn" class="p-2 -ml-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center gap-1 text-slate-600 dark:text-slate-300">
                                 ${BackIcon({className: "w-5 h-5"})}
                             </button>
                         ` : ''}
@@ -180,13 +146,13 @@ const App = (rootElement) => {
                     </div>
                     <nav class="hidden lg:flex items-center gap-1 text-sm font-medium">
                          ${getTabs().map(tab => `
-                            <button data-tab="${tab.id}" class="flex items-center gap-2 px-4 py-1.5 rounded-full transition-all duration-300 ${state.activeTab === tab.id ? 'text-theme-700 dark:text-theme-300 bg-theme-500/15 shadow-sm font-bold ring-1 ring-theme-500/20' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-slate-200'}">
+                            <button data-tab="${tab.id}" class="flex items-center gap-2 px-4 py-1.5 rounded-full transition-colors ${state.activeTab === tab.id ? 'text-theme-700 dark:text-theme-300 bg-theme-500/15 shadow-sm font-bold ring-1 ring-theme-500/20' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-slate-200'}">
                                 ${tab.icon({className: "w-4 h-4"})} <span>${tab.label}</span>
                             </button>
                         `).join('')}
                     </nav>
                     <div class="flex items-center gap-2">
-                        <button id="header-settings-btn" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-all active:scale-90 text-slate-600 dark:text-slate-300">
+                        <button id="header-settings-btn" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-600 dark:text-slate-300">
                             ${SettingsIcon({className: "w-5 h-5"})}
                         </button>
                     </div>
@@ -214,7 +180,7 @@ const App = (rootElement) => {
 
     const renderMobileNav = () => {
         const isHidden = (state.isReaderMode && state.activeTab === 'quran') || state.activeTab === 'settings';
-        mobileNav.className = isHidden ? 'hidden' : 'lg:hidden fixed bottom-0 left-0 right-0 glass z-50 transition-all duration-500 ease-out border-t border-slate-200/50 dark:border-slate-800/50 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.05)] dark:shadow-[0_-4px_20px_rgba(0,0,0,0.2)] animate-fade';
+        mobileNav.className = isHidden ? 'hidden' : 'lg:hidden fixed bottom-0 left-0 right-0 glass z-50 border-t border-slate-200/50 dark:border-slate-800/50 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.05)] dark:shadow-[0_-4px_20px_rgba(0,0,0,0.2)]';
         mobileNavPlaceholder.className = isHidden ? 'hidden' : 'lg:hidden h-16';
         if (isHidden) return;
 
@@ -229,7 +195,7 @@ const App = (rootElement) => {
                 const tile = b.querySelector('div');
                 tile?.classList.toggle('bg-theme-500/10', on);
                 const svg = b.querySelector('svg');
-                svg?.classList.toggle('scale-110', on);
+                
             });
             return;
         }
@@ -237,11 +203,11 @@ const App = (rootElement) => {
         mobileNav.innerHTML = `
             <div class="flex items-center justify-around h-16 px-2 overflow-x-auto hide-scrollbar relative">
                 ${getTabs().map(tab => `
-                    <button data-tab="${tab.id}" class="relative flex-shrink-0 flex flex-col items-center justify-center w-16 h-full space-y-1 transition-all duration-300 ${state.activeTab === tab.id ? 'text-theme-600 dark:text-theme-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'}">
-                        <div class="p-1.5 rounded-xl transition-all duration-300 ${state.activeTab === tab.id ? 'bg-theme-500/10' : ''}">
-                            ${tab.icon({className: `w-5 h-5 transition-transform duration-300 ${state.activeTab === tab.id ? 'scale-110' : ''}`})}
+                    <button data-tab="${tab.id}" class="relative flex-shrink-0 flex flex-col items-center justify-center w-16 h-full space-y-1 transition-colors ${state.activeTab === tab.id ? 'text-theme-600 dark:text-theme-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'}">
+                        <div class="p-1.5 rounded-xl transition-colors ${state.activeTab === tab.id ? 'bg-theme-500/10' : ''}">
+                            ${tab.icon({className: `w-5 h-5`})}
                         </div>
-                        <span class="text-[10px] font-bold tracking-tight truncate w-full text-center transition-all duration-300">${tab.mobileLabel}</span>
+                        <span class="text-[10px] font-bold tracking-tight truncate w-full text-center transition-colors">${tab.mobileLabel}</span>
                     </button>`).join('')}
             </div>`;
         mobileNav.querySelectorAll('button').forEach(b => b.addEventListener('click', () => { 
@@ -371,10 +337,10 @@ const App = (rootElement) => {
 
         const overlay = document.createElement('div');
         overlay.id = 'ai-modal-overlay';
-        overlay.className = "fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 animate-fade";
+        overlay.className = "fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6";
         overlay.innerHTML = `
-            <div class="absolute inset-0 bg-slate-950/60 backdrop-blur-sm" id="ai-modal-backdrop"></div>
-            <div class="relative w-full max-w-2xl glass rounded-[2.5rem] shadow-lg border border-white/20 overflow-hidden flex flex-col h-[85vh] animate-scale-in">
+            <div class="absolute inset-0 bg-slate-950/50" id="ai-modal-backdrop"></div>
+            <div class="relative w-full max-w-2xl bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden flex flex-col h-[85vh]">
                 <div id="ai-modal-content" class="flex-1 overflow-hidden"></div>
             </div>
         `;
@@ -419,11 +385,8 @@ const App = (rootElement) => {
 
         const btn = document.createElement('button');
         btn.id = 'floating-ai-btn';
-        btn.className = "fixed bottom-20 right-4 lg:bottom-8 lg:right-8 w-14 h-14 rounded-2xl bg-theme-500 text-white shadow-lg flex items-center justify-center z-50 transition-all duration-300 hover:scale-110 active:scale-95 group";
+        btn.className = "fixed bottom-20 right-4 lg:bottom-8 lg:right-8 w-14 h-14 rounded-2xl bg-theme-500 text-white shadow-md flex items-center justify-center z-50 transition-colors";
         btn.innerHTML = `
-            <div class="absolute -top-12 right-0 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-md border border-slate-100 dark:border-slate-700 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                ${t('aiAssistant') || 'AI Assistant'}
-            </div>
             ${SparklesIcon({className: "w-7 h-7"})}
         `;
 

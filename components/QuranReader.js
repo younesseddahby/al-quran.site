@@ -276,18 +276,18 @@ export const renderQuranReader = (container, cache, props) => {
             if (isArabicOnly || (displayMode === 'both' && !lang.includes('en') && !lang.includes('id') && !lang.includes('tr'))) {
                 // Mushaf style (inline)
                 html = batch.map((a, i) => `
-                    <span class="ayah-item ayah-span cursor-pointer hover:text-theme-600 dark:hover:text-theme-400 transition-colors inline fade-in ${state.activeAyah == a.numberInSurah ? 'active-ayah-span' : ''}" 
+                    <span class="ayah-item ayah-span cursor-pointer hover:text-theme-600 transition-colors inline ${state.activeAyah == a.numberInSurah ? 'active-ayah-span' : ''}" 
                           style="animation-delay: ${i * 30}ms"
                           data-num="${a.numberInSurah}" 
                           data-ayah-number="${a.numberInSurah}">
                         ${a.text} 
                         <span class="ayah-marker inline-flex items-center justify-center relative mx-1.5 translate-y-[-0.15em] select-none group/ayah">
-                            <svg class="w-9 h-9 text-theme-600/30 dark:text-theme-500/30 group-hover/ayah:text-theme-500 transition-all duration-700 group-hover/ayah:rotate-180" viewBox="0 0 32 32" fill="none">
+                            <svg class="w-9 h-9 text-theme-600/30 group-hover/ayah:text-theme-500 transition-colors" viewBox="0 0 32 32" fill="none">
                                 <path d="M16 2L19 7L24 7L24 12L29 15L24 18L24 23L19 23L16 28L13 23L8 23L8 18L3 15L8 12L8 7L13 7L16 2Z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
                                 <path d="M16 6L18 10L22 10L20 13L22 16L19 19L16 23L13 19L10 16L12 13L10 10L13 10L16 6Z" fill="currentColor" fill-opacity="0.15" />
                                 <circle cx="16" cy="16" r="11" stroke="currentColor" stroke-width="0.3" stroke-dasharray="2 2" class="opacity-50" />
                             </svg>
-                            <span class="absolute inset-0 flex items-center justify-center text-[10px] font-bold font-sans text-theme-700 dark:text-theme-300 group-hover/ayah:text-theme-600 dark:group-hover:text-theme-400 group-hover/ayah:scale-110 transition-all">
+                            <span class="absolute inset-0 flex items-center justify-center text-[10px] font-bold font-sans text-theme-700 dark:text-theme-300 group-hover/ayah:text-theme-600 dark:group-hover:text-theme-400 transition-colors">
                                 ${a.numberInSurah.toLocaleString('ar-EG')}
                             </span>
                         </span>
@@ -300,26 +300,26 @@ export const renderQuranReader = (container, cache, props) => {
                 html = batch.map((a, i) => {
                     const isBookmarked = (props.bookmarks?.quran || []).some(b => b.id === `${state.pageData.number}:${a.numberInSurah}`);
                     return `
-                    <div class="ayah-item group p-0 md:p-0.5 rounded-md border border-transparent hover:border-theme-500/20 hover:bg-theme-50/30 dark:hover:bg-theme-900/10 transition-all cursor-pointer fade-in ${state.activeAyah == a.numberInSurah ? 'bg-theme-50 dark:bg-theme-900/20 border-theme-500/30' : ''}" 
+                    <div class="ayah-item group p-0 md:p-0.5 rounded-md border border-transparent hover:border-theme-500/20 hover:bg-theme-50/30 transition-colors cursor-pointer ${state.activeAyah == a.numberInSurah ? 'bg-theme-50 border-theme-500/30' : ''}" 
                          style="animation-delay: ${i * 30}ms"
                          data-num="${a.numberInSurah}" 
                          data-ayah-number="${a.numberInSurah}">
                         <div class="flex items-start justify-between gap-1 mb-0.5">
                             <div class="flex items-center gap-1">
-                                <span class="w-6 h-6 flex-shrink-0 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-md text-[7px] md:text-[9px] font-bold text-slate-500 group-hover:bg-theme-600 group-hover:text-white transition-all">${a.numberInSurah}</span>
-                                <button class="bookmark-ayah-btn p-0.5 md:p-1 rounded-md hover:bg-theme-100 dark:hover:bg-theme-800 text-slate-400 hover:text-theme-600 transition-all" data-surah="${state.pageData.number}" data-ayah="${a.numberInSurah}">
-                                    ${isBookmarked ? BookmarkSolidIcon({className: "w-3 h-3 md:w-3.5 h-3.5 text-theme-600"}) : BookmarkIcon({className: "w-3 h-3 md:w-3.5 h-3.5"})}
+                                <span class="ayah-num-badge w-6 h-6 flex-shrink-0 flex items-center justify-center bg-slate-100 rounded-md text-[9px] md:text-[10px] font-bold text-slate-600 transition-colors">${a.numberInSurah}</span>
+                                <button class="bookmark-ayah-btn p-0.5 md:p-1 rounded-md hover:bg-theme-100 text-slate-500 hover:text-theme-600 transition-colors" data-surah="${state.pageData.number}" data-ayah="${a.numberInSurah}">
+                                    ${isBookmarked ? BookmarkSolidIcon({className: "w-3.5 h-3.5 md:w-4 md:h-4 text-theme-600"}) : BookmarkIcon({className: "w-3.5 h-3.5 md:w-4 md:h-4"})}
                                 </button>
-                                <button class="share-ayah-btn p-0.5 md:p-1 rounded-md hover:bg-theme-100 dark:hover:bg-theme-800 text-slate-400 hover:text-theme-600 transition-all" data-surah="${state.pageData.number}" data-ayah="${a.numberInSurah}">
-                                    ${ShareIcon({className: "w-3 h-3 md:w-3.5 h-3.5"})}
+                                <button class="share-ayah-btn p-0.5 md:p-1 rounded-md hover:bg-theme-100 text-slate-500 hover:text-theme-600 transition-colors" data-surah="${state.pageData.number}" data-ayah="${a.numberInSurah}">
+                                    ${ShareIcon({className: "w-3.5 h-3.5 md:w-4 md:h-4"})}
                                 </button>
                             </div>
                             ${displayMode !== 'translation' ? `
-                                <p class="quran-arabic-text text-right text-xl md:text-3xl leading-loose text-slate-800 dark:text-slate-100">${a.text}</p>
+                                <p class="quran-arabic-text text-right text-xl md:text-2xl leading-[1.9] text-slate-800">${a.text}</p>
                             ` : ''}
                         </div>
                         ${displayMode !== 'arabic' ? `
-                            <p class="text-base md:text-lg text-slate-600 dark:text-slate-400 font-serif leading-relaxed ${isArabicOnly ? 'text-right' : 'text-left'}">
+                            <p class="text-[15px] md:text-base text-slate-600 font-serif leading-relaxed ${isArabicOnly ? 'text-right' : 'text-left'}">
                                 ${a.translation || ''}
                             </p>
                         ` : ''}
@@ -430,24 +430,20 @@ export const renderQuranReader = (container, cache, props) => {
         const searchPlaceholder = state.listTab === 'verses' ? t('searchVersesPlaceholder') : t('searchSurahPlaceholder');
 
         contentArea.innerHTML = `
-            <div class="max-w-7xl mx-auto px-4 py-6 md:py-10 fade-in">
+            <div class="max-w-7xl mx-auto px-4 py-6 md:py-10">
                 ${continueReadingHtml}
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                     <div class="flex items-center gap-4">
-                        <button id="reader-list-back" class="p-2.5 rounded-full glass hover:bg-theme-100 dark:hover:bg-theme-900/30 transition-all active:scale-90 flex items-center gap-2 text-slate-600 dark:text-slate-300 border border-white/20 shadow-lg group">
-                            ${BackIcon({className: "w-5 h-5 group-hover:-translate-x-1 rtl:group-hover:translate-x-1 transition-transform"})}
-                            <span class="text-xs font-bold uppercase tracking-wider pr-1">${t('back')}</span>
-                        </button>
                         <div>
-                            <h1 class="text-4xl md:text-6xl font-bold font-display text-slate-900 dark:text-white mb-2 tracking-tight">${t('read')}</h1>
-                            <p class="text-slate-500 dark:text-slate-400 text-sm md:text-base font-medium opacity-80">${t('exploreQuranDescription') || 'Explore the divine message of the Holy Quran'}</p>
+                            <h1 class="text-2xl md:text-3xl font-bold font-display text-slate-900 dark:text-white mb-2 tracking-tight">${t('read')}</h1>
+                            <p class="text-slate-600 dark:text-slate-400 text-sm md:text-base font-medium">${t('exploreQuranDescription') || 'Explore the divine message of the Holy Quran'}</p>
                         </div>
                     </div>
                     <div class="relative w-full max-w-md group">
                         <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-theme-500 transition-colors">
                             ${SearchIcon({className: "w-5 h-5"})}
                         </div>
-                        <input id="surah-search" type="text" value="${state.listTab === 'verses' ? state.verseSearchQuery : state.searchQuery}" placeholder="${searchPlaceholder}" class="w-full pl-12 pr-5 py-4 glass rounded-2xl border border-white/20 outline-none focus:ring-4 focus:ring-theme-500/20 focus:border-theme-500/50 transition-all dark:text-white shadow-md placeholder:text-slate-400 font-medium">
+                        <input id="surah-search" type="text" value="${state.listTab === 'verses' ? state.verseSearchQuery : state.searchQuery}" placeholder="${searchPlaceholder}" class="w-full pl-12 pr-5 py-3.5 bg-white rounded-xl border border-slate-300 outline-none focus:ring-2 focus:ring-theme-500/20 focus:border-theme-500 transition-colors dark:text-white shadow-sm placeholder:text-slate-500 font-medium">
                         ${state.searchingVerses ? `
                             <div class="absolute right-4 top-1/2 -translate-y-1/2">
                                 <div class="w-5 h-5 border-2 border-theme-500 border-t-transparent rounded-full animate-spin"></div>
@@ -457,35 +453,28 @@ export const renderQuranReader = (container, cache, props) => {
                 </div>
 
                 <div class="flex p-1 bg-slate-100 dark:bg-slate-900/50 rounded-xl mb-8 w-fit">
-                    <button data-tab="surah" class="list-tab-btn px-6 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-all ${state.listTab === 'surah' ? 'bg-white dark:bg-slate-800 text-theme-600 shadow-sm' : 'text-slate-500'}">${t('surah')}</button>
-                    <button data-tab="juz" class="list-tab-btn px-6 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-all ${state.listTab === 'juz' ? 'bg-white dark:bg-slate-800 text-theme-600 shadow-sm' : 'text-slate-500'}">${t('juz')}</button>
-                    <button data-tab="verses" class="list-tab-btn px-6 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-all ${state.listTab === 'verses' ? 'bg-white dark:bg-slate-800 text-theme-600 shadow-sm' : 'text-slate-500'}">${t('verses')}</button>
+                    <button data-tab="surah" class="list-tab-btn px-6 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-colors ${state.listTab === 'surah' ? 'bg-white dark:bg-slate-800 text-theme-600 shadow-sm' : 'text-slate-500'}">${t('surah')}</button>
+                    <button data-tab="juz" class="list-tab-btn px-6 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-colors ${state.listTab === 'juz' ? 'bg-white dark:bg-slate-800 text-theme-600 shadow-sm' : 'text-slate-500'}">${t('juz')}</button>
+                    <button data-tab="verses" class="list-tab-btn px-6 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-colors ${state.listTab === 'verses' ? 'bg-white dark:bg-slate-800 text-theme-600 shadow-sm' : 'text-slate-500'}">${t('verses')}</button>
                 </div>
 
                 <div id="surah-grid" class="divide-y divide-slate-200/70 dark:divide-slate-800">
                     ${state.listTab === 'surah' ? filtered.map(s => `
-                        <div data-num="${s.number}" class="surah-card py-3 cursor-pointer group relative overflow-hidden">
+                        <div data-num="${s.number}" class="surah-card py-3 cursor-pointer group">
                             
-                            <div class="flex items-center justify-between mb-2 relative z-10">
-                                <div class="flex items-center gap-2.5">
-                                    <div class="w-9 h-9 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-xl font-bold text-slate-500 dark:text-slate-400 group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-all duration-500 shadow-sm font-display relative">
-                                        <span class="text-sm relative z-10">${s.number}</span>
-                                        <div class="absolute inset-0 bg-theme-500/20 rounded-xl scale-0 group-hover:scale-100 transition-transform duration-500"></div>
+                            <div class="flex items-center gap-3">
+                                <div class="flex items-center gap-2.5 flex-1 min-w-0">
+                                    <div class="w-9 h-9 shrink-0 flex items-center justify-center bg-slate-100 rounded-xl font-bold text-slate-600 group-hover:bg-theme-500/10 group-hover:text-theme-600 transition-colors font-display">
+                                        <span class="text-sm">${s.number}</span>
+                                        
                                     </div>
                                     <div class="min-w-0">
-                                        <h3 class="font-bold text-sm md:text-base text-slate-800 dark:text-slate-200 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-colors duration-300 truncate tracking-tight">${s.englishName}</h3>
-                                        <p class="text-[9px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mt-0.5">${s.revelationType}</p>
+                                        <h3 class="font-bold text-sm md:text-base text-slate-800 group-hover:text-theme-600 transition-colors truncate tracking-tight">${s.englishName}</h3>
+                                        <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500 mt-0.5">${s.revelationType} · ${s.numberOfAyahs} ${t('ayahs')}</p>
                                     </div>
                                 </div>
-                                <div class="text-right flex-shrink-0">
-                                    <p class="font-amiri text-lg text-slate-800 dark:text-slate-200 leading-none group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-colors duration-500">${s.name}</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center justify-between mt-2.5 pt-2.5 border-t border-slate-200/50 dark:border-slate-700/50 relative z-10">
-                                <div class="flex items-center gap-2">
-                                    <span class="px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-[9px] text-slate-500 dark:text-slate-400 font-bold whitespace-nowrap">${s.numberOfAyahs} ${t('ayahs')}</span>
-                                </div>
-                                <div class="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-all duration-500">
+                                <p class="font-amiri text-lg text-slate-800 leading-none group-hover:text-theme-600 transition-colors shrink-0">${s.name}</p>
+                                <div class="w-6 h-6 shrink-0 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 group-hover:bg-theme-500/10 group-hover:text-theme-600 transition-colors">
                                     ${ChevronRightIcon({className: `w-3 h-3 ${isRtl ? 'rotate-180' : ''}`})}
                                 </div>
                             </div>
@@ -493,15 +482,15 @@ export const renderQuranReader = (container, cache, props) => {
                             const mapping = JUZ_MAPPING.find(m => m.juz === j);
                             const surah = state.surahs.find(s => s.number === mapping.surah);
                             return `
-                            <div data-juz="${j}" class="juz-card py-3 cursor-pointer group relative overflow-hidden">
+                            <div data-juz="${j}" class="juz-card py-3 cursor-pointer group">
                                 
-                                <div class="flex items-center gap-3 relative z-10">
-                                    <div class="w-10 h-10 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-xl font-bold text-slate-500 dark:text-slate-400 group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-all duration-500 shadow-sm font-display relative">
-                                        <span class="text-sm relative z-10">${j}</span>
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 shrink-0 flex items-center justify-center bg-slate-100 rounded-xl font-bold text-slate-600 group-hover:bg-theme-500/10 group-hover:text-theme-600 transition-colors font-display">
+                                        <span class="text-sm">${j}</span>
                                     </div>
                                     <div class="min-w-0">
-                                        <h3 class="font-bold text-sm md:text-base text-slate-800 dark:text-slate-200 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-colors duration-300 truncate tracking-tight">${t('juz')} ${j}</h3>
-                                        <p class="text-[9px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mt-0.5">${surah ? surah.englishName : ''} • ${t('ayah')} ${mapping.ayah}</p>
+                                        <h3 class="font-bold text-sm md:text-base text-slate-800 group-hover:text-theme-600 transition-colors truncate tracking-tight">${t('juz')} ${j}</h3>
+                                        <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500 mt-0.5">${surah ? surah.englishName : ''} • ${t('ayah')} ${mapping.ayah}</p>
                                     </div>
                                 </div>
                             </div>`;
@@ -513,7 +502,7 @@ export const renderQuranReader = (container, cache, props) => {
                                             <span class="px-2 py-1 bg-theme-500/10 text-theme-600 dark:text-theme-400 rounded-lg text-[10px] font-bold uppercase tracking-wider">${res.surah.englishName} ${res.surah.number}:${res.numberInSurah}</span>
                                             <p class="font-amiri text-lg text-right text-slate-800 dark:text-slate-200 group-hover:text-theme-600 transition-colors">${res.text}</p>
                                         </div>
-                                        <p class="text-sm text-slate-500 dark:text-slate-400 line-clamp-2 italic">${res.translation || ''}</p>
+                                        <p class="text-sm text-slate-600 line-clamp-2 italic">${res.translation || ''}</p>
                                     </div>
                                 `).join('') : `
                                     <div class="flex flex-col items-center justify-center py-20 text-slate-400">
@@ -526,10 +515,6 @@ export const renderQuranReader = (container, cache, props) => {
                 </div>
             </div>`;
         
-        contentArea.querySelector('#reader-list-back')?.addEventListener('click', () => {
-            if (props.onBack) props.onBack();
-        });
-
         contentArea.querySelectorAll('.list-tab-btn').forEach(btn => {
             btn.onclick = () => {
                 state.listTab = btn.dataset.tab;
@@ -615,39 +600,38 @@ export const renderQuranReader = (container, cache, props) => {
 
         const percentageRead = (state.activeAyah / s.numberOfAyahs) * 100;
         contentArea.innerHTML = `
-            <div id="reader-topbar-hover-zone" class="fixed top-0 inset-x-0 h-4 z-[70] pointer-events-auto"></div>
-            <div id="reader-topbar" class="fixed top-0 inset-x-0 h-14 md:h-16 glass z-[60] border-b border-white/10 flex items-center px-2 md:px-4 justify-between transition-all duration-500 transform shadow-md backdrop-blur-2xl">
-                <div class="absolute bottom-0 left-0 h-0.5 bg-theme-600 transition-all duration-500" style="width: ${percentageRead}%"></div>
+                        <div id="reader-topbar" class="fixed top-0 inset-x-0 h-14 md:h-16 bg-white z-[60] border-b border-slate-200 flex items-center px-2 md:px-4 justify-between shadow-sm">
+                <div class="absolute bottom-0 left-0 h-0.5 bg-theme-600" style="width: ${percentageRead}%"></div>
                 
-                <button id="reader-back" class="p-2 rounded-xl glass hover:bg-theme-100 dark:hover:bg-theme-900/30 text-slate-600 dark:text-slate-200 flex items-center gap-2 transition-all active:scale-90 border border-white/10 shadow-sm group">
-                    ${BackIcon({className: "w-4 h-4 md:w-5 md:h-5 group-hover:-translate-x-1 rtl:group-hover:translate-x-1 transition-transform"})}
-                    <span class="hidden sm:inline text-[10px] font-bold uppercase tracking-wider pr-1">${t('back')}</span>
+                <button id="reader-back" class="p-2 rounded-xl hover:bg-slate-100 text-slate-600 flex items-center gap-2 transition-colors border border-slate-200 shadow-sm group">
+                    ${BackIcon({className: "w-4 h-4 md:w-5 md:h-5"})}
+                    <span class="hidden sm:inline text-[11px] font-bold uppercase tracking-wider pr-1">${t('back')}</span>
                 </button>
 
                 <div class="text-center flex flex-col items-center">
                     <div class="flex items-center gap-3">
                         <h2 class="font-amiri text-xl md:text-2xl font-bold leading-none text-slate-900 dark:text-white drop-shadow-sm">${s.name}</h2>
-                        <button id="jump-trigger" class="px-3 py-1 bg-theme-600 text-white rounded-full font-bold shadow-lg active:scale-95 hover: transition-all text-[9px] uppercase tracking-widest border border-white/10">
+                        <button id="jump-trigger" class="px-3 py-1 bg-theme-600 text-white rounded-lg font-bold shadow-sm transition-colors text-[10px] uppercase tracking-widest">
                             ${s.number}:${state.activeAyah}
                         </button>
                     </div>
                     <div class="flex items-center gap-2 mt-0.5">
-                        <span class="text-[7px] md:text-[8px] text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em] font-bold">${s.englishName}</span>
+                        <span class="text-[9px] text-slate-500 uppercase tracking-[0.2em] font-bold">${s.englishName}</span>
                         <span class="w-1 h-1 rounded-full bg-theme-500/40"></span>
-                        <span class="text-[7px] md:text-[8px] text-theme-600 dark:text-theme-400 uppercase tracking-[0.2em] font-bold">${t('surah')} ${s.number}</span>
+                        <span class="text-[9px] text-theme-600 uppercase tracking-[0.2em] font-bold">${t('surah')} ${s.number}</span>
                     </div>
                 </div>
 
-                <button id="settings-trigger" class="p-2 rounded-xl glass hover:bg-theme-100 dark:hover:bg-theme-900/30 text-slate-600 dark:text-slate-200 transition-all active:scale-90 border border-white/10 shadow-sm group">
-                    ${SettingsIcon({className: "w-4 h-4 md:w-5 md:h-5 group-hover:rotate-90 transition-transform duration-500"})}
+                <button id="settings-trigger" class="p-2 rounded-xl hover:bg-slate-100 text-slate-600 transition-colors border border-slate-200 shadow-sm group">
+                    ${SettingsIcon({className: "w-4 h-4 md:w-5 md:h-5"})}
                 </button>
             </div>
             
             <div class="pt-14 pb-20 md:pt-16 md:pb-28 w-full mx-auto px-1 ${fontSizeClass} ${fontClass}" id="reader-scroll-container">
-                <div class="glass-card rounded-none p-0 shadow-none border-0 transition-all duration-500 relative overflow-hidden">
+                <div class="rounded-none p-0 relative overflow-hidden">
                                         
                     <div class="text-center mb-1 relative z-10">
-                        <p class="text-[7px] font-bold text-theme-600/40 dark:text-theme-400/40 uppercase tracking-[0.2em]">
+                        <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
                             ${t('clickAyahForTafsir') || (getCurrentLanguage() === 'ar' ? 'انقر على الآية لعرض التفسير' : 'Click on any verse to view its Tafsir')}
                         </p>
                     </div>
@@ -658,10 +642,10 @@ export const renderQuranReader = (container, cache, props) => {
                                 <p class="font-amiri text-xl md:text-3xl text-slate-900 dark:text-white leading-relaxed">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</p>
                             </div>
                          ` : ''}
-                         <div class="inline-flex items-center gap-1.5 px-3 py-1 glass rounded-full border border-white/5 opacity-80">
-                            <span class="text-[8px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">${s.revelationType}</span>
+                         <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-white rounded-lg border border-slate-200">
+                            <span class="text-[11px] font-bold text-slate-600 uppercase tracking-widest">${s.revelationType}</span>
                             <div class="w-1 h-1 rounded-full bg-theme-500/50"></div>
-                            <span class="text-[8px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">${s.numberOfAyahs} ${t('ayahs')}</span>
+                            <span class="text-[11px] font-bold text-slate-600 uppercase tracking-widest">${s.numberOfAyahs} ${t('ayahs')}</span>
                          </div>
                     </div>
 
@@ -672,14 +656,14 @@ export const renderQuranReader = (container, cache, props) => {
             </div>
 
             <div class="fixed bottom-4 md:bottom-8 inset-x-4 md:inset-x-8 z-[60] pointer-events-none">
-                <div id="reader-bottom-nav" class="max-w-[200px] mx-auto flex items-center justify-between bg-white dark:bg-slate-900 rounded-full p-1.5 border border-slate-200 dark:border-slate-700 shadow-lg pointer-events-auto transition-all duration-500">
-                    <button id="reader-prev-surah" class="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full text-slate-800 dark:text-slate-300 hover:text-theme-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all ${s.number === 1 ? 'opacity-40 cursor-not-allowed' : ''}" ${s.number === 1 ? 'disabled' : ''}>
+                <div id="reader-bottom-nav" class="max-w-[200px] mx-auto flex items-center justify-between bg-white rounded-2xl p-1.5 border border-slate-200 shadow-md pointer-events-auto">
+                    <button id="reader-prev-surah" class="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full text-slate-800 dark:text-slate-300 hover:text-theme-600 hover:bg-slate-100 transition-colors ${s.number === 1 ? 'opacity-40 cursor-not-allowed' : ''}" ${s.number === 1 ? 'disabled' : ''}>
                         ${SkipBackwardIcon({className: "w-5 h-5"})}
                     </button>
                     
                     <div class="w-px h-6 bg-slate-200 dark:bg-slate-700 mx-1"></div>
                     
-                    <button id="reader-next-surah" class="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full text-slate-800 dark:text-slate-300 hover:text-theme-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all ${s.number === 114 ? 'opacity-40 cursor-not-allowed' : ''}" ${s.number === 114 ? 'disabled' : ''}>
+                    <button id="reader-next-surah" class="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full text-slate-800 dark:text-slate-300 hover:text-theme-600 hover:bg-slate-100 transition-colors ${s.number === 114 ? 'opacity-40 cursor-not-allowed' : ''}" ${s.number === 114 ? 'disabled' : ''}>
                         ${SkipForwardIcon({className: "w-5 h-5"})}
                     </button>
                 </div>
@@ -697,15 +681,11 @@ export const renderQuranReader = (container, cache, props) => {
         if (!btt) {
             btt = document.createElement('button');
             btt.id = 'back-to-top';
-            btt.className = 'fixed bottom-24 left-4 md:left-6 z-[9999] p-3 bg-theme-600 text-white rounded-full shadow-lg transition-all duration-500 hover:scale-110 animate-float flex items-center justify-center pointer-events-auto opacity-0 translate-y-10';
+            btt.className = 'fixed bottom-24 right-4 md:right-6 z-[9999] p-3 bg-theme-600 text-white rounded-full shadow-md transition-all flex items-center justify-center pointer-events-auto opacity-0 translate-y-10';
             btt.innerHTML = ArrowUpIcon({className: "w-5 h-5"});
             document.body.appendChild(btt);
         }
             
-        contentArea.querySelector('#reader-topbar-hover-zone').onmouseenter = () => {
-            const header = document.getElementById('reader-topbar');
-            if (header) header.style.transform = 'translateY(0)';
-        };
         
         contentArea.querySelector('#reader-back').onclick = () => {
             setState({ view: 'list', pageData: null });
@@ -841,8 +821,8 @@ export const renderQuranReader = (container, cache, props) => {
         const isBookmarked = (props.bookmarks?.quran || []).some(b => b.id === `${state.pageData.number}:${ayahNum}`);
 
         modal.innerHTML = `
-            <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-md pointer-events-auto" id="tafsir-backdrop"></div>
-            <div class="panel-content w-full max-w-2xl glass rounded-t-[3rem] shadow-[0_-20px_50px_rgba(0,0,0,0.3)] p-8 md:p-12 translate-y-0 transition-transform duration-500 pointer-events-auto max-h-[90vh] overflow-y-auto border-t border-white/20 relative z-10">
+            <div class="absolute inset-0 bg-slate-950/80 pointer-events-auto" id="tafsir-backdrop"></div>
+            <div class="panel-content w-full max-w-2xl bg-white rounded-t-2xl shadow-[0_-20px_50px_rgba(0,0,0,0.3)] p-8 md:p-12 transition-transform duration-300 pointer-events-auto max-h-[90vh] overflow-y-auto border-t border-slate-200 relative z-10">
                 <div class="w-16 h-1.5 bg-white/10 rounded-full mx-auto mb-10"></div>
                 
                 <div class="flex justify-between items-start mb-8">
@@ -851,10 +831,10 @@ export const renderQuranReader = (container, cache, props) => {
                         <p class="text-xs font-bold text-theme-600 dark:text-theme-400 uppercase tracking-widest">${surahName} • ${t('ayah')} ${ayahNum}</p>
                     </div>
                     <div class="flex items-center gap-3">
-                        <button id="tafsir-bookmark-btn" class="w-12 h-12 flex items-center justify-center rounded-full glass border border-white/10 text-slate-400 hover:text-theme-600 transition-all active:scale-90">
+                        <button id="tafsir-bookmark-btn" class="w-12 h-12 flex items-center justify-center rounded-full bg-white border border-slate-200 text-slate-500 hover:text-theme-600 transition-colors">
                             ${isBookmarked ? BookmarkSolidIcon({className: "w-6 h-6 text-theme-600"}) : BookmarkIcon({className: "w-6 h-6"})}
                         </button>
-                        <button id="close-tafsir" class="w-12 h-12 flex items-center justify-center rounded-full glass border border-white/10 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-all active:scale-90">
+                        <button id="close-tafsir" class="w-12 h-12 flex items-center justify-center rounded-full bg-white border border-slate-200 text-slate-500 hover:text-slate-700 transition-colors">
                             ${CloseIcon({className: "w-6 h-6"})}
                         </button>
                     </div>
@@ -946,7 +926,7 @@ export const renderQuranReader = (container, cache, props) => {
         if (!modal) {
             modal = document.createElement('div');
             modal.id = 'jump-modal';
-            modal.className = 'fixed inset-0 z-[120] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md';
+            modal.className = 'fixed inset-0 z-[120] flex items-center justify-center p-4 bg-slate-950/80';
             document.body.appendChild(modal);
         }
 
@@ -954,11 +934,11 @@ export const renderQuranReader = (container, cache, props) => {
         const currentAyahNum = state.activeAyah || 1;
 
         modal.innerHTML = `
-            <div class="glass rounded-[2rem] md:rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.5)] w-full max-w-sm p-6 md:p-8 fade-in border border-white/20 relative z-10 overflow-hidden">
+            <div class="bg-white rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.5)] w-full max-w-sm p-6 md:p-8 border border-slate-200 relative z-10 overflow-hidden">
                                 
                 <div class="flex justify-between items-center mb-6 relative z-10">
                     <h3 class="text-xl font-bold text-slate-900 dark:text-white tracking-tight">${t('jumpTo')}</h3>
-                    <button id="close-jump-modal" class="w-8 h-8 flex items-center justify-center rounded-full glass border border-white/10 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-all active:scale-90">
+                    <button id="close-jump-modal" class="w-8 h-8 flex items-center justify-center rounded-full bg-white border border-slate-200 text-slate-500 hover:text-slate-700 transition-colors">
                         ${CloseIcon({className: "w-4 h-4"})}
                     </button>
                 </div>
@@ -975,7 +955,7 @@ export const renderQuranReader = (container, cache, props) => {
                             <div class="space-y-2">
                                 <label class="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em] ml-1">${t('selectSurah')}</label>
                                 <div class="relative">
-                                    <select id="jump-surah-select" class="w-full p-4 bg-white/5 dark:bg-slate-900/50 rounded-xl border border-white/10 outline-none text-slate-900 dark:text-white focus:ring-4 focus:ring-theme-500/20 focus:border-theme-500/50 transition-all appearance-none font-medium text-sm">
+                                    <select id="jump-surah-select" class="w-full p-4 bg-white rounded-xl border border-slate-300 outline-none text-slate-900 focus:ring-2 focus:ring-theme-500/20 focus:border-theme-500 transition-colors appearance-none font-medium text-sm">
                                         ${state.surahs.map(s => `<option value="${s.number}" ${s.number === currentSurahNum ? 'selected' : ''} class="bg-slate-900">${s.number}. ${s.englishName}</option>`).join('')}
                                     </select>
                                     <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
@@ -986,14 +966,14 @@ export const renderQuranReader = (container, cache, props) => {
 
                             <div class="space-y-2">
                                 <label class="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em] ml-1">${t('ayahNumber')}</label>
-                                <input id="jump-ayah-input" type="number" min="1" value="${currentAyahNum}" class="w-full p-4 bg-white/5 dark:bg-slate-900/50 rounded-xl border border-white/10 outline-none text-slate-900 dark:text-white focus:ring-4 focus:ring-theme-500/20 focus:border-theme-500/50 transition-all font-medium text-sm">
+                                <input id="jump-ayah-input" type="number" min="1" value="${currentAyahNum}" class="w-full p-4 bg-white rounded-xl border border-slate-300 outline-none text-slate-900 focus:ring-2 focus:ring-theme-500/20 focus:border-theme-500 transition-colors font-medium text-sm">
                             </div>
                         </div>
                     ` : state.jumpTab === 'juz' ? `
                         <div class="space-y-2">
                             <label class="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em] ml-1">${t('selectJuz')}</label>
                             <div class="relative">
-                                <select id="jump-juz-select" class="w-full p-4 bg-white/5 dark:bg-slate-900/50 rounded-xl border border-white/10 outline-none text-slate-900 dark:text-white focus:ring-4 focus:ring-theme-500/20 focus:border-theme-500/50 transition-all appearance-none font-medium text-sm">
+                                <select id="jump-juz-select" class="w-full p-4 bg-white rounded-xl border border-slate-300 outline-none text-slate-900 focus:ring-2 focus:ring-theme-500/20 focus:border-theme-500 transition-colors appearance-none font-medium text-sm">
                                     ${Array.from({length: 30}, (_, i) => i + 1).map(j => `<option value="${j}" class="bg-slate-900">${t('juz')} ${j}</option>`).join('')}
                                 </select>
                                 <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
@@ -1005,7 +985,7 @@ export const renderQuranReader = (container, cache, props) => {
                         <div class="space-y-2">
                             <label class="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em] ml-1">${t('selectHizb')}</label>
                             <div class="relative">
-                                <select id="jump-hizb-select" class="w-full p-4 bg-white/5 dark:bg-slate-900/50 rounded-xl border border-white/10 outline-none text-slate-900 dark:text-white focus:ring-4 focus:ring-theme-500/20 focus:border-theme-500/50 transition-all appearance-none font-medium text-sm">
+                                <select id="jump-hizb-select" class="w-full p-4 bg-white rounded-xl border border-slate-300 outline-none text-slate-900 focus:ring-2 focus:ring-theme-500/20 focus:border-theme-500 transition-colors appearance-none font-medium text-sm">
                                     ${Array.from({length: 60}, (_, i) => i + 1).map(h => `<option value="${h}" class="bg-slate-900">${t('hizb')} ${h}</option>`).join('')}
                                 </select>
                                 <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
@@ -1015,7 +995,7 @@ export const renderQuranReader = (container, cache, props) => {
                         </div>
                     `}
 
-                    <button id="jump-confirm-btn" class="w-full py-4 bg-theme-700 text-white font-bold rounded-xl shadow-md hover: active:scale-95 transition-all uppercase tracking-[0.2em] text-[10px] border border-white/10">
+                    <button id="jump-confirm-btn" class="w-full py-4 bg-theme-600 text-white font-bold rounded-xl shadow-sm transition-colors uppercase tracking-[0.2em] text-[10px]">
                         ${t('goTo')}
                     </button>
                 </div>
@@ -1070,7 +1050,7 @@ export const renderQuranReader = (container, cache, props) => {
         if (!modal) {
             modal = document.createElement('div');
             modal.id = 'reader-settings-modal';
-            modal.className = 'fixed inset-0 z-[120] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/80 backdrop-blur-md';
+            modal.className = 'fixed inset-0 z-[120] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/80';
             document.body.appendChild(modal);
         }
 
@@ -1113,7 +1093,7 @@ export const renderQuranReader = (container, cache, props) => {
                 
                 <div class="flex justify-between items-center mb-8">
                     <h3 class="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">${t('displaySettings')}</h3>
-                    <button id="close-reader-settings" class="w-10 h-10 flex items-center justify-center rounded-full glass border border-white/10 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-all active:scale-90">
+                    <button id="close-reader-settings" class="w-10 h-10 flex items-center justify-center rounded-full bg-white border border-slate-200 text-slate-500 hover:text-slate-700 transition-colors">
                         ${CloseIcon({className: "w-5 h-5"})}
                     </button>
                 </div>
@@ -1123,7 +1103,7 @@ export const renderQuranReader = (container, cache, props) => {
                         <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em] ml-1">${t('fontSize')}</label>
                         <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
                             ${sizeOptions.map(opt => `
-                                <button data-size="${opt.id}" class="size-btn px-4 py-3 text-[10px] font-bold rounded-2xl border transition-all active:scale-95 ${props.fontSize === opt.id ? 'bg-theme-600 border-theme-600 text-white shadow-md' : 'glass border-white/10 text-slate-600 dark:text-slate-400 hover:bg-white/10'}">
+                                <button data-size="${opt.id}" class="size-btn px-4 py-3 text-[10px] font-bold rounded-2xl border transition-colors ${props.fontSize === opt.id ? 'bg-theme-600 border-theme-600 text-white shadow-md' : 'bg-white border-slate-200 text-slate-600'}">
                                     ${opt.name}
                                 </button>
                             `).join('')}
@@ -1142,7 +1122,7 @@ export const renderQuranReader = (container, cache, props) => {
                         </div>
                     </div>
 
-                    <button id="done-reader-settings" class="w-full py-5 bg-theme-700 text-white font-bold rounded-2xl shadow-md hover: active:scale-95 transition-all uppercase tracking-[0.2em] text-xs border border-white/10">
+                    <button id="done-reader-settings" class="w-full py-5 bg-theme-600 text-white font-bold rounded-2xl shadow-sm transition-colors uppercase tracking-[0.2em] text-xs">
                         ${t('done') || (getCurrentLanguage() === 'ar' ? 'تم' : 'Done')}
                     </button>
                 </div>

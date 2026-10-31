@@ -160,7 +160,7 @@ const getDailyHadith = async () => {
 // --- RENDER FUNCTIONS ---
 const renderHeroSection = (container, state) => {
     const heroContainer = document.createElement('div');
-    heroContainer.className = "p-4 md:p-6 rounded-2xl glass border border-white/20 dark:border-slate-800/50 shadow-sm relative overflow-hidden group transition-all duration-700 fade-in";
+    heroContainer.className = "p-4 md:p-6 rounded-2xl glass border border-white/20 dark:border-slate-800/50 shadow-sm relative overflow-hidden group transition-colors";
     
     const greetingText = getGreeting();
 
@@ -262,7 +262,7 @@ const renderPrayerWidget = (container, state) => {
         if (!nextPrayerName) nextPrayerName = 'Fajr';
         
         prayerContainer.innerHTML = `
-            <div class="p-6 glass-card rounded-2xl h-full flex flex-col transition-all duration-500 hover: border border-slate-200/50 dark:border-slate-700/50">
+            <div class="p-6 glass-card rounded-2xl h-full flex flex-col transition-colors border border-slate-200/50 dark:border-slate-700/50">
                 <div class="flex justify-between items-start mb-6">
                     <div class="flex flex-col gap-1">
                         <div class="flex items-center gap-2">
@@ -281,7 +281,7 @@ const renderPrayerWidget = (container, state) => {
                     ${prayerOrder.map(name => {
                         const isActive = name === nextPrayerName;
                         return `
-                        <div class="p-3.5 rounded-2xl flex items-center justify-between transition-all duration-500 ${isActive ? 'bg-theme-600 text-white shadow-lg scale-[1.02] z-10' : 'bg-slate-50 dark:bg-slate-800/40 text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 border border-transparent hover:border-slate-200 dark:hover:border-slate-700'}">
+                        <div class="p-3.5 rounded-2xl flex items-center justify-between transition-colors ${isActive ? 'bg-theme-600 text-white shadow-md z-10' : 'bg-slate-50 text-slate-700 hover:bg-white border border-transparent hover:border-slate-200'}">
                             <div class="flex items-center gap-3">
                                 <span class="text-[10px] font-black uppercase tracking-widest opacity-60">${t(`prayer_${name}`)}</span>
                             </div>
@@ -293,13 +293,13 @@ const renderPrayerWidget = (container, state) => {
         `;
     } else {
          prayerContainer.innerHTML = `
-            <div class="p-6 glass-card rounded-2xl text-center h-full flex flex-col justify-center items-center border border-slate-200/50 dark:border-slate-700/50">
+            <div class="p-6 glass-card rounded-2xl text-center flex flex-col items-center border border-slate-200/50 dark:border-slate-700/50">
                  <div class="w-12 h-12 glass rounded-full flex items-center justify-center text-slate-400 dark:text-slate-500 mb-4">
                     ${ClockIcon({className: 'w-6 h-6'})}
                  </div>
                  <h4 class="text-lg font-bold text-slate-900 dark:text-white mb-1">${t('prayerTimes')}</h4>
                  <p class="text-slate-500 dark:text-slate-400 mb-6 text-xs max-w-[180px]">${t('setupPrayerTimes')}</p>
-                 <a href="#" data-nav="adhan" class="w-full py-3 bg-theme-700 text-white text-xs font-bold rounded-xl hover:bg-theme-800 shadow-lg transition-all active:scale-95">${t('setupNow')}</a>
+                 <a href="#" data-nav="adhan" class="w-full py-3 bg-theme-600 text-white text-xs font-bold rounded-xl hover:bg-theme-700 shadow-sm transition-colors">${t('setupNow')}</a>
             </div>
         `;
     }
@@ -310,7 +310,7 @@ const renderPrayerWidget = (container, state) => {
 const renderQuickLinks = (container) => {
     // Quick Links Section - Now at the top
     const linksHeader = document.createElement('h3');
-    linksHeader.className = "font-bold font-display text-lg md:text-xl text-slate-900 dark:text-white mb-4 flex items-center gap-2";
+    linksHeader.className = "font-bold font-display text-lg md:text-xl text-slate-900 dark:text-white mb-4 flex items-center gap-2 capitalize";
     linksHeader.innerHTML = `
         <span class="w-1.5 h-6 bg-theme-500 rounded-full"></span>
         ${t('explore') || 'Explore'}
@@ -326,7 +326,6 @@ const renderQuickLinks = (container) => {
         ]},
         { title: t('sectionLearn') || 'Learn', items: [
             { nav: "seerah", icon: BookOpenIcon({className: 'w-6 h-6'}), title: t('prophetSeerah') || "Prophet's Seerah", desc: t('seerahHeroDesc') || "Explore the life and legacy of the Prophet Muhammad (PBUH)", meta: 'Biography' },
-            { nav: "stories", icon: SparklesIcon({className: 'w-6 h-6'}), title: t('prophetStories') || "Prophet Stories", desc: t('prophetStoriesDesc') || "Stories of the Prophets from Adam to Muhammad (PBUH)", meta: 'Prophets' },
             { nav: "sahaba", icon: UsersIcon({className: 'w-6 h-6'}), title: t('sahabaStories') || "Sahaba Stories", desc: t('sahabaStoriesDesc') || "Life of the Companions of the Prophet (PBUH)", meta: 'Sahaba' },
             { nav: "hadith", icon: HadithIcon({className: 'w-6 h-6'}), title: t('discoverHadith'), desc: t('discoverHadithDesc'), meta: '9 Collections' },
             { nav: "asma", icon: BookOpenIcon({className: 'w-6 h-6'}), title: t('asmaUlHusna'), desc: t('asmaUlHusnaDesc') || 'The 99 Names of Allah', meta: '99 Names' },
@@ -341,22 +340,20 @@ const renderQuickLinks = (container) => {
     ];
     linkGroups.forEach((group) => {
         const groupHeader = document.createElement('h4');
-        groupHeader.className = "text-sm font-bold text-slate-700 dark:text-slate-300 mb-3";
+        groupHeader.className = "text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-3";
         groupHeader.textContent = group.title;
         container.appendChild(groupHeader);
         const groupGrid = document.createElement('div');
         groupGrid.className = "divide-y divide-slate-200/70 dark:divide-slate-800 mb-8";
-        groupGrid.innerHTML = group.items.map((link, i) => `<a href="#" data-nav="${link.nav}" ${link.subNav ? `data-sub-nav="${link.subNav}"` : ''} ${link.surah ? `data-surah="${link.surah}"` : ''} ${link.ayah ? `data-ayah="${link.ayah}"` : ''} class="quick-link-card fade-in group py-3 transition-colors flex flex-col gap-2 active:scale-[0.98] relative overflow-hidden" style="animation-delay: ${0.1 + (i * 0.05)}s">
-            <div class="flex items-center justify-between relative z-10">
-                <div class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-all duration-300 shadow-sm">
-                    ${link.icon.toString().replace('w-6 h-6', 'w-4 h-4')}
-                </div>
-                <span class="text-[8px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded-md group-hover:bg-theme-500/10 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-colors shadow-sm">${link.meta}</span>
+        groupGrid.innerHTML = group.items.map((link, i) => `<a href="#" data-nav="${link.nav}" ${link.subNav ? `data-sub-nav="${link.subNav}"` : ''} ${link.surah ? `data-surah="${link.surah}"` : ''} ${link.ayah ? `data-ayah="${link.ayah}"` : ''} class="quick-link-card group py-3 transition-colors flex items-center gap-3">
+            <div class="w-10 h-10 shrink-0 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 group-hover:bg-theme-500/10 group-hover:text-theme-600 transition-colors">
+                ${link.icon.toString().replace('w-6 h-6', 'w-5 h-5')}
             </div>
-            <div class="mt-0.5 relative z-10">
-                <h4 class="font-bold text-sm text-slate-800 dark:text-slate-200 mb-0.5 group-hover:text-theme-600 dark:group-hover:text-theme-400 transition-colors">${link.title}</h4>
-                <p class="text-[10px] text-slate-500 dark:text-slate-400 leading-tight font-medium line-clamp-2">${link.desc}</p>
+            <div class="min-w-0 flex-1">
+                <h4 class="font-bold text-sm text-slate-800 mb-0.5 group-hover:text-theme-600 transition-colors truncate">${link.title}</h4>
+                <p class="text-xs text-slate-500 leading-tight font-medium line-clamp-1">${link.desc}</p>
             </div>
+            <span class="shrink-0 text-[10px] font-bold uppercase tracking-wider text-slate-500">${link.meta}</span>
         </a>`).join('');
         container.appendChild(groupGrid);
     });
@@ -384,8 +381,8 @@ const renderProphetStoriesSection = (container, state) => {
     ];
 
     storiesContainer.innerHTML = prophets.map((p, i) => `
-        <a href="#" data-nav="stories" data-prophet-id="${p.id}" class="group py-2 transition-colors text-center flex flex-col items-center gap-2 fade-in" style="animation-delay: ${0.2 + (i * 0.05)}s">
-            <div class="w-10 h-10 rounded-full bg-theme-500/10 flex items-center justify-center text-theme-600 dark:text-theme-400 group-hover:bg-theme-500 group-hover:text-white transition-all duration-500 shadow-sm font-amiri text-lg">
+        <a href="#" data-nav="stories" data-prophet-id="${p.id}" class="group py-2 transition-colors text-center flex flex-col items-center gap-2">
+            <div class="w-10 h-10 rounded-full bg-theme-500/10 flex items-center justify-center text-theme-600 group-hover:bg-theme-500 group-hover:text-white transition-colors font-amiri text-lg">
                 ${p.nameAr}
             </div>
             <span class="text-[10px] font-bold text-slate-700 dark:text-slate-300 group-hover:text-theme-600 transition-colors">${getCurrentLanguage() === 'ar' ? p.nameAr : p.name}</span>
@@ -409,7 +406,7 @@ export const renderHomePage = (container, props) => {
     const init = () => {
         container.innerHTML = '';
         const homeWrapper = document.createElement('div');
-        homeWrapper.className = 'w-full space-y-6 fade-in';
+        homeWrapper.className = 'w-full space-y-6';
         
         // --- Render static layout ---
         renderHeroSection(homeWrapper, state);
@@ -418,7 +415,7 @@ export const renderHomePage = (container, props) => {
         mainGrid.className = 'grid grid-cols-1 lg:grid-cols-3 gap-6';
         
         const prayerTimesContainer = document.createElement('div');
-        prayerTimesContainer.className = 'lg:col-span-1 h-full order-2 lg:order-1';
+        prayerTimesContainer.className = 'lg:col-span-1 order-2 lg:order-1';
         
         const quickLinksContainer = document.createElement('div');
         quickLinksContainer.className = 'lg:col-span-2 space-y-6 order-1 lg:order-2';

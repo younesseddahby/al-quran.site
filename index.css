@@ -81,3 +81,16 @@
   animation: none !important;
   transition: none !important;
 }
+
+/* Active ayah: the number badge goes solid blue together with the wash, so
+   the scroll position and the tapped ayah share ONE highlight treatment. */
+.ayah-item.bg-theme-50 .ayah-num-badge {
+  background-color: #2563eb !important;
+  color: #fff !important;
+}
+
+/* Placeholder floor: no input in the app should ever look washed out. */
+input::placeholder, textarea::placeholder {
+  color: #64748b;
+  opacity: 1;
+}
